@@ -1,58 +1,76 @@
-<<<<<<< HEAD
-# Team-Aardvark
-Web-based information system built with Django for Code Tutors, a fictitious tutoring business. Designed to streamline admin tasks such as lesson requests, scheduling, and invoicing. Includes role-based access for admins, tutors, and students.
-=======
-# Team *enter team name here* Small Group project
+# **Team Aardvark - Code Tutors Information System**  
 
-## Team members
-The members of the team are:
-- *enter full name 1 here*
-- *enter full name 2 here*
-- *enter full name 3 here*
-- *enter full name 4 here*
-- *enter full name 5 here*
+A web-based information system built with **Django** for **Code Tutors**, a fictitious tutoring business. This application streamlines administrative tasks such as managing lesson requests, scheduling, and invoicing. The system includes **role-based access** for:
+- **Admins**: Full access to manage students, tutors, and schedules.
+- **Tutors**: Access to view assigned lessons and manage availability.
+- **Students**: Access to view lesson schedules and invoices.
 
-## Project structure
-The project is called `task_manager`.  It currently consists of a single app `tasks`.
+---
 
-## Deployed version of the application
-The deployed version of the application can be found at [*enter url here*](*enter_url_here*).
+## **Team Members**  
+The project was developed by the following team members:
+- [Full Name 1]
+- [Full Name 2]
+- [Full Name 3]
+- [Full Name 4]
+- [Full Name 5]
 
-## Installation instructions
-To install the software and use it in your local development environment, you must first set up and activate a local development environment.  From the root of the project:
+---
 
-```
+## **Project Overview**  
+
+The project, named `task_manager`, consists of a single app called `tasks`. This app is responsible for managing tasks and workflows for the tutoring business.
+
+---
+
+## **Deployed Application**  
+
+The deployed version of the application is available at:  
+[**Insert Deployment URL Here**](#)
+
+---
+
+## **Installation Instructions**  
+
+To set up the application locally, follow these steps:
+
+### **1. Set Up a Virtual Environment**:
+From the root directory of the project:
+```bash
 $ virtualenv venv
-$ source venv/bin/activate
+$ source venv/bin/activate   # On Windows: .\venv\Scripts\activate
 ```
 
-Install all required packages:
-
-```
+### **2. Install Dependencies**:
+Install all required packages using:
+```bash
 $ pip3 install -r requirements.txt
 ```
 
-Migrate the database:
-
-```
+### **3. Migrate the Database**:
+Apply database migrations:
+```bash
 $ python3 manage.py migrate
 ```
 
-Seed the development database with:
-
-```
+### **4. Seed the Database**:
+Populate the development database with sample data:
+```bash
 $ python3 manage.py seed
 ```
 
-Run all tests with:
-```
+### **5. Run Tests**:
+Verify the application by running all tests:
+```bash
 $ python3 manage.py test
 ```
 
-*The above instructions should work in your version of the application.  If there are deviations, declare those here in bold.  Otherwise, remove this line.*
+> **Note**: If there are any deviations in these instructions for your version, please document them here.
 
-## Sources
-The packages used by this application are specified in `requirements.txt`
+---
 
-*Declare are other sources here, and remove this line*
->>>>>>> 61d9b3f (Initial commit: Starting code base)
+## **Project Dependencies**  
+
+The packages required for this project are listed in `requirements.txt`. These include, but are not limited to:
+- **Django**: The core web framework.
+- **Other Dependencies**: [Add specific packages as needed].
