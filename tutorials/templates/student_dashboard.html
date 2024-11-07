@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h1 class="mb-4">Student Dashboard</h1>
+  
+  <div class="card mb-3">
+    <div class="card-header">Your Lesson Schedule</div>
+    <div class="card-body">
+      <p>View your upcoming lessons and any changes to your schedule.</p>
+      <a href="#" class="btn btn-primary">View Schedule</a>
+    </div>
+  </div>
+  
+  <div class="card mb-3">
+    <div class="card-header">Invoices</div>
+    <div class="card-body">
+      <p>Access and download your invoices.</p>
+      <a href="#" class="btn btn-primary">View Invoices</a>
+    </div>
+  </div>
+  
+  <div class="card mb-3">
+    <div class="card-header">Request Changes</div>
+    <div class="card-body">
+      <p>Submit requests to change or cancel your lessons.</p>
+      <a href="#" class="btn btn-primary">Submit Request</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
