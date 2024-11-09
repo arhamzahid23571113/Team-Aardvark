@@ -3,7 +3,6 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from libgravatar import Gravatar
 
-
 class User(AbstractUser):
     """Model used for user authentication, and team member related information."""
 
@@ -29,9 +28,6 @@ class User(AbstractUser):
 
     expertise = models.TextField(blank=True, null=True,
                                  help_text="Comma-separated list of programming languages or topics the tutor specializes in.")
-
-    lesson_preferences = models.TextField(blank=True, null=True,
-                                          help_text="Optional lesson preferences (e.g., desired programming language or specific focus).")
 
     class Meta:
         """Model options."""
