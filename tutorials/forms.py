@@ -88,7 +88,7 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
     class Meta:
         """Form options."""
         model = User
-        fields = ['first_name', 'last_name', 'username', 'email', 'role', 'lesson_preferences']
+        fields = ['first_name', 'last_name', 'username', 'email', 'role']  # Removed 'lesson_preferences'
 
     def save(self):
         """Create a new user."""
@@ -101,7 +101,5 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
             password=self.cleaned_data.get('new_password'),
             role=self.cleaned_data.get('role'),
         )
-        if user.role == 'student':
-            user.lesson_preferences = self.cleaned_data.get('lesson_preferences')
         user.save()
         return user
