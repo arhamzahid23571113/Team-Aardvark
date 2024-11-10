@@ -1,29 +1,67 @@
-/* dashboard_style.css */
 /* Purple color for the dashboard title */
 .text-dashboard-purple {
     color: #6a0dad !important; /* Light purple for the title */
 }
+
+/* Dark purple background for navbar */
 .navbar-dark.bg-dark {
+    background-color: #4b0082 !important;
+}
+
+/* Full-height sidebar with dark purple background */
+#sidebar {
+    height: 100vh;
+    padding-top: 20px;
     background-color: #4b0082 !important; /* Dark purple */
 }
-.sidebar {
-    background-color: #4b0082 !important; /* Dark purple */
+
+/* Sidebar links */
+#sidebar .nav-link {
+    color: #ffffff !important;
+    font-size: 1.1rem;
+    padding: 10px 15px;
 }
+
+#sidebar .nav-link:hover {
+    background-color: #6a0dad; /* Lighter purple for hover */
+    color: #ffffff;
+    border-radius: 5px;
+}
+
+/* White text for navbar and sidebar brand */
+.navbar-brand, .nav-link {
+    color: #ffffff !important;
+}
+
+/* Light background for the main content area to create contrast */
+main {
+    padding-top: 20px;
+    background-color: #f8f9fa;
+}
+
+/* Card styling */
+.card {
+    background-color: #4b0082; /* Dark purple background */
+    border: none;
+    color: #ffffff; /* White text */
+}
+
 .card-header {
     background-color: #6a0dad !important; /* Lighter purple for headers */
+    border-bottom: none;
 }
+
+/* Button styling */
 .btn-outline-primary {
     color: #4b0082;
     border-color: #4b0082 !important;
 }
+
 .btn-outline-primary:hover {
     background-color: #4b0082 !important;
     color: rgb(223, 210, 210);
 }
-/* Dark purple background color */
-.bg-dark-purple {
-    background-color: #4b0082 !important; /* Use any dark purple hex color you like */
-}
+
 /* Light button style that fits the dark purple background */
 .btn-outline-light {
     color: #ffffff; /* White text */
@@ -34,44 +72,13 @@
     background-color: #ffffff !important; /* White background on hover */
     color: #4b0082 !important; /* Dark purple text on hover */
 }
-/* Ensures text within dark purple cards stays white */
+
+/* Adjust the card text color to ensure readability */
 .bg-dark-purple .card-header, .bg-dark-purple .card-body {
     color: #ffffff !important;
 }
-/* Set the sidebar to be full-height */
-#sidebar {
-    height: 100vh;
-    padding-top: 20px;
-    background-color: #4b0082; /* Dark purple */
-}
 
-/* Navbar link color */
-.navbar-brand, .nav-link {
-    color: #ffffff !important;
-}
-
-/* Adjust main content to fill remaining height */
-main {
-    padding-top: 20px;
-    background-color: #f8f9fa; /* Light background for contrast */
-}
-
-/* Ensure the sidebar links are white */
-#sidebar .nav-link {
-    color: white !important;
-}
-
-#sidebar .nav-link:hover {
-    background-color: #6a0dad; /* Lighter purple for hover */
-    color: white;
-}
-
-/* Adjust button colors */
-.btn-outline-light {
-    color: #ffffff;
-    border-color: #ffffff;
-}
-.btn-outline-light:hover {
-    background-color: #ffffff;
-    color: #4b0082;
+/* Add some spacing around cards */
+.card {
+    margin-bottom: 20px;
 }
