@@ -1,6 +1,6 @@
 /* Purple color for the dashboard title */
 .text-dashboard-purple {
-    color: #6a0dad !important; /* Light purple for the title */
+    color: #fbf9fc !important; /* Light purple for the title */
 }
 
 /* Dark purple background for navbar */
@@ -36,7 +36,7 @@
 /* Light background for the main content area to create contrast */
 main {
     padding-top: 20px;
-    background-color: #f8f9fa;
+    background-color: #38254b;
 }
 
 /* Card styling */
