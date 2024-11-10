@@ -1,0 +1,77 @@
+/* dashboard_style.css */
+/* Purple color for the dashboard title */
+.text-dashboard-purple {
+    color: #6a0dad !important; /* Light purple for the title */
+}
+.navbar-dark.bg-dark {
+    background-color: #4b0082 !important; /* Dark purple */
+}
+.sidebar {
+    background-color: #4b0082 !important; /* Dark purple */
+}
+.card-header {
+    background-color: #6a0dad !important; /* Lighter purple for headers */
+}
+.btn-outline-primary {
+    color: #4b0082;
+    border-color: #4b0082 !important;
+}
+.btn-outline-primary:hover {
+    background-color: #4b0082 !important;
+    color: rgb(223, 210, 210);
+}
+/* Dark purple background color */
+.bg-dark-purple {
+    background-color: #4b0082 !important; /* Use any dark purple hex color you like */
+}
+/* Light button style that fits the dark purple background */
+.btn-outline-light {
+    color: #ffffff; /* White text */
+    border-color: #ffffff !important; /* White border */
+}
+
+.btn-outline-light:hover {
+    background-color: #ffffff !important; /* White background on hover */
+    color: #4b0082 !important; /* Dark purple text on hover */
+}
+/* Ensures text within dark purple cards stays white */
+.bg-dark-purple .card-header, .bg-dark-purple .card-body {
+    color: #ffffff !important;
+}
+/* Set the sidebar to be full-height */
+#sidebar {
+    height: 100vh;
+    padding-top: 20px;
+    background-color: #4b0082; /* Dark purple */
+}
+
+/* Navbar link color */
+.navbar-brand, .nav-link {
+    color: #ffffff !important;
+}
+
+/* Adjust main content to fill remaining height */
+main {
+    padding-top: 20px;
+    background-color: #f8f9fa; /* Light background for contrast */
+}
+
+/* Ensure the sidebar links are white */
+#sidebar .nav-link {
+    color: white !important;
+}
+
+#sidebar .nav-link:hover {
+    background-color: #6a0dad; /* Lighter purple for hover */
+    color: white;
+}
+
+/* Adjust button colors */
+.btn-outline-light {
+    color: #ffffff;
+    border-color: #ffffff;
+}
+.btn-outline-light:hover {
+    background-color: #ffffff;
+    color: #4b0082;
+}

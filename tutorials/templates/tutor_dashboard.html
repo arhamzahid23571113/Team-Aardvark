@@ -1,32 +1,68 @@
-{% extends 'base.html' %}
+{% extends 'dashboard_base.html' %}
+
 {% block title %}Tutor Dashboard{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-  <h1 class="mb-4">Tutor Dashboard</h1>
+  <h1 class="mb-4 text-center text-dashboard-purple">Tutor Dashboard</h1>
   
-  <div class="card mb-3">
-    <div class="card-header">Your Schedule</div>
-    <div class="card-body">
-      <p>View your upcoming lessons and availability here.</p>
-      <a href="#" class="btn btn-primary">View Schedule</a>
+  <div class="row">
+    <!-- Schedule Card -->
+    <div class="col-md-4">
+      <div class="card shadow-sm text-white bg-dark-purple mb-4 h-100">
+        <div class="card-header bg-dark-purple text-white">
+          <i class="fas fa-calendar-alt"></i> Your Schedule
+        </div>
+        <div class="card-body">
+          <p>View your upcoming lessons and availability here.</p>
+          <a href="#" class="btn btn-outline-light btn-block">View Schedule</a>
+        </div>
+      </div>
     </div>
-  </div>
-  
-  <div class="card mb-3">
-    <div class="card-header">Student Profiles</div>
-    <div class="card-body">
-      <p>Access profiles of students assigned to you.</p>
-      <a href="#" class="btn btn-primary">View Profiles</a>
+
+    <!-- Student Profiles Card -->
+    <div class="col-md-4">
+      <div class="card shadow-sm text-white bg-dark-purple mb-4 h-100">
+        <div class="card-header bg-dark-purple text-white">
+          <i class="fas fa-user-graduate"></i> My Student Profiles
+        </div>
+        <div class="card-body">
+          <p>Access profiles of students assigned to you.</p>
+          <a href="#" class="btn btn-outline-light btn-block">View Profiles</a>
+        </div>
+      </div>
     </div>
-  </div>
-  
-  <div class="card mb-3">
-    <div class="card-header">Communicate with Admin</div>
-    <div class="card-body">
-      <p>Send messages or report issues to the admin team.</p>
-      <a href="#" class="btn btn-primary">Contact Admin</a>
+
+    <!-- Communicate with Admin Card -->
+    <div class="col-md-4">
+      <div class="card shadow-sm text-white bg-dark-purple mb-4 h-100">
+        <div class="card-header bg-dark-purple text-white">
+          <i class="fas fa-envelope"></i> Communicate with Admin
+        </div>
+        <div class="card-body">
+          <p>Send messages or report issues to the admin team.</p>
+          <a href="#" class="btn btn-outline-light btn-block">Contact Admin</a>
+        </div>
+      </div>
     </div>
+
+
+    <div class="col-md-4 mt-4">
+      <div class="card shadow-sm text-white bg-dark-purple mb-4 h-100">
+        <div class="card-header bg-dark-purple text-white">
+          <i class="fas fa-edit"></i> Update Details
+        </div>
+        <div class="card-body">
+          <p>Update your profile and other personal details.</p>
+          <a href="#" class="btn btn-outline-light btn-block">Update Details</a>
+        </div>
+      </div>
+    </div>
+
+
+
   </div>
 </div>
 {% endblock %}
+
+
