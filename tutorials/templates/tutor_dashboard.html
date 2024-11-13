@@ -3,11 +3,19 @@
 {% block title %}Tutor Dashboard{% endblock %}
 
 {% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="text-center text-dashboard-purple mt-4">Welcome to your dashboard, {{ user.username }}!</h1>
+    </div>
+  </div>
+</div>
+
 <div class="container-fluid">
-  <h1 class="text-center text-dashboard-purple">Tutor Dashboard</h1>
+  <h2 class="text-center text-dashboard-purple mt-4">Tutor Dashboard</h2>
 
   <div class="row mt-4">
-    <!-- Example Dashboard Cards -->
+    <!-- Schedule Card -->
     <div class="col-md-4 mb-4">
       <div class="card shadow text-center h-100">
         <div class="card-header">
@@ -20,6 +28,7 @@
       </div>
     </div>
 
+    <!-- Student Profiles Card -->
     <div class="col-md-4 mb-4">
       <div class="card shadow text-center h-100">
         <div class="card-header">
@@ -32,6 +41,7 @@
       </div>
     </div>
 
+    <!-- Communicate with Admin Card -->
     <div class="col-md-4 mb-4">
       <div class="card shadow text-center h-100">
         <div class="card-header">
@@ -44,7 +54,7 @@
       </div>
     </div>
 
-    <!-- New Update Details Card -->
+    <!-- Update Details Card -->
     <div class="col-md-4 mb-4">
       <div class="card shadow text-center h-100">
         <div class="card-header">
@@ -59,5 +69,3 @@
   </div>
 </div>
 {% endblock %}
-
-
