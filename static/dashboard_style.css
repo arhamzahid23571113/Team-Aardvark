@@ -85,18 +85,18 @@ main {
 
 /* Styles for the logo */
 .navbar-logo {
-    font-size: 1.5rem;         /* Make the logo larger */
-    font-weight: bold;         /* Make the logo bold */
-    color: #fff;               /* Ensure the logo text is white */
-    padding-left: 20px;        /* Adds space to the left to shift it right */
+    font-size: 1.5rem !important;         /* Make the logo larger */
+    font-weight: bold  !important;         /* Make the logo bold */
+    color: #fff  !important;               /* Ensure the logo text is white */
+    padding-left: 20px  !important;        /* Adds space to the left to shift it right */
 }
 
 .navbar-logo:hover {
-    color: #f0f0f0;            /* Slight color change on hover */
-    text-decoration: none;     /* Remove underline on hover */
+    color: #f0f0f0  !important;            /* Slight color change on hover */
+    text-decoration: none !important;     /* Remove underline on hover */
 }
 
 /* Center the logo on the navbar */
 .navbar .container-fluid {
-    justify-content: center;   /* Centers the content inside the navbar */
+    justify-content: center  !important;  /* Centers the content inside the navbar */
 }
