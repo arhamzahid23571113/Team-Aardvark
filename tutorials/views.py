@@ -146,13 +146,13 @@ def admin_dashboard(request):
     return render(request, 'admin_dashboard.html')
 
 
-
+@login_required
 def tutor_dashboard(request):
     """Tutor-specific dashboard."""
     return render(request, 'tutor_dashboard.html')
 
 
-@login_required
+
 def student_dashboard(request):
     """Student-specific dashboard."""
     return render(request, 'student_dashboard.html')
