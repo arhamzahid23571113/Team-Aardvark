@@ -13,9 +13,10 @@
 <div class="container-fluid">
   <h2 class="text-center text-dashboard-purple mt-4">Student Dashboard</h2>
 
+  <!-- Row for the first three cards -->
   <div class="row mt-4">
     <!-- Schedule Card -->
-    <div class="col-md-3 mb-4">
+    <div class="col-md-4 mb-4">
       <div class="card shadow text-center h-100">
         <div class="card-header">
           <i class="fas fa-calendar-alt"></i> Your Schedule
@@ -27,8 +28,8 @@
       </div>
     </div>
 
-    <!-- Student Profiles Card -->
-    <div class="col-md-3 mb-4">
+    <!-- My Tutor Card -->
+    <div class="col-md-4 mb-4">
       <div class="card shadow text-center h-100">
         <div class="card-header">
           <i class="fas fa-user-graduate"></i> My Tutor
@@ -41,7 +42,7 @@
     </div>
 
     <!-- Communicate with Admin Card -->
-    <div class="col-md-3 mb-4">
+    <div class="col-md-4 mb-4">
       <div class="card shadow text-center h-100">
         <div class="card-header">
           <i class="fas fa-envelope"></i> Communicate with Admin
@@ -52,9 +53,12 @@
         </div>
       </div>
     </div>
+  </div>
 
+  <!-- Row for Update Details and Invoice cards -->
+  <div class="row mt-4">
     <!-- Update Details Card -->
-    <div class="col-md-3 mb-4">
+    <div class="col-md-6 mb-4">
       <div class="card shadow text-center h-100">
         <div class="card-header">
           <i class="fas fa-edit"></i> Update Details
@@ -65,21 +69,19 @@
         </div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- Invoice Card -->
-<div class="col-md-3 mb-4">
-  <div class="card shadow text-center h-100">
-    <div class="card-header">
-      <i class="fas fa-file-invoice-dollar"></i> My Invoices
-    </div>
-    <div class="card-body">
-      <p>View financial Information.</p>
-      <a href="#" class="btn btn-outline-light">View Invoices</a>
+    <!-- My Invoices Card -->
+    <div class="col-md-6 mb-4">
+      <div class="card shadow text-center h-100">
+        <div class="card-header">
+          <i class="fas fa-file-invoice-dollar"></i> My Invoices
+        </div>
+        <div class="card-body">
+          <p>View financial information.</p>
+          <a href="#" class="btn btn-outline-light">View Invoices</a>
+        </div>
+      </div>
     </div>
   </div>
-</div>
-</div>
 </div>
 {% endblock %}
