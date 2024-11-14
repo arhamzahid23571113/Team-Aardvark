@@ -156,3 +156,6 @@ def tutor_dashboard(request):
 def student_dashboard(request):
     """Student-specific dashboard."""
     return render(request, 'student_dashboard.html')
+
+def request_lesson(request):
+    return render(request, 'request_lesson.html')
