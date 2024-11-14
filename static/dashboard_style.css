@@ -44,7 +44,7 @@ main {
     background-color: #4b0082; /* Dark purple background */
     border: none;
     color: #ffffff; /* White text */
-    min-height: 250px;
+    min-height: 150px;
 }
 
 .card-header {
