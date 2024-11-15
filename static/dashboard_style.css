@@ -101,3 +101,56 @@ main {
 .navbar .container-fluid {
     justify-content: center  !important;  /* Centers the content inside the navbar */
 }
+/* Custom purple style for form labels */
+.form-label {
+    color: #ffffff; /* White text for labels to match the dark purple theme */
+    font-weight: bold;
+}
+
+/* Dark purple background for form select and input elements */
+.form-select, .form-control {
+    background-color: #4b0082; /* Dark purple background */
+    color: #ffffff; /* White text */
+    border: 1px solid #6a0dad; /* Lighter purple border */
+    border-radius: 5px;
+}
+
+.form-select:focus, .form-control:focus {
+    background-color: #6a0dad; /* Lighter purple when focused */
+    color: #ffffff;
+    border-color: #4b0082; /* Darker purple border */
+    box-shadow: 0 0 5px rgba(75, 0, 130, 0.5); /* Subtle purple glow */
+}
+
+/* Placeholder text color in input and textarea */
+::placeholder {
+    color: #d3c3e0; /* Light lavender placeholder text for readability */
+}
+
+/* Additional styles for textarea */
+.form-control {
+    color: #ffffff;
+    resize: vertical; /* Allow vertical resizing */
+}
+
+/* Submit button styling */
+.btn-dashboard-purple {
+    background-color: #4b0082; /* Dark purple background */
+    color: #ffffff; /* White text */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.btn-dashboard-purple:hover {
+    background-color: #6a0dad; /* Slightly lighter purple on hover */
+    color: #ffffff;
+}
+
+/* Make form labels bold and white */
+.form-label.text-white.font-weight-bold {
+    color: #ffffff !important;  /* White color */
+    font-weight: bold !important;  /* Bold font */
+}
