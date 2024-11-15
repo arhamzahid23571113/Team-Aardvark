@@ -152,10 +152,10 @@ def tutor_dashboard(request):
     return render(request, 'tutor_dashboard.html')
 
 
-
+@login_required
 def student_dashboard(request):
     """Student-specific dashboard."""
     return render(request, 'student_dashboard.html')
-
+@login_required
 def request_lesson(request):
     return render(request, 'request_lesson.html')
