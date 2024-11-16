@@ -140,13 +140,12 @@ class SignUpView(LoginProhibitedMixin, FormView):
         return reverse('dashboard')
 
 
-@login_required
 def admin_dashboard(request):
     """Admin-specific dashboard."""
     return render(request, 'admin_dashboard.html')
 
 
-
+@login_required
 def tutor_dashboard(request):
     """Tutor-specific dashboard."""
     return render(request, 'tutor_dashboard.html')
