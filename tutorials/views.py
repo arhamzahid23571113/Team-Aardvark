@@ -139,7 +139,7 @@ class SignUpView(LoginProhibitedMixin, FormView):
     def get_success_url(self):
         return reverse('dashboard')
 
-
+@login_required
 def admin_dashboard(request):
     """Admin-specific dashboard."""
     return render(request, 'admin_dashboard.html')
