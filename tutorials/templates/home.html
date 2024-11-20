@@ -8,14 +8,14 @@
           <h1 class="cover-heading">Welcome to Code Tutors!</h1>
           <p class="cover-text">Your gateway to mastering programming with expert tutors.</p>
           <p>
-            <a href="#" class="btn btn-lg btn-primary m-2">Learn More</a>
-            <a href="#" class="btn btn-lg btn-secondary m-2">View Available Courses</a>
+            <a href="{% url 'learn_more' %}" class="btn btn-lg btn-primary m-2">Learn More</a>
+            <a href="{% url 'available_courses' %}" class="btn btn-lg btn-secondary m-2">View Available Courses</a>
           </p>
           <p>
-            <a href='{% url 'sign_up' %}' class="btn btn-lg btn-secondary m-2">
+            <a href="{% url 'sign_up' %}" class="btn btn-lg btn-secondary m-2">
               Sign up
             </a>
-            <a href='{% url 'log_in' %}' class="btn btn-lg btn-secondary m-2">
+            <a href="{% url 'log_in' %}" class="btn btn-lg btn-secondary m-2">
               Log in
             </a>
           </p>
