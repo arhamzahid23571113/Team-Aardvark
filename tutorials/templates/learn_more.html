@@ -2,63 +2,64 @@
 {% load static %}
 
 {% block content %}
-<div class="container py-5">
-  <div class="text-center mb-4">
-    <h1 class="display-4 fw-bold">Learn More About Code Tutors</h1>
-    <p class="lead">We are dedicated to providing personalized programming lessons for all skill levels.</p>
+<!-- Hero Section -->
+<div class="container-fluid py-5" style="background: linear-gradient(to right, #4e54c8, #8f94fb); color: white;">
+  <div class="text-center">
+    <h1 class="fw-bold">Welcome to Code Tutors</h1>
+    <p class="lead mt-3">Your pathway to mastering programming with top-notch tutors.</p>
+    <a href="{% url 'available_courses' %}" class="btn btn-outline-light btn-sm mt-2">Explore Courses</a>
   </div>
-  
-  <div class="row g-4">
-    <div class="col-md-4 text-center">
-      <i class="fas fa-chalkboard-teacher fa-3x text-primary mb-3"></i>
-      <h3 class="fw-bold">Expert Tutors</h3>
-      <p>Our tutors are experienced in various programming languages and specialized areas such as AI and web development.</p>
+</div>
+
+<!-- Features Section -->
+<div class="container py-4">
+  <h2 class="text-center fw-bold mb-4" style="color: #4e54c8;">Why Choose Us?</h2>
+  <div class="row g-3">
+    <div class="col-md-4">
+      <div class="p-3 bg-light rounded shadow-sm text-center">
+        <i class="fas fa-chalkboard-teacher fa-2x text-primary mb-2"></i>
+        <h4 class="fw-bold">Expert Tutors</h4>
+        <p>Learn from seasoned professionals with hands-on industry experience in coding and specialized technologies.</p>
+      </div>
     </div>
-    <div class="col-md-4 text-center">
-      <i class="fas fa-calendar-alt fa-3x text-success mb-3"></i>
-      <h3 class="fw-bold">Flexible Scheduling</h3>
-      <p>Learn at your own pace with weekly or fortnightly sessions tailored to your availability and goals.</p>
+    <div class="col-md-4">
+      <div class="p-3 bg-light rounded shadow-sm text-center">
+        <i class="fas fa-calendar-alt fa-2x text-success mb-2"></i>
+        <h4 class="fw-bold">Flexible Scheduling</h4>
+        <p>Customize your learning schedule with weekly or bi-weekly sessions, designed to fit your life.</p>
+      </div>
     </div>
-    <div class="col-md-4 text-center">
-      <i class="fas fa-graduation-cap fa-3x text-info mb-3"></i>
-      <h3 class="fw-bold">All Skill Levels</h3>
-      <p>Whether beginner or advanced, we have courses to match your needs.</p>
+    <div class="col-md-4">
+      <div class="p-3 bg-light rounded shadow-sm text-center">
+        <i class="fas fa-graduation-cap fa-2x text-info mb-2"></i>
+        <h4 class="fw-bold">All Skill Levels</h4>
+        <p>Our courses are tailored for everyone, from absolute beginners to seasoned coders looking to specialize.</p>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Enforce tighter spacing between Features and What We Offer -->
-<section class="py-5" style="margin-top: -3rem; padding-top: 0;"> 
-  <div class="container">
-    <h2 class="text-center fw-bold mb-4">What We Offer</h2>
-    <div class="row g-4">
-      <div class="col-md-4">
-        <div class="card h-100">
-          <div class="card-body">
-            <h4 class="card-title">Python Programming</h4>
-            <p class="card-text">Learn Python from basics to advanced topics.</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card h-100">
-          <div class="card-body">
-            <h4 class="card-title">Web Development with JavaScript</h4>
-            <p class="card-text">Master front-end development with React.js and more.</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card h-100">
-          <div class="card-body">
-            <h4 class="card-title">AI and Machine Learning</h4>
-            <p class="card-text">Dive into AI concepts with hands-on TensorFlow projects.</p>
-          </div>
-        </div>
-      </div>
+<!-- Learn More Details Section -->
+<section class="container py-5">
+  <h2 class="text-center fw-bold mb-4">Learn More About Our Offerings</h2>
+  <div class="row">
+    <div class="col-md-6">
+      <h4 class="fw-bold text-primary">Personalized Learning</h4>
+      <p>Every student is unique. We tailor our lessons to your specific learning needs and career goals, ensuring you gain the maximum value.</p>
     </div>
-    <div class="text-center mt-5">
-      <a href="{% url 'available_courses' %}" class="btn btn-primary btn-lg">Explore All Courses</a>
+    <div class="col-md-6">
+      <h4 class="fw-bold text-success">Real-World Projects</h4>
+      <p>Work on hands-on projects that simulate real-world challenges, preparing you for professional success in programming and software development.</p>
+    </div>
+  </div>
+  <div class="row mt-3">
+    <div class="col-md-6">
+      <h4 class="fw-bold text-info">Community Support</h4>
+      <p>Join a vibrant community of learners and mentors. Participate in discussions, collaborate on projects, and grow together.</p>
+    </div>
+    <div class="col-md-6">
+      <h4 class="fw-bold text-warning">Cutting-Edge Tools</h4>
+      <p>Our courses use the latest frameworks, libraries, and tools in the tech industry, ensuring you stay ahead of the curve.</p>
     </div>
   </div>
 </section>
@@ -71,14 +72,14 @@
       <div class="carousel-inner">
         <div class="carousel-item active">
           <blockquote class="blockquote text-center">
-            <p class="mb-3">"Code Tutors transformed my career! The tutors are exceptional."</p>
-            <footer class="blockquote-footer mt-2">John Doe, Web Developer</footer>
+            <p class="mb-3">"Code Tutors made learning Python so simple and enjoyable. The hands-on projects were amazing!"</p>
+            <footer class="blockquote-footer mt-2">Sarah Williams, Data Analyst</footer>
           </blockquote>
         </div>
         <div class="carousel-item">
           <blockquote class="blockquote text-center">
-            <p class="mb-3">"I never thought learning AI could be this easy and engaging!"</p>
-            <footer class="blockquote-footer mt-2">Jane Smith, Data Scientist</footer>
+            <p class="mb-3">"Their AI and TensorFlow course helped me land a great job. I couldn’t be happier!"</p>
+            <footer class="blockquote-footer mt-2">Mark Evans, Machine Learning Engineer</footer>
           </blockquote>
         </div>
       </div>
