@@ -46,3 +46,43 @@ class User(AbstractUser):
     def mini_gravatar(self):
         """Return a URL to a miniature version of the user's gravatar."""
         return self.gravatar(size=60)
+
+class Invoice(models.Model):
+    """Model for invoices and tracking payment status"""
+    student = models.ForeignKey(User, related_name="invoices")
+    amount_due = models.DecimalField(max_digits=8, decimal_places=2)
+    due_date = models.DateField()
+    payment_status = models.CharField(max_length=20, choices=[('Paid', 'Paid'),('Unpaid', 'Unpaid')])
+    invoice_date = models.DateField(auto_now_add=True)
+    payment_date = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Invoice for {self.student.first_name} {self.student.last_name}"
+    
+class LessonRequest(models.Model):
+    """Model for students to request lessons"""
+    student = models.ForeignKey(User, related_name="lesson_requests")
+    status = models.CharField(max_length=20, choices=[('Unallocated', 'Unallocated'), ('Allocated', 'Allocated'), ('Pending', 'Pending'), ('Cancelled', 'Cancelled')], default='Unallocated')
+    request_date = models.DateTimeField(auto_now_add=True)
+    requested_topic = models.TextField(
+        blank = True,
+        help_text="Describe what you would like to learn (e.g Web Development with Django)"
+    )
+    requested_frequency = models.TextField(
+        max_length=20,
+        help_text="How often would you like your lessons (e.g Weekly, Fortnightly)?"
+    )
+    requested_duration = models.IntegerField(help_text="Lesson duration in minutes")
+    requested_time = models.TimeField(help_text="Preffered time for the lesson")
+    experience_level = models.TextField(help_text="Describe your level of experience with this topic.")
+    additional_notes = models.TextField(blank=True, help_text="Additional information or requests")
+
+class LessonBooking(models.Model):
+    """Models used for showing lesson bookings between students and tutors"""
+
+    student = models.ForeignKey(User)
+    tutor = models.ForeignKey(User)
+    topic = models.TextField(max_length=100)
+    duration = models.IntegerField()
+    time = models.TimeField()
+    lesson_date = models.DateField()
