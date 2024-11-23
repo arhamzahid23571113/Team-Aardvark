@@ -44,7 +44,7 @@ urlpatterns = [
     path('tutor_dashboard/', views.tutor_dashboard, name='tutor_dashboard'),
     path('student_dashboard/', views.student_dashboard, name='student_dashboard'),
     path('request-lesson/', views.request_lesson, name='request_lesson'),
-
+    path('invoice_page/', views.invoice_page, name='invoice_page')
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
