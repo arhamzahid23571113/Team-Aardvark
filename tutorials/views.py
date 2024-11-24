@@ -158,3 +158,6 @@ def student_dashboard(request):
 
 def request_lesson(request):
     return render(request, 'request_lesson.html')
+
+def contact_admin(request):
+    return render(request,'contact_admin.html')
