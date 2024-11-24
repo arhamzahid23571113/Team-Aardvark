@@ -1,14 +1,24 @@
-{% extends 'dashboard_base_student.html' %} {% block title %} Invoice Page
-{%endblock %} {% block content %}
+{% extends 'dashboard_base_student.html' %} {% load static %} {% block title %}
+Invoice Page {% endblock %} {% block extra_css %}
+<link href="{% static 'invoice_page.css' %}" rel="stylesheet" />
+{% endblock %} {% block content %}
 <div class="card">
   <div class="card-header">Here is your invoice for: ~Select Date~</div>
   <div class="card-body">
-    <!--<h4 class="text-start navbar-dark.bg-dark mt-4">
-      Here is your invoice for: ~Select Date~
-    </h4> -->
     <p>Customer Name</p>
     <p>Address</p>
     <p>Phone Number</p>
+  </div>
+</div>
+
+<hr class="my-4" />
+
+<div class="container text-start">
+  <div class="row justify-content-md-start">
+    <div class="col invoice-titles">Lesson date</div>
+    <div class="col invoice-titles">Lesson length</div>
+    <div class="col invoice-titles">Tutor name</div>
+    <div class="col invoice-titles">Price</div>
   </div>
 </div>
 

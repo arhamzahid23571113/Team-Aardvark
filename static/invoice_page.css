@@ -1,0 +1,10 @@
+.invoice-page .card-header {
+    background-color: #6a0dad !important; /* Lighter purple for headers */
+    border-bottom: none;
+    font-weight: 700 !important; /* Force bold text */
+}
+
+.invoice-titles {
+    color: #ffffff; 
+    font-weight: bold;
+}
