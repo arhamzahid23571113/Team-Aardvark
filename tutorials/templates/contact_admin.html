@@ -1,0 +1,32 @@
+{% extends 'dashboard_base_student.html' %}
+{% block title %}Contact Admin{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1 class="text-center text-dashboard-purple mt-4">Contact Admin</h1>
+  <p class="text-center text-dashboard-purple mb-4">Here you can communicate with admin if there are any issues</p>
+  
+  <form method="post" action="" class="p-4 bg-dark-purple rounded">
+   
+    <!-- Your Role Dropdown -->
+    <div class="mb-3">
+      <label for="language" class="form-label text-white font-weight-bold">Select Your Role</label>
+      <select class="form-select" id="language" name="language">
+        <option selected disabled>Select Your Role</option>
+        <option value="python">Student</option>
+        <option value="javascript">Tutor</option>
+      </select>
+    </div>
+    
+   
+    <!-- Message to Admin -->
+    <div class="mb-3">
+      <label for="comments" class="form-label text-white font-weight-bold">Your Message</label>
+      <textarea class="form-control" id="comments" name="comments" rows="3" placeholder="Add any additional details here"></textarea>
+    </div>
+    
+    <!-- Submit Button -->
+    <button type="submit" class="btn btn-dashboard-purple btn-lg w-100 mt-3">Submit</button>
+  </form>
+</div>
+{% endblock %}
