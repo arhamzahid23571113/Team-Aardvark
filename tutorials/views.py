@@ -161,3 +161,6 @@ def request_lesson(request):
 
 def contact_admin(request):
     return render(request,'contact_admin.html')
+
+def see_my_tutor_profile(request):
+    return render(request,'my_tutor_profile')
