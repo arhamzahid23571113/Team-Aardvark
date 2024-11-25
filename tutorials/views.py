@@ -33,6 +33,34 @@ def home(request):
     return render(request, 'home.html')
 
 
+@login_required
+def admin_dashboard(request):
+    """Admin-specific dashboard."""
+    return render(request, 'admin_dashboard.html')
+
+
+@login_required
+def tutor_dashboard(request):
+    """Tutor-specific dashboard."""
+    return render(request, 'tutor_dashboard.html')
+
+
+@login_required
+def student_dashboard(request):
+    """Student-specific dashboard."""
+    return render(request, 'student_dashboard.html')
+
+
+def learn_more(request):
+    """Display the Learn More page."""
+    return render(request, 'learn_more.html')
+
+
+def available_courses(request):
+    """Display the Available Courses page."""
+    return render(request, 'available_courses.html')
+
+
 class LoginProhibitedMixin:
     """Mixin that redirects when a user is logged in."""
 
@@ -138,21 +166,3 @@ class SignUpView(LoginProhibitedMixin, FormView):
 
     def get_success_url(self):
         return reverse('dashboard')
-
-
-@login_required
-def admin_dashboard(request):
-    """Admin-specific dashboard."""
-    return render(request, 'admin_dashboard.html')
-
-
-@login_required
-def tutor_dashboard(request):
-    """Tutor-specific dashboard."""
-    return render(request, 'tutor_dashboard.html')
-
-
-@login_required
-def student_dashboard(request):
-    """Student-specific dashboard."""
-    return render(request, 'student_dashboard.html')

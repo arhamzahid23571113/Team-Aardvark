@@ -1,23 +1,147 @@
 {% extends 'base.html' %}
-{% block body %}
-  <div class="container vh-100">
-    <div class="row h-100">
-      <div class="col-12 my-auto">
-        <div class="card cover-card offset-sm-2 offset-md-4 offset-lg-7">
-          <h1 class="cover-heading">Task Manager</h1>
-          <p class="cover-text">A task manager application by Team <i>Insert team name here (or revise this home screen as you see fit)</i></p>
-          <p>
-            <a href='{% url 'sign_up' %}' class="btn btn-lg btn-secondary">
-              Sign up
-            </a>
-          </p>
-          <p>
-            <a href='{% url 'log_in' %}' class="btn btn-lg btn-secondary">
-              Log in
-            </a>
-          </p>
-        </div>
+{% load static %}
+
+{% block content %}
+<!-- Custom CSS -->
+<style>
+  /* Fonts and Colors */
+  body {
+    font-family: 'Open Sans', sans-serif;
+    color: #333;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Hero Section */
+  .hero {
+    position: relative;
+    height: 100vh;
+    background: linear-gradient(135deg, #1c92d2 0%, #f2fcfe 100%);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('{% static "images/hero-bg.jpg" %}') no-repeat center center / cover;
+    opacity: 0.3;
+    z-index: -1;
+  }
+
+  .hero .container {
+    position: relative;
+    text-align: center;
+    padding: 0 20px;
+  }
+
+  .hero h1 {
+    font-size: 4rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    animation: fadeInDown 1s ease-out;
+  }
+
+  .hero p {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    animation: fadeInUp 1s ease-out;
+  }
+
+  .hero .btn {
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    margin: 5px;
+    animation: fadeInUp 1s ease-out;
+  }
+
+  .btn-primary {
+    background-color: #1c92d2;
+    border-color: #1c92d2;
+  }
+
+  .btn-secondary {
+    background-color: #0d3b66;
+    border-color: #0d3b66;
+  }
+
+  .btn:hover {
+    opacity: 0.9;
+  }
+
+  /* Animations */
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Features Section */
+  .features {
+    background-color: #f8f9fa;
+    color: #333;
+    padding: 60px 0;
+    margin: 0; /* Ensure no extra margins */
+  }
+
+  .feature-item {
+    text-align: center;
+    padding: 20px;
+  }
+
+  .feature-item h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+  }
+
+  .feature-item p {
+    font-size: 1rem;
+  }
+</style>
+
+<!-- Hero Section -->
+<div class="hero">
+  <div class="container">
+    <h1>Welcome to Code Tutors!</h1>
+    <p>Your gateway to mastering programming with expert tutors.</p>
+    <p>
+      <a href="{% url 'learn_more' %}" class="btn btn-lg btn-primary m-2">Learn More</a>
+      <a href="{% url 'available_courses' %}" class="btn btn-lg btn-secondary m-2">View Courses</a>
+    </p>
+  </div>
+</div>
+
+<!-- Features Section -->
+<div class="features">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4 feature-item">
+        <i class="fas fa-chalkboard-teacher fa-3x mb-3" style="color: #1c92d2;"></i>
+        <h3>Expert Tutors</h3>
+        <p>Learn from industry professionals with years of experience.</p>
+      </div>
+      <div class="col-md-4 feature-item">
+        <i class="fas fa-code fa-3x mb-3" style="color: #0d3b66;"></i>
+        <h3>Hands-on Learning</h3>
+        <p>Engage in practical projects to build real-world skills.</p>
+      </div>
+      <div class="col-md-4 feature-item">
+        <i class="fas fa-users fa-3x mb-3" style="color: #f25c54;"></i>
+        <h3>Community Support</h3>
+        <p>Join a vibrant community of learners and professionals.</p>
       </div>
     </div>
   </div>
+</div>
 {% endblock %}

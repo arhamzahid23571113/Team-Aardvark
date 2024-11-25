@@ -43,6 +43,10 @@ urlpatterns = [
     path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('tutor_dashboard/', views.tutor_dashboard, name='tutor_dashboard'),
     path('student_dashboard/', views.student_dashboard, name='student_dashboard'),
+
+    # New Pages
+    path('learn-more/', views.learn_more, name='learn_more'),
+    path('available-courses/', views.available_courses, name='available_courses'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
