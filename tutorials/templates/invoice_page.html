@@ -2,12 +2,34 @@
 Invoice Page {% endblock %} {% block extra_css %}
 <link href="{% static 'invoice_page.css' %}" rel="stylesheet" />
 {% endblock %} {% block content %}
-<div class="card">
-  <div class="card-header">Here is your invoice for: ~Select Date~</div>
-  <div class="card-body">
-    <p>Customer Name</p>
-    <p>Address</p>
-    <p>Phone Number</p>
+
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="text-start text-dashboard-purple mt-4">
+        Here are your invoices, {{ user.username }}.
+      </h1>
+    </div>
+  </div>
+</div>
+
+<div class="invoice-page">
+  <div class="card bg-transparent border-0">
+    <div class="card-header">~Select Date~</div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col">
+          <p>Customer Name</p>
+          <p>Address</p>
+          <p>Phone Number</p>
+        </div>
+        <div class="col">
+          <p>Date</p>
+          <p>Invoice num</p>
+          <p>Account num</p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -22,9 +44,24 @@ Invoice Page {% endblock %} {% block extra_css %}
 </div>
 
 <hr class="my-4" />
-<div style="height: 300px; text-align: center; line-height: 300px">
-  Receipt will be displayed here
+
+<div class="invoice-page">
+  <div class="card shadow-lg bg-transparent border-0 text-center">
+    <div class="card-body">Receipt will be displayed here.</div>
+  </div>
 </div>
+
+<!--<div class="invoice-page">
+  <div class="card shadow-lg mb-4">
+    <div
+      class="card-body text-center"
+      style="height: 300px; line-height: 300px"
+    >
+      Receipt will be displayed here
+    </div>
+  </div>
+</div>-->
+
 <hr class="my-4" />
 
 <div class="invoice-text" style="text-align: right">

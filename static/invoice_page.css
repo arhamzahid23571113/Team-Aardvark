@@ -1,11 +1,11 @@
-.invoice-page .card-header {
-    background-color: #4b0082 !important; 
-    border-bottom: none;
-    font-weight: bold;
-}
-
 .invoice-text {
     color: #ffffff !important;
+}
+
+.invoice-page .card-header {
+    background-color: transparent !important; /* Lighter purple for headers */
+    border-bottom: none;
+    font-weight: bold;
 }
 
 .invoice-titles {
