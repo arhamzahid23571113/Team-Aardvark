@@ -1,0 +1,44 @@
+{% extends 'dashboard_base_tutor.html' %}
+{% block title %}My Students{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1 class="text-center text-dashboard-purple mt-4">My Students</h1>
+  <p class="text-center text-dashboard-purple mb-4">Here you can view the profiles of your current students.</p>
+  
+  <div class="row">
+    {% for student in students %}
+    <div class="col-md-4">
+      <div class="card p-3 mb-4 bg-dark-purple text-white rounded">
+        <!-- Student Profile Section -->
+        <div class="text-center">
+          <i class="bi bi-person-circle text-dashboard-purple mb-3" style="font-size: 100px;"></i>
+          <h4>{{ student.full_name }}</h4>
+          <p class="text-white-50"><strong>Email:</strong> {{ student.email }}</p>
+        </div>
+
+        <!-- Courses/Topics Section -->
+        <div class="mt-3">
+          <h5 class="font-weight-bold">Learning Topics:</h5>
+          <ul class="list-group bg-transparent">
+            {% for topic in student.learning_topics %}
+            <li class="list-group-item bg-dark-purple text-white">{{ topic }}</li>
+            {% empty %}
+            <li class="list-group-item bg-dark-purple text-white">No topics specified.</li>
+            {% endfor %}
+          </ul>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="text-center mt-3">
+          <a href="{% url 'message_student' student.id %}" class="btn btn-dashboard-purple btn-sm">Message</a>
+          <a href="{% url 'view_student_progress' student.id %}" class="btn btn-dashboard-purple btn-sm">View Progress</a>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-center text-white">You currently have no students.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
