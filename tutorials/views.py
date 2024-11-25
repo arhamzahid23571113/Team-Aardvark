@@ -178,3 +178,6 @@ def contact_admin(request):
 
 def see_my_tutor_profile(request):
     return render(request,'my_tutor_profile.html')
+
+def see_my_students_profile(request):
+    return render(request,'my_students_profile.html')
