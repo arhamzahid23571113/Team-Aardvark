@@ -160,7 +160,21 @@ def request_lesson(request):
     return render(request, 'request_lesson.html')
 
 def contact_admin(request):
-    return render(request,'contact_admin.html')
+        # Determine the base template based on the user's role
+    if request.user.is_authenticated:
+        if request.user.role == 'tutor':
+            base_template = 'dashboard_base_tutor.html'
+        elif request.user.role == 'student':
+            base_template = 'dashboard_base_student.html'
+        elif request.user.role == 'admin':
+            base_template = 'dashboard_base_admin.html'
+        else:
+            base_template = 'dashboard.html'  # Default for other roles
+    else:
+        base_template = 'dashboard.html'  # Default for unauthenticated users
+
+    
+    return render(request, 'contact_admin.html', {'base_template': base_template})
 
 def see_my_tutor_profile(request):
     return render(request,'my_tutor_profile.html')
