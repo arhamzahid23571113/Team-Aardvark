@@ -12,10 +12,9 @@ Invoice Page {% endblock %} {% block extra_css %}
 </div>
 
 <hr class="my-4" />
-
-<div class="container text-start">
+<div class="container text-center">
   <div class="row justify-content-md-start">
-    <div class="col invoice-titles">Lesson date</div>
+    <div class="col invoice-titles">Date</div>
     <div class="col invoice-titles">Lesson length</div>
     <div class="col invoice-titles">Tutor name</div>
     <div class="col invoice-titles">Price</div>
@@ -23,4 +22,14 @@ Invoice Page {% endblock %} {% block extra_css %}
 </div>
 
 <hr class="my-4" />
+<div style="height: 300px; text-align: center; line-height: 300px">
+  Receipt will be displayed here
+</div>
+<hr class="my-4" />
+
+<div class="invoice-text" style="text-align: right">
+  <p>Total:</p>
+  <p>Amount paid:</p>
+</div>
+
 {% endblock %}

@@ -1,10 +1,25 @@
 .invoice-page .card-header {
-    background-color: #6a0dad !important; /* Lighter purple for headers */
+    background-color: #4b0082 !important; 
     border-bottom: none;
-    font-weight: 700 !important; /* Force bold text */
+    font-weight: bold;
+}
+
+.invoice-text {
+    color: #ffffff !important;
 }
 
 .invoice-titles {
     color: #ffffff; 
     font-weight: bold;
+    margin-top: 1px; 
+    margin-bottom: 1px;
+}
+
+hr.my-4 {
+    margin-top: 5px !important;  
+    margin-bottom: 5px !important; 
+}
+
+.invoice-text {
+    color: #ffffff !important;
 }
