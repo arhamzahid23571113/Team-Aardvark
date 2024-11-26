@@ -5,14 +5,15 @@
 
 /* Dark purple background for navbar */
 .navbar-dark.bg-dark {
-    background-color: #4b0082 !important;
+    background: linear-gradient(135deg, #4b0082 0%, #6a0dad 100%) !important;
 }
 
 /* Full-height sidebar with dark purple background */
 #sidebar {
     height: 100vh;
     padding-top: 20px;
-    background-color: #4b0082 !important; /* Dark purple */
+    background: linear-gradient(135deg, #4b0082 0%, #6a0dad 100%) !important;
+    color: #ffffff !important; /* Ensure white text */
 }
 
 /* Sidebar links */

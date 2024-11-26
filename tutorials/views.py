@@ -138,18 +138,37 @@ class PasswordView(LoginRequiredMixin, FormView):
 
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
-    """Display user profile editing screen and handle profile modifications."""
+     """Display user profile editing screen and handle profile modifications."""
 
-    model = User
-    template_name = "profile.html"
-    form_class = UserForm
+     model = User
+     template_name = "profile.html"
+     form_class = UserForm
 
-    def get_object(self):
+     def get_object(self):
         return self.request.user
 
-    def get_success_url(self):
+     def get_success_url(self):
         messages.success(self.request, "Profile updated!")
         return reverse('dashboard')
+
+     def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Determine the base template based on the user's role
+        if hasattr(self.request.user, 'role'):  # Ensure the role attribute exists
+            if self.request.user.role == 'tutor':
+                profile_base_template = 'dashboard_base_tutor.html'
+            elif self.request.user.role == 'student':
+                profile_base_template = 'dashboard_base_student.html'
+            elif self.request.user.role == 'admin':
+                profile_base_template = 'dashboard_base_admin.html'
+            else:
+                profile_base_template = 'dashboard.html'  # Default for other roles
+        else:
+            profile_base_template = 'dashboard.html'
+
+        context['profile_base_template'] = profile_base_template
+        return context
 
 
 class SignUpView(LoginProhibitedMixin, FormView):
@@ -204,6 +223,8 @@ def contact_admin(request):
 
     
     return render(request, 'contact_admin.html', {'base_template': base_template})
+
+
 
 @login_required
 def see_my_tutor_profile(request):
