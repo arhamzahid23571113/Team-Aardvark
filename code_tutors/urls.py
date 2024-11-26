@@ -47,6 +47,10 @@ urlpatterns = [
     path('contact_admin/',views.contact_admin,name='contact_admin'),
     path('my_tutor_profile/',views.see_my_tutor_profile,name='my_tutor_profile'),
     path('my_students_profile/',views.see_my_students_profile,name='my_students_profile'),
+
+    # New Pages
+    path('learn-more/', views.learn_more, name='learn_more'),
+    path('available-courses/', views.available_courses, name='available_courses'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

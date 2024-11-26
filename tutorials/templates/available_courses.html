@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Custom CSS -->
+<style>
+  /* Fonts and Colors */
+  body {
+    font-family: 'Open Sans', sans-serif;
+    color: #333;
+  }
+  .navbar {
+    background-color: #fff;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  .navbar-brand {
+    font-weight: bold;
+    color: #1c92d2;
+  }
+  .hero-section {
+    background: linear-gradient(135deg, #1c92d2 0%, #f2fcfe 100%);
+    color: #fff;
+    padding: 60px 0;
+  }
+  .hero-section h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+  }
+  .section-title {
+    color: #1c92d2;
+    margin-bottom: 40px;
+  }
+  .card {
+    border: none;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  }
+  .card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+  .btn-primary {
+    background-color: #1c92d2;
+    border-color: #1c92d2;
+  }
+  .btn-primary:hover {
+    background-color: #0d3b66;
+    border-color: #0d3b66;
+  }
+  .footer {
+    background-color: #f8f9fa;
+    padding: 20px 0;
+  }
+</style>
+
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-light">
+  <div class="container">
+    <a class="navbar-brand" href="#">EduCourses</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<div class="hero-section text-center">
+  <div class="container">
+    <h1 class="display-5 fw-bold">Explore Our Courses</h1>
+    <p class="lead">Comprehensive learning paths for every level of expertise.</p>
+    <a href="{% url 'sign_up' %}" class="btn btn-primary btn-lg mt-3">Get Started Now</a>
+  </div>
+</div>
+
+<!-- Available Courses Section -->
+<div class="container py-5">
+  <h2 class="text-center fw-bold section-title">Our Courses</h2>
+  
+  <div class="row g-4">
+    <!-- Course 1 -->
+    <div class="col-md-6 d-flex align-items-stretch">
+      <div class="card shadow-sm w-100">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title text-primary mb-3">Python Programming</h5>
+          <p class="card-text">Master Python from basic concepts to advanced data science techniques.</p>
+          <ul class="list-unstyled flex-grow-1">
+            <li><strong>Core Concepts:</strong> Syntax, loops, conditionals, functions.</li>
+            <li><strong>Data Structures & Algorithms:</strong> Lists, dictionaries, tuples.</li>
+            <li><strong>Object-Oriented Programming:</strong> OOP principles for scalable code.</li>
+            <li><strong>Data Science Integration:</strong> Pandas, NumPy, Matplotlib.</li>
+            <li><strong>Machine Learning Basics:</strong> Training models with Scikit-Learn.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Course 2 -->
+    <div class="col-md-6 d-flex align-items-stretch">
+      <div class="card shadow-sm w-100">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title text-success mb-3">Web Development with JavaScript</h5>
+          <p class="card-text">Create dynamic, modern web applications with JavaScript and its powerful frameworks.</p>
+          <ul class="list-unstyled flex-grow-1">
+            <li><strong>Core JavaScript:</strong> ES6+ features, event handling, async programming.</li>
+            <li><strong>DOM Manipulation:</strong> Interactive pages with dynamic HTML and CSS.</li>
+            <li><strong>Front-End Frameworks:</strong> Single-page apps with React.js.</li>
+            <li><strong>API Integration:</strong> Fetching and posting data to APIs.</li>
+            <li><strong>Deployment:</strong> Deploy on Netlify and Vercel.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Course 3 -->
+    <div class="col-md-6 d-flex align-items-stretch">
+      <div class="card shadow-sm w-100">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title text-danger mb-3">Ruby on Rails</h5>
+          <p class="card-text">Develop efficient, scalable full-stack web applications with Ruby on Rails.</p>
+          <ul class="list-unstyled flex-grow-1">
+            <li><strong>Routing and Controllers:</strong> Manage web traffic and inputs.</li>
+            <li><strong>Active Record:</strong> Database interactions with Rails' ORM.</li>
+            <li><strong>View Templates:</strong> Dynamic pages using embedded Ruby.</li>
+            <li><strong>Authentication and Authorization:</strong> User login and access control.</li>
+            <li><strong>Deployment:</strong> Deploy to cloud services like Heroku.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Course 4 -->
+    <div class="col-md-6 d-flex align-items-stretch">
+      <div class="card shadow-sm w-100">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title text-info mb-3">AI and Machine Learning</h5>
+          <p class="card-text">Dive into AI and learn how to create powerful machine learning models.</p>
+          <ul class="list-unstyled flex-grow-1">
+            <li><strong>Supervised Learning:</strong> Regression and classification models.</li>
+            <li><strong>Unsupervised Learning:</strong> Clustering and dimensionality reduction.</li>
+            <li><strong>Neural Networks:</strong> Deep learning for complex problems.</li>
+            <li><strong>Frameworks:</strong> TensorFlow and Keras mastery.</li>
+            <li><strong>Real-World Applications:</strong> Projects like recommendation systems.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Call to Action Section -->
+<div class="container text-center py-5">
+  <h5 class="fw-bold mb-3">Ready to Start?</h5>
+  <p class="lead mb-4">Join our community and elevate your coding skills today.</p>
+  <a href="{% url 'sign_up' %}" class="btn btn-primary btn-lg px-5 py-3">Get Started Now</a>
+</div>
+
+<!-- Footer -->
+<footer class="footer text-center">
+  <div class="container">
+    <p class="mb-0">&copy; 2023 EduCourses. All rights reserved.</p>
+  </div>
+</footer>
+{% endblock %}
