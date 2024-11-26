@@ -20,6 +20,15 @@ hr.my-4 {
     margin-bottom: 5px !important; 
 }
 
-.invoice-text {
-    color: #ffffff !important;
+.btn-prev, .btn-next {
+    color: #ffffff;
+    height: auto;
+    line-height:normal;
+}
+
+.btn-prev:hover, .btn-next:hover {
+    color: #4b0082;
+    transform: scale(1.1);
+    box-shadow: 0 4px 20px rgba(106, 13, 173, 0.2); 
+
 }

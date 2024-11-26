@@ -15,7 +15,13 @@ Invoice Page {% endblock %} {% block extra_css %}
 
 <div class="invoice-page">
   <div class="card bg-transparent border-0">
-    <div class="card-header">~Select Date~</div>
+    <div
+      class="card-header d-flex align-items-center justify-content-center gap-2"
+    >
+      <button type="button" class="btn btn-prev">&lt;</button>
+      <span class="align-middle">Select Date</span>
+      <button type="button" class="btn btn-next">&gt;</button>
+    </div>
     <div class="card-body">
       <div class="row">
         <div class="col">
