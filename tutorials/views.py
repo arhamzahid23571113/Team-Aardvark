@@ -144,7 +144,6 @@ def admin_dashboard(request):
     """Admin-specific dashboard."""
     return render(request, 'admin_dashboard.html')
 
-
 @login_required
 def tutor_dashboard(request):
     """Tutor-specific dashboard."""
@@ -181,7 +180,6 @@ def contact_admin(request):
 @login_required
 def see_my_tutor_profile(request):
     return render(request,'my_tutor_profile.html')
-
 
 @login_required
 def see_my_students_profile(request):
