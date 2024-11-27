@@ -48,6 +48,8 @@ urlpatterns = [
     path('my_tutor_profile/',views.see_my_tutor_profile,name='my_tutor_profile'),
     path('my_students_profile/',views.see_my_students_profile,name='my_students_profile'),
     path('request_success/', views.lesson_request_success, name='lesson_request_success'),
+    path('student_requests/', views.student_requests, name='student_requests'),
+
 
     # New Pages
     path('learn-more/', views.learn_more, name='learn_more'),
