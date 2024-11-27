@@ -49,7 +49,7 @@ class User(AbstractUser):
 
 class Invoice(models.Model):
     """Model for invoices and tracking payment status"""
-    student = models.ForeignKey(User, related_name="invoices")
+    student = models.ForeignKey(User, related_name="invoices",on_delete=models.CASCADE)
     amount_due = models.DecimalField(max_digits=8, decimal_places=2)
     due_date = models.DateField()
     payment_status = models.CharField(max_length=20, choices=[('Paid', 'Paid'),('Unpaid', 'Unpaid')])
@@ -61,7 +61,7 @@ class Invoice(models.Model):
     
 class LessonRequest(models.Model):
     """Model for students to request lessons"""
-    student = models.ForeignKey(User, related_name="lesson_requests")
+    student = models.ForeignKey(User, related_name="lesson_requests",on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=[('Unallocated', 'Unallocated'), ('Allocated', 'Allocated'), ('Pending', 'Pending'), ('Cancelled', 'Cancelled')], default='Unallocated')
     request_date = models.DateTimeField(auto_now_add=True)
     requested_topic = models.TextField(
@@ -80,8 +80,8 @@ class LessonRequest(models.Model):
 class LessonBooking(models.Model):
     """Models used for showing lesson bookings between students and tutors"""
 
-    student = models.ForeignKey(User)
-    tutor = models.ForeignKey(User)
+    student = models.ForeignKey(User,related_name="student_lessons",on_delete=models.CASCADE)
+    tutor = models.ForeignKey(User,related_name="tutor_lessons",on_delete=models.CASCADE)
     topic = models.TextField(max_length=100)
     duration = models.IntegerField()
     time = models.TimeField()
