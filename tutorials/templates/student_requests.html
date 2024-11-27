@@ -1,0 +1,49 @@
+{% extends 'dashboard_base_admin.html' %}
+{% block title %}Student Requests{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h1 class="text-center text-dashboard-purple mt-4">Lesson Requests by Students</h1>
+
+  {% if students_with_requests %}
+    {% for student, requests in students_with_requests.items %}
+      <div class="card mb-3">
+        <div class="card-header">
+          {{ student.full_name }} ({{ student.email }})
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">Lesson Requests</h5>
+          <table class="table table-striped table-dark">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Topic</th>
+                <th>Frequency</th>
+                <th>Duration</th>
+                <th>Preferred Time</th>
+                <th>Status</th>
+                <th>Request Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for request in requests %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ request.requested_topic }}</td>
+                <td>{{ request.requested_frequency }}</td>
+                <td>{{ request.requested_duration }} mins</td>
+                <td>{{ request.requested_time }}</td>
+                <td>{{ request.status }}</td>
+                <td>{{ request.request_date|date:"M d, Y H:i" }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="text-center mt-4">No lesson requests found.</p>
+  {% endif %}
+</div>
+{% endblock %}
