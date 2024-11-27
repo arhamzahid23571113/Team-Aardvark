@@ -218,7 +218,7 @@ def request_lesson(request):
             additional_notes=request.POST.get('additional_notes', '')
         )
         # Redirect to the student dashboard after successful submission
-        return redirect('student_dashboard')
+        return redirect('lesson_request_success.html')
     
     # Render the form for a GET request
     return render(request, 'request_lesson.html')

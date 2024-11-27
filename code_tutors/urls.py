@@ -47,6 +47,7 @@ urlpatterns = [
     path('contact_admin/',views.contact_admin,name='contact_admin'),
     path('my_tutor_profile/',views.see_my_tutor_profile,name='my_tutor_profile'),
     path('my_students_profile/',views.see_my_students_profile,name='my_students_profile'),
+    path('request-lesson/', views.request_lesson, name='request_lesson'),
 
     # New Pages
     path('learn-more/', views.learn_more, name='learn_more'),
