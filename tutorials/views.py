@@ -12,6 +12,8 @@ from tutorials.forms import LogInForm, PasswordForm, UserForm, SignUpForm
 from tutorials.helpers import login_prohibited
 from .models import User
 from .models import LessonRequest
+from django.shortcuts import get_object_or_404, redirect
+
 
 
 @login_required
@@ -272,3 +274,20 @@ def student_requests(request):
         'students_with_requests': students_with_requests
     }
     return render(request, 'student_requests.html', context)
+
+
+@login_required
+def assign_tutor(request, lesson_request_id):
+    if request.method == 'POST':
+        # Fetch the lesson request and selected tutor
+        lesson_request = get_object_or_404(LessonRequest, id=lesson_request_id)
+        tutor_id = request.POST.get('tutor_id')
+
+        if tutor_id:
+            tutor = get_object_or_404(User, id=tutor_id, role='tutor')
+            # Assign the tutor to the lesson request (assuming you have a 'tutor' field)
+            lesson_request.tutor = tutor
+            lesson_request.status = 'Allocated'
+            lesson_request.save()
+
+        return redirect('student_requests')  # Redirect back to the requests page
