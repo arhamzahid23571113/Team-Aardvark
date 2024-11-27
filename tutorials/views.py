@@ -259,7 +259,6 @@ def lesson_request_success(request):
 
 @login_required
 def student_requests(request):
-   # Fetch all lesson requests and group by student
     lesson_requests = LessonRequest.objects.select_related('student').order_by('student')
 
     # Group requests by student
@@ -269,9 +268,11 @@ def student_requests(request):
             students_with_requests[req.student] = []
         students_with_requests[req.student].append(req)
 
-    # Pass the grouped data to the template
+    tutors = User.objects.filter(role='tutor')  # Fetch all tutors
+
     context = {
-        'students_with_requests': students_with_requests
+        'students_with_requests': students_with_requests,
+        'tutors': tutors,
     }
     return render(request, 'student_requests.html', context)
 
