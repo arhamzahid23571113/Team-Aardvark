@@ -11,6 +11,8 @@ from django.views.generic.edit import FormView, UpdateView
 from tutorials.forms import LogInForm, PasswordForm, UserForm, SignUpForm
 from tutorials.helpers import login_prohibited
 from .models import User
+from .models import LessonRequest
+
 
 @login_required
 def dashboard(request):
@@ -204,6 +206,21 @@ def student_dashboard(request):
 
 @login_required
 def request_lesson(request):
+    if request.method == 'POST':
+        # Process the form data and create a LessonRequest
+        LessonRequest.objects.create(
+            student=request.user,  # Assuming the logged-in user is the student
+            requested_topic=request.POST['requested_topic'],
+            requested_frequency=request.POST['requested_frequency'],
+            requested_duration=request.POST['requested_duration'],
+            requested_time=request.POST['requested_time'],
+            experience_level=request.POST['experience_level'],
+            additional_notes=request.POST.get('additional_notes', '')
+        )
+        # Redirect to the student dashboard after successful submission
+        return redirect('student_dashboard')
+    
+    # Render the form for a GET request
     return render(request, 'request_lesson.html')
 
 @login_required
