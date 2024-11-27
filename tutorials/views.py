@@ -250,3 +250,7 @@ def see_my_tutor_profile(request):
 @login_required
 def see_my_students_profile(request):
     return render(request,'my_students_profile.html')
+
+@login_required
+def lesson_request_success(request):
+    return render(request, 'lesson_request_success.html')
