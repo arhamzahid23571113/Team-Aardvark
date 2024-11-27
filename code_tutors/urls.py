@@ -47,7 +47,7 @@ urlpatterns = [
     path('contact_admin/',views.contact_admin,name='contact_admin'),
     path('my_tutor_profile/',views.see_my_tutor_profile,name='my_tutor_profile'),
     path('my_students_profile/',views.see_my_students_profile,name='my_students_profile'),
-    path('request-lesson/', views.lesson_request_success, name='request_lesson_success'),
+    path('request_success/', views.lesson_request_success, name='lesson_request_success'),
 
     # New Pages
     path('learn-more/', views.learn_more, name='learn_more'),
