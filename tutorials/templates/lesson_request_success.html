@@ -1,0 +1,15 @@
+{% extends 'dashboard_base_student.html' %}
+
+{% block title %}Lesson Request Successful{% endblock %}
+
+{% block content %}
+<div class="container text-center mt-5">
+    <h1 class="text-success">Success!</h1>
+    <p class="mt-3">Your lesson request has been successfully submitted.</p>
+    <p>You’ll hear back from an admin soon.</p>
+    <p>If you are not redirected, <a href="{% url 'student_dashboard' %}">click here</a>.</p>
+</div>
+
+<!-- Meta tag for auto-redirection -->
+<meta http-equiv="refresh" content="5; url={% url 'student_dashboard' %}">
+{% endblock %}
