@@ -73,7 +73,7 @@ class LessonRequest(models.Model):
         help_text="How often would you like your lessons (e.g Weekly, Fortnightly)?"
     )
     requested_duration = models.IntegerField(help_text="Lesson duration in minutes")
-    requested_time = models.TimeField(help_text="Preffered time for the lesson")
+    requested_time = models.TimeField(help_text="Preferred time for the lesson")
     experience_level = models.TextField(help_text="Describe your level of experience with this topic.")
     additional_notes = models.TextField(blank=True, help_text="Additional information or requests")
 
