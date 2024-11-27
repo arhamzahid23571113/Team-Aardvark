@@ -142,3 +142,56 @@ main {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* Gradient Purple Table Styling */
+.table-bordered {
+    background: linear-gradient(135deg, #4b0082, #6a0dad); /* Gradient background */
+    color: #ffffff; /* White text */
+    border-color: #6a0dad; /* Light purple borders */
+}
+
+.table-bordered thead th {
+    background: linear-gradient(135deg, #6a0dad, #9b66c7); /* Gradient header */
+    color: #ffffff; /* White text */
+    border-bottom: 2px solid #8465cb; /* Slightly darker border */
+}
+
+.table-bordered tbody tr:nth-of-type(odd) {
+    background: rgba(75, 0, 130, 0.3); /* Subtle purple for odd rows */
+}
+
+.table-bordered tbody tr:nth-of-type(even) {
+    background: rgba(75, 0, 130, 0.2); /* Lighter purple for even rows */
+}
+
+.table-bordered tbody tr:hover {
+    background: linear-gradient(135deg, #6a0dad, #4b0082); /* Highlight row on hover */
+    color: #ffffff; /* White text */
+}
+
+/* Gradient Badges for Status */
+.badge.bg-warning {
+    background: linear-gradient(135deg, #ffd700, #ffbf00) !important; /* Gradient yellow for pending */
+    color: #212529 !important; /* Dark text */
+}
+
+.badge.bg-success {
+    background: linear-gradient(135deg, #28a745, #85d887) !important; /* Gradient green for allocated */
+    color: #ffffff !important; /* White text */
+}
+
+.badge.bg-danger {
+    background: linear-gradient(135deg, #dc3545, #ff6b6b) !important; /* Gradient red for cancelled */
+    color: #ffffff !important; /* White text */
+}
+
+.badge.bg-secondary {
+    background: linear-gradient(135deg, #6c757d, #b3b6b8) !important; /* Gradient gray for unallocated */
+    color: #ffffff !important; /* White text */
+}
+
+/* Add Rounded Corners to Table */
+.table-bordered {
+    border-radius: 10px; /* Rounded corners */
+    overflow: hidden; /* Ensures the corners apply to the content */
+}
