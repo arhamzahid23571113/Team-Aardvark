@@ -43,15 +43,9 @@ urlpatterns = [
     path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('tutor_dashboard/', views.tutor_dashboard, name='tutor_dashboard'),
     path('student_dashboard/', views.student_dashboard, name='student_dashboard'),
-<<<<<<< HEAD
-    path('request-lesson/', views.request_lesson, name='request_lesson'),
-    path('invoice_page/', views.invoice_page, name='invoice_page')
-=======
-
-    # New Pages
+    path('invoice_page/', views.invoice_page, name='invoice_page'),
     path('learn-more/', views.learn_more, name='learn_more'),
     path('available-courses/', views.available_courses, name='available_courses'),
->>>>>>> origin/main
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
