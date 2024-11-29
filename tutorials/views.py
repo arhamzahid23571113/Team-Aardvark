@@ -80,7 +80,10 @@ def invoice_page(request, invoice_id):
 
     lesson_bookings = LessonBooking.objects.filter(student=invoice.student, lesson_date__range=[autumn_start, autumn_end])
 
-    return render(request, 'invoice_page.html', {'invoice': invoice, 'lesson_bookings': lesson_bookings})
+    for booking in lesson_bookings:
+        booking.lesson_price = (booking.duration / 60) * settings.HOURLY_RATE
+
+    return render(request, 'invoice_page.html', {'invoice': invoice, 'lesson_bookings': lesson_bookings,})
 
 
 class LoginProhibitedMixin:
