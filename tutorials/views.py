@@ -10,7 +10,10 @@ from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from tutorials.forms import LogInForm, PasswordForm, UserForm, SignUpForm
 from tutorials.helpers import login_prohibited
+from datetime import date
 from .models import User
+from .models import Invoice
+from .models import LessonBooking
 
 @login_required
 def dashboard(request):
@@ -50,11 +53,6 @@ def student_dashboard(request):
     """Student-specific dashboard."""
     return render(request, 'student_dashboard.html')
 
-#@login_required
-def invoice_page(request):
-    """Display user invoice."""
-    return render(request, 'invoice_page.html')
-
 
 def learn_more(request):
     """Display the Learn More page."""
@@ -64,6 +62,25 @@ def learn_more(request):
 def available_courses(request):
     """Display the Available Courses page."""
     return render(request, 'available_courses.html')
+
+
+#@login_required
+def invoice_page(request, invoice_id):
+    """Display user invoice."""
+    invoice = Invoice.objects.get(id=invoice_id)
+
+    autumn_start = date(2024, 9, 1)
+    autumn_end = date(2024, 12, 31)
+
+    spring_start = date(2024, 1, 1)
+    spring_end = date(2025, 5, 31)
+
+    summer_start = date(2024, 6, 1)
+    summer_end = date(2024, 8, 31)
+
+    lesson_bookings = LessonBooking.objects.filter(student=invoice.student, lesson_date__range=[autumn_start, autumn_end])
+
+    return render(request, 'invoice_page.html', {'invoice': invoice, 'lesson_bookings': lesson_bookings})
 
 
 class LoginProhibitedMixin:

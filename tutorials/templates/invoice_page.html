@@ -3,6 +3,7 @@ Invoice Page {% endblock %} {% block extra_css %}
 <link href="{% static 'invoice_page.css' %}" rel="stylesheet" />
 {% endblock %} {% block content %}
 
+<!-- This might not be included if we use notif board
 <div
   class="alert"
   style="background-color: #6a0dad; border: 5px solid #4b0082; color: #ffffff"
@@ -25,13 +26,21 @@ Invoice Page {% endblock %} {% block extra_css %}
 
   You have oustanding payments. Click
   <a href="#" class="alert-link" style="color: #ffffff">here</a> to see more.
+</div>-->
+
+<div
+  class="alert"
+  style="background-color: #6a0dad; border: 5px solid #4b0082; color: #ffffff"
+  role="alert"
+>
+  Status: {{invoice.payment_status}} | Payment due by: {{invoice.due_date}}
 </div>
 
 <div class="container">
   <div class="row">
     <div class="col-12">
       <h1 class="text-start text-dashboard-purple mt-4">
-        Here are your invoices, {{ user.username }}.
+        Here are your invoices, {{invoice.student.first_name}}.
       </h1>
     </div>
   </div>
@@ -49,12 +58,12 @@ Invoice Page {% endblock %} {% block extra_css %}
     <div class="card-body">
       <div class="row">
         <div class="col">
-          <p>Customer Name</p>
+          <p>{{invoice.student.full_name}}</p>
           <p>Address</p>
           <p>Phone Number</p>
         </div>
         <div class="col">
-          <p>Date</p>
+          <p>{{invoice.invoice_date}}</p>
           <p>Invoice num</p>
           <p>Account num</p>
         </div>
@@ -77,15 +86,23 @@ Invoice Page {% endblock %} {% block extra_css %}
 
 <div class="invoice-page">
   <div class="card shadow-lg bg-transparent border-0 text-center">
-    <div class="card-body">Receipt will be displayed here.</div>
+    <div class="card-body">
+      {% for booking in lesson_bookings %}
+      <div class="row justify-content-md-start">
+        <div class="col">{{booking.lesson_date}}</div>
+        <div class="col">{{booking.duration}}</div>
+        <div class="col">{{booking.tutor}}</div>
+        <div class="col">{{booking.time}}</div>
+      </div>
+      {% endfor %}
+    </div>
   </div>
 </div>
 
 <hr class="my-4" />
 
 <div class="invoice-text" style="text-align: right">
-  <p>Total:</p>
-  <p>Amount paid:</p>
+  <p>Total: {{invoice.amount_due}}</p>
 </div>
 
 {% endblock %}
