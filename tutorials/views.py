@@ -306,3 +306,14 @@ def unassign_tutor(request, lesson_request_id):
 
         # Redirect back to the student requests page
         return redirect('student_requests')
+    
+@login_required
+def cancel_request(request, lesson_request_id):
+    if request.method == 'POST':
+        # Fetch the lesson request
+        lesson_request = get_object_or_404(LessonRequest, id=lesson_request_id)
+        # Update the status to 'Cancelled'
+        lesson_request.status = 'Cancelled'
+        lesson_request.save()
+        # Redirect back to the student requests page
+        return redirect('student_requests')    
