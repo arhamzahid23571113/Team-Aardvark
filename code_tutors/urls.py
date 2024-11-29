@@ -50,6 +50,8 @@ urlpatterns = [
     path('request_success/', views.lesson_request_success, name='lesson_request_success'),
     path('student_requests/', views.student_requests, name='student_requests'),
     path('assign_tutor/<int:lesson_request_id>/', views.assign_tutor, name='assign_tutor'),
+    path('unassign-tutor/<int:lesson_request_id>/', views.unassign_tutor, name='unassign_tutor'),
+
 
 
 
