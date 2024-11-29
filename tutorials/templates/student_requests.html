@@ -23,7 +23,7 @@
                 <th>Preferred Time</th>
                 <th>Status</th>
                 <th>Request Date</th>
-                <th>Assign Tutor</th>
+                <th>Assign/Unassign Tutor</th>
               </tr>
             </thead>
             <tbody>
@@ -47,16 +47,26 @@
                 </td>
                 <td>{{ request.request_date|date:"M d, Y H:i" }}</td>
                 <td>
-                  <form method="post" action="{% url 'assign_tutor' request.id %}">
-                    {% csrf_token %}
-                    <select name="tutor_id" class="form-select" style="background-color: #6a0dad; color: #fff; border: 1px solid #8465cb;">
-                      <option value="" selected disabled>Assign Tutor</option>
-                      {% for tutor in tutors %}
-                      <option value="{{ tutor.id }}">{{ tutor.full_name }}</option>
-                      {% endfor %}
-                    </select>
-                    <button type="submit" class="btn btn-outline-light btn-sm mt-2">Assign</button>
-                  </form>
+                  {% if request.tutor %}
+                    <!-- Unassign Form -->
+                    <form method="post" action="{% url 'unassign_tutor' request.id %}" style="display: inline;">
+                      {% csrf_token %}
+                      <span>Assigned to: {{ request.tutor.full_name }}</span>
+                      <button type="submit" class="btn btn-outline-danger btn-sm mt-2">Unassign</button>
+                    </form>
+                  {% else %}
+                    <!-- Assign Form -->
+                    <form method="post" action="{% url 'assign_tutor' request.id %}" style="display: inline;">
+                      {% csrf_token %}
+                      <select name="tutor_id" class="form-select" style="background-color: #6a0dad; color: #fff; border: 1px solid #8465cb;">
+                        <option value="" selected disabled>Assign Tutor</option>
+                        {% for tutor in tutors %}
+                        <option value="{{ tutor.id }}">{{ tutor.full_name }}</option>
+                        {% endfor %}
+                      </select>
+                      <button type="submit" class="btn btn-outline-light btn-sm mt-2">Assign</button>
+                    </form>
+                  {% endif %}
                 </td>
               </tr>
               {% endfor %}

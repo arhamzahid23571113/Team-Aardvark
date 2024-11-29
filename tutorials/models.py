@@ -2,6 +2,8 @@ from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from libgravatar import Gravatar
+from django.conf import settings
+
 
 class User(AbstractUser):
     """Model used for user authentication, and team member related information."""
@@ -59,23 +61,67 @@ class Invoice(models.Model):
     def __str__(self):
         return f"Invoice for {self.student.first_name} {self.student.last_name}"
     
+
 class LessonRequest(models.Model):
     """Model for students to request lessons"""
-    student = models.ForeignKey(User, related_name="lesson_requests",on_delete=models.CASCADE)
-    status = models.CharField(max_length=20, choices=[('Unallocated', 'Unallocated'), ('Allocated', 'Allocated'), ('Pending', 'Pending'), ('Cancelled', 'Cancelled')], default='Unallocated')
-    request_date = models.DateTimeField(auto_now_add=True)
-    requested_topic = models.TextField(
-        blank = True,
-        help_text="Describe what you would like to learn (e.g Web Development with Django)"
+    student = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="lesson_requests",
+        on_delete=models.CASCADE,
+        help_text="The student making the lesson request."
     )
-    requested_frequency = models.TextField(
+    tutor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="assigned_requests",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        help_text="The tutor assigned to this lesson request. Null if unallocated."
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=[
+            ('Unallocated', 'Unallocated'),
+            ('Allocated', 'Allocated'),
+            ('Pending', 'Pending'),
+            ('Cancelled', 'Cancelled')
+        ],
+        default='Unallocated',
+        help_text="The current status of the lesson request."
+    )
+    request_date = models.DateTimeField(
+        auto_now_add=True,
+        help_text="The date and time when the lesson request was created."
+    )
+    requested_topic = models.TextField(
+        blank=True,
+        help_text="Describe what you would like to learn (e.g Web Development with Django)."
+    )
+    requested_frequency = models.CharField(
         max_length=20,
         help_text="How often would you like your lessons (e.g Weekly, Fortnightly)?"
     )
-    requested_duration = models.IntegerField(help_text="Lesson duration in minutes")
-    requested_time = models.TimeField(help_text="Preferred time for the lesson")
-    experience_level = models.TextField(help_text="Describe your level of experience with this topic.")
-    additional_notes = models.TextField(blank=True, help_text="Additional information or requests")
+    requested_duration = models.PositiveIntegerField(
+        help_text="Lesson duration in minutes."
+    )
+    requested_time = models.TimeField(
+        help_text="Preferred time for the lesson."
+    )
+    experience_level = models.TextField(
+        help_text="Describe your level of experience with this topic."
+    )
+    additional_notes = models.TextField(
+        blank=True,
+        help_text="Additional information or requests."
+    )
+
+    class Meta:
+        verbose_name = "Lesson Request"
+        verbose_name_plural = "Lesson Requests"
+        ordering = ['-request_date']
+
+    def __str__(self):
+        return f"Lesson Request by {self.student.full_name} for {self.requested_topic}"
 
 class LessonBooking(models.Model):
     """Models used for showing lesson bookings between students and tutors"""
