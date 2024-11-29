@@ -292,3 +292,17 @@ def assign_tutor(request, lesson_request_id):
             lesson_request.save()
 
         return redirect('student_requests')  # Redirect back to the requests page
+    
+@login_required
+def unassign_tutor(request, lesson_request_id):
+    if request.method == 'POST':
+        # Fetch the lesson request
+        lesson_request = get_object_or_404(LessonRequest, id=lesson_request_id)
+
+        # Unassign the tutor and update the status
+        lesson_request.tutor = None
+        lesson_request.status = 'Unallocated'
+        lesson_request.save()
+
+        # Redirect back to the student requests page
+        return redirect('student_requests')
