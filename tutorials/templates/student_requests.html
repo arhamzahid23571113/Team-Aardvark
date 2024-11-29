@@ -23,7 +23,7 @@
                 <th>Preferred Time</th>
                 <th>Status</th>
                 <th>Request Date</th>
-                <th>Assign/Unassign Tutor</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -47,6 +47,13 @@
                 </td>
                 <td>{{ request.request_date|date:"M d, Y H:i" }}</td>
                 <td>
+                  {% if request.status != 'Cancelled' %}
+                    <!-- Cancel Request Form -->
+                    <form method="post" action="{% url 'cancel_request' request.id %}" style="display: inline;">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-outline-danger btn-sm mt-2">Cancel</button>
+                    </form>
+                  {% endif %}
                   {% if request.tutor %}
                     <!-- Unassign Form -->
                     <form method="post" action="{% url 'unassign_tutor' request.id %}" style="display: inline;">
