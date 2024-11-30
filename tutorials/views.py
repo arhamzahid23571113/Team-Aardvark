@@ -316,4 +316,12 @@ def cancel_request(request, lesson_request_id):
         lesson_request.status = 'Cancelled'
         lesson_request.save()
         # Redirect back to the student requests page
-        return redirect('student_requests')    
+        return redirect('student_requests')
+
+@login_required
+def all_tutor_profiles(request):
+    # Fetch all tutors (users with role='tutor')
+    tutors = User.objects.filter(role='tutor')
+    context = {'tutors': tutors}
+    return render(request, 'all_tutor_profiles.html', context)
+    
