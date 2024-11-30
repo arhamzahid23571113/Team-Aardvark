@@ -53,26 +53,30 @@
                       {% csrf_token %}
                       <button type="submit" class="btn btn-outline-danger btn-sm mt-2">Cancel</button>
                     </form>
-                  {% endif %}
-                  {% if request.tutor %}
-                    <!-- Unassign Form -->
-                    <form method="post" action="{% url 'unassign_tutor' request.id %}" style="display: inline;">
-                      {% csrf_token %}
-                      <span>Assigned to: {{ request.tutor.full_name }}</span>
-                      <button type="submit" class="btn btn-outline-danger btn-sm mt-2">Unassign</button>
-                    </form>
+
+                    {% if request.tutor %}
+                      <!-- Unassign Form -->
+                      <form method="post" action="{% url 'unassign_tutor' request.id %}" style="display: inline;">
+                        {% csrf_token %}
+                        <span>Assigned to: {{ request.tutor.full_name }}</span>
+                        <button type="submit" class="btn btn-outline-danger btn-sm mt-2">Unassign</button>
+                      </form>
+                    {% else %}
+                      <!-- Assign Form -->
+                      <form method="post" action="{% url 'assign_tutor' request.id %}" style="display: inline;">
+                        {% csrf_token %}
+                        <select name="tutor_id" class="form-select" style="background-color: #6a0dad; color: #fff; border: 1px solid #8465cb;">
+                          <option value="" selected disabled>Assign Tutor</option>
+                          {% for tutor in tutors %}
+                          <option value="{{ tutor.id }}">{{ tutor.full_name }}</option>
+                          {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-outline-light btn-sm mt-2">Assign</button>
+                      </form>
+                    {% endif %}
                   {% else %}
-                    <!-- Assign Form -->
-                    <form method="post" action="{% url 'assign_tutor' request.id %}" style="display: inline;">
-                      {% csrf_token %}
-                      <select name="tutor_id" class="form-select" style="background-color: #6a0dad; color: #fff; border: 1px solid #8465cb;">
-                        <option value="" selected disabled>Assign Tutor</option>
-                        {% for tutor in tutors %}
-                        <option value="{{ tutor.id }}">{{ tutor.full_name }}</option>
-                        {% endfor %}
-                      </select>
-                      <button type="submit" class="btn btn-outline-light btn-sm mt-2">Assign</button>
-                    </form>
+                    <!-- Show a message for canceled requests -->
+                    <span class="text-muted">Request Canceled</span>
                   {% endif %}
                 </td>
               </tr>
