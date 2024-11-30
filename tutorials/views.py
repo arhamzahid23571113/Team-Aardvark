@@ -329,6 +329,7 @@ def cancel_request(request, lesson_request_id):
         lesson_request = get_object_or_404(LessonRequest, id=lesson_request_id)
         # Update the status to 'Cancelled'
         lesson_request.status = 'Cancelled'
+        lesson_request.tutor = None  # Unassign the tutor
         lesson_request.save()
         # Redirect back to the student requests page
         return redirect('student_requests')
