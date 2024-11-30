@@ -65,25 +65,35 @@ def available_courses(request):
 
 
 #@login_required
-def invoice_page(request, invoice_id):
+def invoice_page(request, invoice_id, term_name):
     """Display user invoice."""
     invoice = Invoice.objects.get(id=invoice_id)
 
-    autumn_start = date(2024, 9, 1)
+    '''autumn_start = date(2024, 9, 1)
     autumn_end = date(2024, 12, 31)
 
     spring_start = date(2024, 1, 1)
     spring_end = date(2025, 5, 31)
 
     summer_start = date(2024, 6, 1)
-    summer_end = date(2024, 8, 31)
+    summer_end = date(2024, 8, 31)'''
 
-    lesson_bookings = LessonBooking.objects.filter(student=invoice.student, lesson_date__range=[autumn_start, autumn_end])
+    terms = {
+        'autumn': (date(2024, 9, 1), date(2024, 12, 31)),
+        'spring': (date(2025, 1, 1), date (2025, 5, 31)),
+        'summer': (date(2025, 6, 1), date(2025, 8, 31)),
+    }
+
+    term_dates = terms.get(term_name)
+    term_start, term_end = term_dates
+    
+    #lesson_bookings = LessonBooking.objects.filter(student=invoice.student, lesson_date__range=[autumn_start, autumn_end])
+
+    lesson_bookings = LessonBooking.objects.filter(student=invoice.student, lesson_date__range=[term_start, term_end])
 
     for booking in lesson_bookings:
         booking.lesson_price = (booking.duration / 60) * settings.HOURLY_RATE
-
-    return render(request, 'invoice_page.html', {'invoice': invoice, 'lesson_bookings': lesson_bookings,})
+    return render(request, 'invoice_page.html', {'invoice': invoice, 'lesson_bookings': lesson_bookings, 'term_name': term_name.title()})
 
 
 class LoginProhibitedMixin:

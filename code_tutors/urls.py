@@ -43,7 +43,7 @@ urlpatterns = [
     path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('tutor_dashboard/', views.tutor_dashboard, name='tutor_dashboard'),
     path('student_dashboard/', views.student_dashboard, name='student_dashboard'),
-    path('invoice_page/<int:invoice_id>/', views.invoice_page, name='invoice_page'),
+    path('invoice_page/<int:invoice_id>/<str:term_name>/', views.invoice_page, name='invoice_page'),
     path('learn-more/', views.learn_more, name='learn_more'),
     path('available-courses/', views.available_courses, name='available_courses'),
 ]

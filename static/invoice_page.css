@@ -8,6 +8,16 @@
     font-weight: bold;
 }
 
+.pricing-alert {
+    background-color: #6a0dad;
+    color: #ffffff;
+    border: 2px solid #4b0082;
+}
+
+.header-alert {
+    background-color:#6a0dad
+}
+
 .invoice-titles {
     color: #ffffff; 
     font-weight: bold;
@@ -32,3 +42,4 @@ hr.my-4 {
     box-shadow: 0 4px 20px rgba(106, 13, 173, 0.2); 
 
 }
+
