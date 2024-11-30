@@ -330,4 +330,15 @@ def view_tutor_profile(request, tutor_id):
     # Fetch a specific tutor by ID
     tutor = get_object_or_404(User, id=tutor_id, role='tutor')
     return render(request, 'view_tutor_profile.html', {'tutor': tutor})
+
+@login_required
+def edit_tutor_profile(request, tutor_id):
+    # Fetch a specific tutor by ID
+    tutor = get_object_or_404(User, id=tutor_id, role='tutor')
+    if request.method == 'POST':
+        # Handle the form submission for editing tutor details (e.g., expertise)
+        tutor.expertise = request.POST.get('expertise', tutor.expertise)
+        tutor.save()
+        return redirect('all_tutor_profiles')
+    return render(request, 'edit_tutor_profile.html', {'tutor': tutor})
     
