@@ -266,7 +266,7 @@ def see_my_students_profile(request):
     context = {
         'students': assigned_students,
     }
-    return render(request, 'my_students.html', context)
+    return render(request, 'my_students_profile.html', context)
 
 @login_required
 def lesson_request_success(request):
