@@ -324,4 +324,10 @@ def all_tutor_profiles(request):
     tutors = User.objects.filter(role='tutor')
     context = {'tutors': tutors}
     return render(request, 'all_tutor_profiles.html', context)
+
+@login_required
+def view_tutor_profile(request, tutor_id):
+    # Fetch a specific tutor by ID
+    tutor = get_object_or_404(User, id=tutor_id, role='tutor')
+    return render(request, 'view_tutor_profile.html', {'tutor': tutor})
     
