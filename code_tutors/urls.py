@@ -52,6 +52,9 @@ urlpatterns = [
     path('assign_tutor/<int:lesson_request_id>/', views.assign_tutor, name='assign_tutor'),
     path('unassign-tutor/<int:lesson_request_id>/', views.unassign_tutor, name='unassign_tutor'),
     path('cancel-request/<int:lesson_request_id>/', views.cancel_request, name='cancel_request'),
+    path('tutor-profiles/', views.all_tutor_profiles, name='all_tutor_profiles'),
+    path('tutor-profile/<int:tutor_id>/', views.view_tutor_profile, name='view_tutor_profile'),
+    path('tutor-profile/<int:tutor_id>/edit/', views.edit_tutor_profile, name='edit_tutor_profile'),
 
 
 
