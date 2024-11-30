@@ -6,7 +6,7 @@
 
 /* Dark purple background for navbar with gradient animation */
 .navbar-dark.bg-dark {
-    background: linear-gradient(135deg, #4b0082 0%, #6a0dad 100%) !important;
+    background: linear-gradient(135deg, #4e54c8 0%, #f2fcfe 100%) !important;
     animation: gradientBg 5s infinite alternate; /* Animated gradient background */
 }
 
@@ -14,7 +14,7 @@
 #sidebar {
     height: 100vh;
     padding-top: 20px;
-    background: linear-gradient(135deg, #4b0082 0%, #6a0dad 100%) !important;
+    background: linear-gradient(135deg, #4e54c8 0%, #f2fcfe 100%) !important;
     animation: gradientBg 5s infinite alternate; /* Animated gradient background */
     color: #ffffff !important; /* Ensure white text */
 }
@@ -49,7 +49,7 @@ main {
 
 /* Card styling with hover effect */
 .card {
-    background: linear-gradient(135deg, #4b0082, #6a0dad) !important; /* Gradient background */
+    background: linear-gradient(135deg, #4e54c8 0%, #f2fcfe 100%) !important; /* Gradient background */
     border: none;
     color: #ffffff; /* White text */
     min-height: 150px;
