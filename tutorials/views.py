@@ -251,7 +251,22 @@ def see_my_tutor_profile(request):
 
 @login_required
 def see_my_students_profile(request):
-    return render(request,'my_students_profile.html')
+ # Ensure only tutors can access this page
+    if request.user.role != 'tutor':
+        return redirect('dashboard')
+
+    # Fetch all unique students assigned to the current tutor
+    assigned_students = (
+        User.objects.filter(
+            lesson_requests__tutor=request.user  # Filter users linked to lesson requests for this tutor
+        )
+        .distinct()
+    )
+
+    context = {
+        'students': assigned_students,
+    }
+    return render(request, 'my_students.html', context)
 
 @login_required
 def lesson_request_success(request):
