@@ -62,6 +62,7 @@ Invoice Page {% endblock %} {% block extra_css %}
     aria-label="Info:"
     width="24"
     height="24"
+    style="fill: #9b66c7"
   >
     <use xlink:href="#info-fill" />
   </svg>
@@ -77,7 +78,8 @@ Invoice Page {% endblock %} {% block extra_css %}
   </h1>
   <hr />
   <p class="mb-0 invoice-text">
-    Status: {{invoice.payment_status}} | Payment due by: {{invoice.due_date}}
+    Status: {{invoice.payment_status}} | Payment due by:
+    {{invoice.due_date|date:"d/m/Y"}}
   </p>
 </div>
 
@@ -106,7 +108,7 @@ Invoice Page {% endblock %} {% block extra_css %}
           <p>Phone Number</p>
         </div>
         <div class="col">
-          <p>{{invoice.invoice_date}}</p>
+          <p>{{invoice.invoice_date|date:"d/m/Y"}}</p>
           <p>Invoice num</p>
           <p>Account num</p>
         </div>
@@ -132,8 +134,8 @@ Invoice Page {% endblock %} {% block extra_css %}
     <div class="card-body">
       {% for booking in lesson_bookings %}
       <div class="row justify-content-md-start">
-        <div class="col">{{booking.lesson_date}}</div>
-        <div class="col">{{booking.duration}}</div>
+        <div class="col">{{booking.standardised_date}}</div>
+        <div class="col">{{booking.duration}}min</div>
         <div class="col">{{booking.tutor}}</div>
         <div class="col">£{{booking.lesson_price}}</div>
       </div>

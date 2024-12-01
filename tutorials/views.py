@@ -97,6 +97,7 @@ def invoice_page(request, invoice_id, term_name):
 
     for booking in lesson_bookings:
         booking.lesson_price = (booking.duration / 60) * settings.HOURLY_RATE
+        booking.standardised_date = booking.lesson_date.strftime("%d/%m/%Y")
 
     return render(request, 'invoice_page.html', {
         'invoice': invoice, 
