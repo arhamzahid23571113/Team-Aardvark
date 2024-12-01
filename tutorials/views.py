@@ -87,13 +87,24 @@ def invoice_page(request, invoice_id, term_name):
     term_dates = terms.get(term_name)
     term_start, term_end = term_dates
     
-    #lesson_bookings = LessonBooking.objects.filter(student=invoice.student, lesson_date__range=[autumn_start, autumn_end])
-
     lesson_bookings = LessonBooking.objects.filter(student=invoice.student, lesson_date__range=[term_start, term_end])
+
+    term_keys = list(terms.keys())
+    current_term_index = term_keys.index(term_name)
+
+    previous_term = term_keys[(current_term_index - 1) % len(term_keys)]
+    next_term = term_keys[(current_term_index + 1) % len(term_keys)]
 
     for booking in lesson_bookings:
         booking.lesson_price = (booking.duration / 60) * settings.HOURLY_RATE
-    return render(request, 'invoice_page.html', {'invoice': invoice, 'lesson_bookings': lesson_bookings, 'term_name': term_name.title()})
+
+    return render(request, 'invoice_page.html', {
+        'invoice': invoice, 
+        'lesson_bookings': lesson_bookings, 
+        'term_name': term_name.title(),
+        'previous_term': previous_term,
+        'next_term': next_term,
+        })
 
 
 class LoginProhibitedMixin:

@@ -66,7 +66,8 @@ Invoice Page {% endblock %} {% block extra_css %}
     <use xlink:href="#info-fill" />
   </svg>
   <div>
-    Click <a href="#" class="alert-link">here</a> to see more on lesson pricing.
+    Click <a href="#" class="alert-link invoice-text">here</a> to see more on
+    lesson pricing.
   </div>
 </div>
 
@@ -85,9 +86,17 @@ Invoice Page {% endblock %} {% block extra_css %}
     <div
       class="card-header d-flex align-items-center justify-content-center gap-2"
     >
-      <button type="button" class="btn btn-prev">&lt;</button>
-      <span class="align-middle">Select Date</span>
-      <button type="button" class="btn btn-next">&gt;</button>
+      <a
+        href="{% url 'invoice_page' invoice.id previous_term %}"
+        class="btn btn-prev"
+        >&lt;</a
+      >
+      <span class="align-middle">{{ term_name }} term</span>
+      <a
+        href="{% url 'invoice_page' invoice.id next_term %}"
+        class="btn btn-next"
+        >&gt;</a
+      >
     </div>
     <div class="card-body">
       <div class="row">

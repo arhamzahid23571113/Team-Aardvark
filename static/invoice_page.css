@@ -3,7 +3,7 @@
 }
 
 .invoice-page .card-header {
-    background-color: transparent !important; /* Lighter purple for headers */
+    background-color: transparent !important; 
     border-bottom: none;
     font-weight: bold;
 }
@@ -11,7 +11,7 @@
 .pricing-alert {
     background-color: #6a0dad;
     color: #ffffff;
-    border: 2px solid #4b0082;
+    border: 10px solid #4b0082;
 }
 
 .header-alert {
