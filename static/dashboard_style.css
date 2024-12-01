@@ -43,7 +43,7 @@
 /* Light background for the main content area to create contrast */
 main {
     padding-top: 20px;
-    background-color: #8465cb !important;
+    background-color: #ddd6ee !important;
     animation: fadeIn 1.5s ease-out !important; /* Smooth fade-in effect */
 }
 
@@ -62,8 +62,12 @@ main {
 }
 
 .card-header {
-    background-color: #6a0dad !important; /* Lighter purple for headers */
-    border-bottom: none;
+    background: linear-gradient(135deg, #4e54c8 0%, #f2fcfe 100%) !important; /* Gradient background */
+    color: #ffffff !important; /* White text for readability */
+    border-bottom: none; /* Remove border */
+    border-radius: 10px 10px 0 0; /* Rounded corners for the top of the card */
+    padding: 15px; /* Add some padding for spacing */
+    font-weight: bold; /* Make text bold for emphasis */
 }
 
 /* Button styling with hover animations */
