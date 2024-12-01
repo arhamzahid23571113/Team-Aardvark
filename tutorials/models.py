@@ -126,9 +126,21 @@ class LessonRequest(models.Model):
 class LessonBooking(models.Model):
     """Models used for showing lesson bookings between students and tutors"""
 
-    student = models.ForeignKey(User,related_name="student_lessons",on_delete=models.CASCADE)
-    tutor = models.ForeignKey(User,related_name="tutor_lessons",on_delete=models.CASCADE)
-    topic = models.TextField(max_length=100)
-    duration = models.IntegerField()
-    time = models.TimeField()
-    lesson_date = models.DateField()
+    # Relationships
+    student = models.ForeignKey(User, related_name="student_lessons", on_delete=models.CASCADE)
+    tutor = models.ForeignKey(User, related_name="tutor_lessons", on_delete=models.CASCADE)
+
+    # Fields matching the template
+    topic = models.CharField(max_length=100)  # Use CharField for the dropdown of topics
+    duration = models.CharField(max_length=20)  # Duration as string (e.g., "30 Minutes")
+    time = models.TimeField()  # Time input for preferred time
+    lesson_date = models.DateField()  # Placeholder for the actual date
+
+    # New fields from the template
+    frequency = models.CharField(max_length=20)  # Weekly/Fortnightly
+    preferred_day = models.CharField(max_length=10)  # Dropdown of weekdays
+    experience_level = models.CharField(max_length=20)  # No Experience/Beginner/Intermediate/Advanced
+    additional_notes = models.TextField(blank=True, null=True)  # Additional Notes
+
+    def __str__(self):
+        return f"{self.student.username} - {self.topic} with {self.tutor.username}"
