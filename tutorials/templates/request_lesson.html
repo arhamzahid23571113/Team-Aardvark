@@ -30,7 +30,13 @@
     <!-- Requested Duration -->
     <div class="mb-3">
       <label for="requested_duration" class="form-label text-white font-weight-bold">Lesson Duration</label>
-      <input type="number" class="form-control" id="requested_duration" name="requested_duration" placeholder="Duration in minutes" min="30" required>
+      <select class="form-select form-control" id="requested_duration" name="requested_duration" required>
+        <option value="" disabled selected>Select duration</option>
+        <option value="30_minutes">30 Minutes</option>
+        <option value="1_hour">1 Hour</option>
+        <option value="1_hour_30_minutes">1 Hour and 30 Minutes</option>
+        <option value="2_hours">2 Hours</option>
+      </select>
     </div>
 
     <!-- Requested Time -->
