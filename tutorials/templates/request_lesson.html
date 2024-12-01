@@ -12,7 +12,13 @@
     <!-- Requested Topic -->
     <div class="mb-3">
       <label for="requested_topic" class="form-label text-white font-weight-bold">Topic</label>
-      <textarea class="form-control" id="requested_topic" name="requested_topic" rows="3" placeholder="Describe what you would like to learn (e.g., Web Development with Django)" required></textarea>
+      <select class="form-select form-control" id="requested_topic" name="requested_topic" required>
+        <option value="" disabled selected>Select a topic</option>
+        <option value="python_programming">Python Programming</option>
+        <option value="web_development_with_js">Web Development with JavaScript</option>
+        <option value="ruby_on_rails">Ruby on Rails</option>
+        <option value="ai_and_ml">AI and Machine Learning</option>
+      </select>
     </div>
 
     <!-- Requested Frequency -->
