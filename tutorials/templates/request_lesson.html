@@ -24,7 +24,11 @@
     <!-- Requested Frequency -->
     <div class="mb-3">
       <label for="requested_frequency" class="form-label text-white font-weight-bold">Lesson Frequency</label>
-      <input type="text" class="form-control" id="requested_frequency" name="requested_frequency" placeholder="e.g., Weekly, Fortnightly" required>
+      <select class="form-select form-control" id="requested_frequency" name="requested_frequency" required>
+        <option value="" disabled selected>Select frequency</option>
+        <option value="weekly">Weekly</option>
+        <option value="fortnightly">Fortnightly</option>
+      </select>
     </div>
     
     <!-- Requested Duration -->
