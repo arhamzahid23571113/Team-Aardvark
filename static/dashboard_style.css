@@ -1,6 +1,6 @@
 /* Purple color for the dashboard title */
 .text-dashboard-purple {
-    color: #fbf9fc !important; /* Light purple for the title */
+    color: #4e54c8 !important; /* Light purple for the title */
     animation: gradientText 3s infinite !important; /* Animated gradient text */
 }
 
