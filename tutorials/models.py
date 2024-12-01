@@ -97,7 +97,7 @@ class LessonBooking(models.Model):
 
 
 
-#AMINA'S WORK:
+#AMINA'S:
 
 
 class Timetable(models.Model):
