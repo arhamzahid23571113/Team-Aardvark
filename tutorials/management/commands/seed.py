@@ -1,5 +1,8 @@
-from django.core.management.base import BaseCommand
-from tutorials.models import User, LessonRequest, LessonBooking, Invoice
+from django.core.management.base import BaseCommand, CommandError
+from django.contrib.auth.models import User
+from tutorials.models import User
+from tutorials.models import Tutor, Student
+import pytz
 from faker import Faker
 import random
 from datetime import timedelta, date
@@ -13,12 +16,40 @@ class Command(BaseCommand):
     DEFAULT_PASSWORD = 'Password123'
     USER_COUNT = 50  # Example count for students and tutors
 
+    def __init__(self):
+        self.faker = Faker('en_GB')
+
     def handle(self, *args, **kwargs):
-        self.create_users()
-        self.create_lesson_requests()
-        self.create_lesson_bookings()
-        self.create_invoices()
-        print("Seeding complete.")
+   
+        User.objects.all().delete()
+
+  
+        self.generate_user_fixtures()
+        self.stdout.write(self.style.SUCCESS("Predefined users created."))
+
+        
+        john_doe = User.objects.create_user(username="johndoe", password="Password123")
+        john_doe.is_staff = True
+        john_doe.is_superuser = True
+        john_doe.save()
+        self.stdout.write(self.style.SUCCESS(f"Admin user (@johndoe) created"))
+
+        
+        jane_doe = User.objects.create_user(username="janedoe", password="Password123")
+        tutor = Tutor.objects.create(user=jane_doe)
+        self.stdout.write(self.style.SUCCESS(f"Tutor user (@janedoe) created"))
+
+    
+        charlie = User.objects.create_user(username="charlie", password="Password123")
+        Student.objects.create(user=charlie, tutor=tutor)
+        self.stdout.write(self.style.SUCCESS(f"Student user (@charlie) created"))
+
+    
+        self.generate_random_users()
+
+        
+        self.stdout.write(self.style.SUCCESS("Seeding completed successfully!"))
+
 
     def create_users(self):
         """Seed users with admin, tutor, and student roles."""
