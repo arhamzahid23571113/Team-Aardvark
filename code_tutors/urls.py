@@ -20,6 +20,8 @@ from django.contrib import admin
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from tutorials import views
+from django.urls import path, include 
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -79,6 +81,11 @@ urlpatterns = [
     # New Pages
     path('learn-more/', views.learn_more, name='learn_more'),
     path('available-courses/', views.available_courses, name='available_courses'),
+    #AMINA
+    path('tutor/timetable/', views.tutor_timetable, name='tutor_timetable'),
+    path('student/timetable/', views.student_timetable, name='student_timetable'), 
+
+   
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

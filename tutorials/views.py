@@ -22,6 +22,9 @@ from django.utils.timezone import now
 
 
 
+#AMINA
+from django.shortcuts import render
+from .models import Timetable
 
 @login_required
 def dashboard(request):
@@ -529,4 +532,14 @@ def tutor_messages(request):
 def student_messages(request):
     student = request.user
     studentMessages = ContactMessage.objects.filter(user=student).order_by('timestamp')
-    return render(request,'student_messages.html',{'messages':studentMessages})
+    return render(request,'student_messages.html',{'messages':studentMessages})    
+#AMINA    
+def tutor_timetable(request):
+    """View for tutors to see their timetable."""
+    timetable = Timetable.objects.filter(tutor=request.user)
+    return render(request, 'tutor_timetable.html', {'timetable': timetable})
+
+def student_timetable(request):
+    """View for students to see their timetable."""
+    timetable = Timetable.objects.filter(student=request.user)
+    return render(request, 'student_timetable.html', {'timetable': timetable})

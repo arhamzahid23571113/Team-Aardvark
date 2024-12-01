@@ -51,7 +51,7 @@ class User(AbstractUser):
 
 class Invoice(models.Model):
     """Model for invoices and tracking payment status"""
-    student = models.ForeignKey(User, related_name="invoices",on_delete=models.CASCADE)
+    student = models.ForeignKey(User, related_name="invoices", on_delete=models.CASCADE)
     amount_due = models.DecimalField(max_digits=8, decimal_places=2)
     due_date = models.DateField()
     payment_status = models.CharField(max_length=20, choices=[('Paid', 'Paid'),('Unpaid', 'Unpaid')])
