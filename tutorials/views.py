@@ -11,6 +11,9 @@ from django.views.generic.edit import FormView, UpdateView
 from tutorials.forms import LogInForm, PasswordForm, UserForm, SignUpForm
 from tutorials.helpers import login_prohibited
 from .models import User
+#AMINA
+from django.shortcuts import render
+from .models import Timetable
 
 @login_required
 def dashboard(request):
@@ -166,3 +169,14 @@ class SignUpView(LoginProhibitedMixin, FormView):
 
     def get_success_url(self):
         return reverse('dashboard')
+    
+#AMINA    
+def tutor_timetable(request):
+    """View for tutors to see their timetable."""
+    timetable = Timetable.objects.filter(tutor=request.user)
+    return render(request, 'tutor_timetable.html', {'timetable': timetable})
+
+def student_timetable(request):
+    """View for students to see their timetable."""
+    timetable = Timetable.objects.filter(student=request.user)
+    return render(request, 'student_timetable.html', {'timetable': timetable})
