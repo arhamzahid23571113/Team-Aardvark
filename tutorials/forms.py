@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
 from .models import User
-from .models import LessonBooking
+from .models import LessonRequest
 
 
 class LogInForm(forms.Form):
@@ -108,30 +108,30 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
     
 class LessonBookingForm(forms.ModelForm):
     class Meta:
-        model = LessonBooking
+        model = LessonRequest
         fields = [
-            "topic",
-            "duration",
-            "time",
-            "frequency",
+            "requested_topic",
+            "requested_frequency",
+            "requested_duration",
+            "requested_time",
             "preferred_day",
             "experience_level",
             "additional_notes",
         ]
         widgets = {
-            "topic": forms.Select(choices=[
+            "requested_topic": forms.Select(choices=[
                 ("python_programming", "Python Programming"),
                 ("web_development_with_js", "Web Development with JavaScript"),
                 ("ruby_on_rails", "Ruby on Rails"),
                 ("ai_and_ml", "AI and Machine Learning"),
             ]),
-            "duration": forms.Select(choices=[
-                ("30_minutes", "30 Minutes"),
-                ("1_hour", "1 Hour"),
-                ("1_hour_30_minutes", "1 Hour and 30 Minutes"),
-                ("2_hours", "2 Hours"),
+            "requested_duration": forms.Select(choices=[
+                ("30", "30 Minutes"),
+                ("60", "1 Hour"),
+                ("90", "1 Hour and 30 Minutes"),
+                ("120", "2 Hours"),
             ]),
-            "frequency": forms.Select(choices=[
+            "requested_frequency": forms.Select(choices=[
                 ("weekly", "Weekly"),
                 ("fortnightly", "Fortnightly"),
             ]),
@@ -151,3 +151,5 @@ class LessonBookingForm(forms.ModelForm):
                 ("advanced", "Advanced"),
             ]),
         }
+
+        

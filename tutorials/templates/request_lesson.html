@@ -5,84 +5,100 @@
 <div class="container mt-4">
   <h1 class="text-center text-dashboard-purple mt-4">Request a Lesson</h1>
   <p class="text-center text-dashboard-purple mb-4">Here you can request a new lesson tailored to your needs.</p>
-  
+
+  <!-- Display form errors if any -->
+  {% if form.errors %}
+  <div class="alert alert-danger">
+    <p><strong>There were errors with your submission:</strong></p>
+    <ul>
+      {% for field, errors in form.errors.items %}
+        <li><strong>{{ field }}</strong>: {{ errors|join:", " }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  <!-- Lesson Request Form -->
   <form method="post" action="" class="p-4 bg-dark-purple rounded">
     {% csrf_token %}
-    
-    <!-- Requested Topic -->
-    <div class="mb-3">
-      <label for="requested_topic" class="form-label text-white font-weight-bold">Topic</label>
-      <select class="form-select form-control" id="requested_topic" name="requested_topic" required>
-        <option value="" disabled selected>Select a topic</option>
-        <option value="python_programming">Python Programming</option>
-        <option value="web_development_with_js">Web Development with JavaScript</option>
-        <option value="ruby_on_rails">Ruby on Rails</option>
-        <option value="ai_and_ml">AI and Machine Learning</option>
-      </select>
+
+    <!-- Topic Card -->
+    <div class="card mb-4">
+      <div class="card-header bg-dashboard-purple text-white">
+        Topic
+      </div>
+      <div class="card-body">
+        <label for="id_requested_topic" class="form-label text-dark">Select the topic you'd like to learn:</label>
+        {{ form.requested_topic }}
+      </div>
     </div>
 
-    <!-- Requested Frequency -->
-    <div class="mb-3">
-      <label for="requested_frequency" class="form-label text-white font-weight-bold">Lesson Frequency</label>
-      <select class="form-select form-control" id="requested_frequency" name="requested_frequency" required>
-        <option value="" disabled selected>Select frequency</option>
-        <option value="weekly">Weekly</option>
-        <option value="fortnightly">Fortnightly</option>
-      </select>
-    </div>
-    
-    <!-- Requested Duration -->
-    <div class="mb-3">
-      <label for="requested_duration" class="form-label text-white font-weight-bold">Lesson Duration</label>
-      <select class="form-select form-control" id="requested_duration" name="requested_duration" required>
-        <option value="" disabled selected>Select duration</option>
-        <option value="30_minutes">30 Minutes</option>
-        <option value="1_hour">1 Hour</option>
-        <option value="1_hour_30_minutes">1 Hour and 30 Minutes</option>
-        <option value="2_hours">2 Hours</option>
-      </select>
+    <!-- Frequency Card -->
+    <div class="card mb-4">
+      <div class="card-header bg-dashboard-purple text-white">
+        Lesson Frequency
+      </div>
+      <div class="card-body">
+        <label for="id_requested_frequency" class="form-label text-dark">How often would you like lessons?</label>
+        {{ form.requested_frequency }}
+      </div>
     </div>
 
-    <!-- Preferred Day -->
-    <div class="mb-3">
-      <label for="preferred_day" class="form-label text-white font-weight-bold">Preferred Day</label>
-      <select class="form-select form-control" id="preferred_day" name="preferred_day" required>
-        <option value="" disabled selected>Select a day</option>
-        <option value="monday">Monday</option>
-        <option value="tuesday">Tuesday</option>
-        <option value="wednesday">Wednesday</option>
-        <option value="thursday">Thursday</option>
-        <option value="friday">Friday</option>
-        <option value="saturday">Saturday</option>
-        <option value="sunday">Sunday</option>
-      </select>
+    <!-- Duration Card -->
+    <div class="card mb-4">
+      <div class="card-header bg-dashboard-purple text-white">
+        Lesson Duration
+      </div>
+      <div class="card-body">
+        <label for="id_requested_duration" class="form-label text-dark">Select the duration of each lesson:</label>
+        {{ form.requested_duration }}
+      </div>
     </div>
 
-    <!-- Requested Time -->
-    <div class="mb-3">
-      <label for="requested_time" class="form-label text-white font-weight-bold">Preferred Time</label>
-      <input type="time" class="form-control" id="requested_time" name="requested_time" required>
-    </div>
-    
-    <!-- Experience Level -->
-    <div class="mb-3">
-      <label for="experience_level" class="form-label text-white font-weight-bold">Experience Level</label>
-      <select class="form-select form-control" id="experience_level" name="experience_level" required>
-        <option value="" disabled selected>Select your experience level</option>
-        <option value="no_experience">No Experience</option>
-        <option value="beginner">Beginner</option>
-        <option value="intermediate">Intermediate</option>
-        <option value="advanced">Advanced</option>
-      </select>
-    </div>
-    
-    <!-- Additional Notes -->
-    <div class="mb-3">
-      <label for="additional_notes" class="form-label text-white font-weight-bold">Additional Notes</label>
-      <textarea class="form-control" id="additional_notes" name="additional_notes" rows="3" placeholder="Additional information or requests"></textarea>
+    <!-- Preferred Day Card -->
+    <div class="card mb-4">
+      <div class="card-header bg-dashboard-purple text-white">
+        Preferred Day
+      </div>
+      <div class="card-body">
+        <label for="id_preferred_day" class="form-label text-dark">Which day works best for you?</label>
+        {{ form.preferred_day }}
+      </div>
     </div>
 
-    <!-- Submit Button -->
+    <!-- Preferred Time Card -->
+    <div class="card mb-4">
+      <div class="card-header bg-dashboard-purple text-white">
+        Preferred Time
+      </div>
+      <div class="card-body">
+        <label for="id_requested_time" class="form-label text-dark">Choose your preferred time:</label>
+        {{ form.requested_time }}
+      </div>
+    </div>
+
+    <!-- Experience Level Card -->
+    <div class="card mb-4">
+      <div class="card-header bg-dashboard-purple text-white">
+        Experience Level
+      </div>
+      <div class="card-body">
+        <label for="id_experience_level" class="form-label text-dark">Describe your current experience level:</label>
+        {{ form.experience_level }}
+      </div>
+    </div>
+
+    <!-- Additional Notes Card -->
+    <div class="card mb-4">
+      <div class="card-header bg-dashboard-purple text-white">
+        Additional Notes
+      </div>
+      <div class="card-body">
+        <label for="id_additional_notes" class="form-label text-dark">Any extra information or requests?</label>
+        {{ form.additional_notes }}
+      </div>
+    </div>
+
     <button type="submit" class="btn btn-dashboard-purple btn-lg w-100 mt-3">Submit</button>
   </form>
 </div>

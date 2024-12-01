@@ -13,6 +13,7 @@ from tutorials.helpers import login_prohibited
 from .models import User
 from .models import LessonRequest
 from django.shortcuts import get_object_or_404, redirect
+from .forms import LessonBookingForm
 
 
 
@@ -206,24 +207,24 @@ def student_dashboard(request):
     """Student-specific dashboard."""
     return render(request, 'student_dashboard.html')
 
+
+
 @login_required
 def request_lesson(request):
     if request.method == 'POST':
-        # Process the form data and create a LessonRequest
-        LessonRequest.objects.create(
-            student=request.user,  # Assuming the logged-in user is the student
-            requested_topic=request.POST['requested_topic'],
-            requested_frequency=request.POST['requested_frequency'],
-            requested_duration=request.POST['requested_duration'],
-            requested_time=request.POST['requested_time'],
-            experience_level=request.POST['experience_level'],
-            additional_notes=request.POST.get('additional_notes', '')
-        )
-        # Redirect to the student dashboard after successful submission
-        return redirect('lesson_request_success')
-    
-    # Render the form for a GET request
-    return render(request, 'request_lesson.html')
+        form = LessonBookingForm(request.POST)
+        if form.is_valid():
+            lesson_request = form.save(commit=False)
+            lesson_request.student = request.user  # Associate with the logged-in user
+            lesson_request.save()
+            return redirect('lesson_request_success')  # Redirect to a success page
+        else:
+            # Debugging form errors if needed
+            print(form.errors)
+    else:
+        form = LessonBookingForm()
+
+    return render(request, 'request_lesson.html', {'form': form})
 
 @login_required
 def contact_admin(request):
