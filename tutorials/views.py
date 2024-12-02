@@ -403,3 +403,23 @@ def edit_tutor_profile(request, tutor_id):
         return redirect('all_tutor_profiles')
     return render(request, 'edit_tutor_profile.html', {'tutor': tutor})
     
+
+
+@login_required
+def tutor_more_info(request, tutor_id):
+    # Ensure only students can access this page
+    if request.user.role != 'student':
+        return redirect('dashboard')
+
+    # Get the tutor's details
+    tutor = get_object_or_404(User, id=tutor_id, role='tutor')
+
+    # Get the lesson requests where the logged-in student is linked to the tutor
+    lessons = LessonRequest.objects.filter(student=request.user, tutor=tutor)
+
+    context = {
+        'tutor': tutor,
+        'lessons': lessons,
+    }
+
+    return render(request, 'tutor_more_info.html', context)
