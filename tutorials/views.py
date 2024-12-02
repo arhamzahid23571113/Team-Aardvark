@@ -387,14 +387,14 @@ def all_student_profiles(request):
 
 @login_required
 def view_tutor_profile(request, tutor_id):
-    # Fetch a specific tutor by ID
+    # Fetch a specific tutor by ID FOR ADMIN
     tutor = get_object_or_404(User, id=tutor_id, role='tutor')
     return render(request, 'view_tutor_profile.html', {'tutor': tutor})
 
 
 @login_required
 def edit_tutor_profile(request, tutor_id):
-    # Fetch a specific tutor by ID
+    # Fetch a specific tutor by ID FOR ADMIN
     tutor = get_object_or_404(User, id=tutor_id, role='tutor')
     if request.method == 'POST':
         # Handle the form submission for editing tutor details (e.g., expertise)
@@ -407,7 +407,7 @@ def edit_tutor_profile(request, tutor_id):
 
 @login_required
 def tutor_more_info(request, tutor_id):
-    # Ensure only students can access this page
+    # Ensure only students can access this page FOR STUDENTS
     if request.user.role != 'student':
         return redirect('dashboard')
 
