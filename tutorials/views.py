@@ -10,7 +10,7 @@ from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from tutorials.forms import LogInForm, PasswordForm, UserForm, SignUpForm
 from tutorials.helpers import login_prohibited
-from .models import User
+from .models import User,LessonBooking
 from .models import LessonRequest
 from django.shortcuts import get_object_or_404, redirect
 from .forms import LessonBookingForm
@@ -247,8 +247,29 @@ def contact_admin(request):
 
 
 @login_required
-def see_my_tutor_profile(request):
-    return render(request,'my_tutor_profile.html')
+def see_my_tutor(request):
+    # Ensure only students can access this page
+    if request.user.role != 'student':
+        return redirect('dashboard')
+
+    # Fetch the tutor assigned to the logged-in student via LessonBooking
+    assigned_tutors = LessonBooking.objects.filter(
+        student=request.user
+    ).values(
+        'tutor__id',
+        'tutor__first_name',
+        'tutor__last_name',
+        'tutor__email',
+        'tutor__expertise'
+    ).distinct()
+
+    context = {
+        'tutors': assigned_tutors,
+    }
+
+    return render(request, 'my_tutor_profile.html', context)
+
+
 
 @login_required
 def see_my_students_profile(request):
@@ -269,9 +290,13 @@ def see_my_students_profile(request):
     }
     return render(request, 'my_students_profile.html', context)
 
+
+
 @login_required
 def lesson_request_success(request):
     return render(request, 'lesson_request_success.html')
+
+
 
 @login_required
 def student_requests(request):
@@ -293,6 +318,8 @@ def student_requests(request):
     return render(request, 'student_requests.html', context)
 
 
+
+
 @login_required
 def assign_tutor(request, lesson_request_id):
     if request.method == 'POST':
@@ -309,6 +336,8 @@ def assign_tutor(request, lesson_request_id):
 
         return redirect('student_requests')  # Redirect back to the requests page
     
+
+
 @login_required
 def unassign_tutor(request, lesson_request_id):
     if request.method == 'POST':
@@ -323,6 +352,8 @@ def unassign_tutor(request, lesson_request_id):
         # Redirect back to the student requests page
         return redirect('student_requests')
     
+
+
 @login_required
 def cancel_request(request, lesson_request_id):
     if request.method == 'POST':
@@ -335,12 +366,15 @@ def cancel_request(request, lesson_request_id):
         # Redirect back to the student requests page
         return redirect('student_requests')
 
+
+
 @login_required
 def all_tutor_profiles(request):
     # Fetch all tutors (users with role='tutor') FOR ADMIN
     tutors = User.objects.filter(role='tutor')
     context = {'tutors': tutors}
     return render(request, 'all_tutor_profiles.html', context)
+
 
 @login_required
 def all_student_profiles(request):
@@ -349,11 +383,13 @@ def all_student_profiles(request):
     context = {'students': students}
     return render(request, 'all_student_profiles.html', context)
 
+
 @login_required
 def view_tutor_profile(request, tutor_id):
     # Fetch a specific tutor by ID
     tutor = get_object_or_404(User, id=tutor_id, role='tutor')
     return render(request, 'view_tutor_profile.html', {'tutor': tutor})
+
 
 @login_required
 def edit_tutor_profile(request, tutor_id):
