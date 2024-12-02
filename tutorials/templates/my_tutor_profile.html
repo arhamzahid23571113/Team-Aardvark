@@ -19,7 +19,7 @@
             <p><strong>Expertise:</strong> {{ tutor.tutor__expertise|default:"Not provided" }}</p>
           </div>
           <div class="card-footer text-center">
-            <a href="#" class="btn btn-outline-light btn-sm">More Information</a>
+            <a href="{% url 'tutor_more_info' tutor.tutor__id %}" class="btn btn-outline-light btn-sm">More Information</a>
           </div>
         </div>
       </div>
