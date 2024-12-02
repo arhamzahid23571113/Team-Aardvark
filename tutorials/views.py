@@ -208,7 +208,7 @@ def student_dashboard(request):
     return render(request, 'student_dashboard.html')
 
 
-
+#STUDENTS
 @login_required
 def request_lesson(request):
     if request.method == 'POST':
@@ -226,9 +226,10 @@ def request_lesson(request):
 
     return render(request, 'request_lesson.html', {'form': form})
 
+#STUDENT OR TUTOR
 @login_required
 def contact_admin(request):
-        # Determine the base template based on the user's role
+        # Determine the base template based on the user's role 
     if request.user.is_authenticated:
         if request.user.role == 'tutor':
             base_template = 'dashboard_base_tutor.html'
@@ -245,7 +246,7 @@ def contact_admin(request):
     return render(request, 'contact_admin.html', {'base_template': base_template})
 
 
-
+#STUDENTS
 @login_required
 def see_my_tutor(request):
     # Ensure only students can access this page
@@ -271,10 +272,10 @@ def see_my_tutor(request):
 
     return render(request, 'my_tutor_profile.html', context)
 
-
+#TUTORS
 @login_required
 def see_my_students_profile(request):
- # Ensure only tutors can access this page
+ # Ensure only tutors can access this page 
     if request.user.role != 'tutor':
         return redirect('dashboard')
 
@@ -292,18 +293,18 @@ def see_my_students_profile(request):
     return render(request, 'my_students_profile.html', context)
 
 
-
+#STUDENTS
 @login_required
 def lesson_request_success(request):
     return render(request, 'lesson_request_success.html')
 
 
-
+#ADMINS
 @login_required
 def student_requests(request):
     lesson_requests = LessonRequest.objects.select_related('student').order_by('student')
 
-    # Group requests by student
+    # Group requests by student 
     students_with_requests = {}
     for req in lesson_requests:
         if req.student not in students_with_requests:
@@ -320,11 +321,11 @@ def student_requests(request):
 
 
 
-
+#ADMINS
 @login_required
 def assign_tutor(request, lesson_request_id):
     if request.method == 'POST':
-        # Fetch the lesson request and selected tutor
+        # Fetch the lesson request and selected tutor 
         lesson_request = get_object_or_404(LessonRequest, id=lesson_request_id)
         tutor_id = request.POST.get('tutor_id')
 
@@ -338,11 +339,11 @@ def assign_tutor(request, lesson_request_id):
         return redirect('student_requests')  # Redirect back to the requests page
     
 
-
+#ADMINS
 @login_required
 def unassign_tutor(request, lesson_request_id):
     if request.method == 'POST':
-        # Fetch the lesson request
+        # Fetch the lesson request 
         lesson_request = get_object_or_404(LessonRequest, id=lesson_request_id)
 
         # Unassign the tutor and update the status
@@ -354,11 +355,11 @@ def unassign_tutor(request, lesson_request_id):
         return redirect('student_requests')
     
 
-
+#ADMINS
 @login_required
 def cancel_request(request, lesson_request_id):
     if request.method == 'POST':
-        # Fetch the lesson request
+        # Fetch the lesson request 
         lesson_request = get_object_or_404(LessonRequest, id=lesson_request_id)
         # Update the status to 'Cancelled'
         lesson_request.status = 'Cancelled'
@@ -368,33 +369,35 @@ def cancel_request(request, lesson_request_id):
         return redirect('student_requests')
 
 
-
+#ADMINS
 @login_required
 def all_tutor_profiles(request):
-    # Fetch all tutors (users with role='tutor') FOR ADMIN
+    # Fetch all tutors (users with role='tutor') 
     tutors = User.objects.filter(role='tutor')
     context = {'tutors': tutors}
     return render(request, 'all_tutor_profiles.html', context)
 
-
+#ADMINS
 @login_required
 def all_student_profiles(request):
-    # Fetch all students (users with role='student') FOR ADMIN
+    # Fetch all students (users with role='student') 
     students = User.objects.filter(role='student')
     context = {'students': students}
     return render(request, 'all_student_profiles.html', context)
 
 
+#ADMINS
 @login_required
 def view_tutor_profile(request, tutor_id):
-    # Fetch a specific tutor by ID FOR ADMIN
+    # Fetch a specific tutor by ID 
     tutor = get_object_or_404(User, id=tutor_id, role='tutor')
     return render(request, 'view_tutor_profile.html', {'tutor': tutor})
 
 
+#ADMINS
 @login_required
 def edit_tutor_profile(request, tutor_id):
-    # Fetch a specific tutor by ID FOR ADMIN
+    # Fetch a specific tutor by ID 
     tutor = get_object_or_404(User, id=tutor_id, role='tutor')
     if request.method == 'POST':
         # Handle the form submission for editing tutor details (e.g., expertise)
@@ -404,10 +407,10 @@ def edit_tutor_profile(request, tutor_id):
     return render(request, 'edit_tutor_profile.html', {'tutor': tutor})
     
 
-
+  #STUDENTS
 @login_required
 def tutor_more_info(request, tutor_id):
-    # Ensure only students can access this page FOR STUDENTS
+    # Ensure only students can access this page 
     if request.user.role != 'student':
         return redirect('dashboard')
 
