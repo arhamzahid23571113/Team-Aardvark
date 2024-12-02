@@ -1,0 +1,40 @@
+{% extends 'dashboard_base_student.html' %}
+{% block title %}Tutor Information{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1 class="text-center text-dashboard-purple mt-4">{{ tutor.first_name }} {{ tutor.last_name }} - More Information</h1>
+  <p class="text-center text-dashboard-purple mb-4">Details of what you are learning with this tutor.</p>
+
+  <div class="card p-4 bg-dark-purple text-white rounded">
+    <div class="card-header text-center bg-purple-gradient">
+      <h4>{{ tutor.first_name }} {{ tutor.last_name }}</h4>
+    </div>
+    <div class="card-body">
+      <p><strong>Email:</strong> {{ tutor.email }}</p>
+      <p><strong>Expertise:</strong> {{ tutor.expertise|default:"Not provided" }}</p>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <h4 class="text-white font-weight-bold">Lessons You Have Requested:</h4>
+    <ul class="list-group bg-transparent">
+      {% for lesson in lessons %}
+      <li class="list-group-item bg-dark-purple text-white">
+        <strong>Topic:</strong> {{ lesson.requested_topic }} <br>
+        <strong>Frequency:</strong> {{ lesson.requested_frequency }} <br>
+        <strong>Duration:</strong> {{ lesson.requested_duration }} minutes <br>
+        <strong>Preferred Day:</strong> {{ lesson.preferred_day }} <br>
+        <strong>Preferred Time:</strong> {{ lesson.requested_time|date:"H:i" }} <br>
+        <strong>Experience Level:</strong> {{ lesson.experience_level }} <br>
+        <strong>Additional Notes:</strong> {{ lesson.additional_notes|default:"None" }}
+      </li>
+      {% empty %}
+      <li class="list-group-item bg-dark-purple text-white">
+        No lessons have been requested with this tutor yet.
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}
