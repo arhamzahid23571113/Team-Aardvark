@@ -344,9 +344,9 @@ def all_tutor_profiles(request):
 
 @login_required
 def all_student_profiles(request):
-    # Fetch all student (users with role='student') FOR ADMIN
-    tutors = User.objects.filter(role='student')
-    context = {'tutors': tutors}
+    # Fetch all students (users with role='student') FOR ADMIN
+    students = User.objects.filter(role='student')
+    context = {'students': students}
     return render(request, 'all_student_profiles.html', context)
 
 @login_required
