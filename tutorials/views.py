@@ -252,9 +252,11 @@ def see_my_tutor(request):
     if request.user.role != 'student':
         return redirect('dashboard')
 
-    # Fetch the tutor assigned to the logged-in student via LessonBooking
-    assigned_tutors = LessonBooking.objects.filter(
-        student=request.user
+    # Fetch the tutor assigned to the logged-in student via LessonRequest
+    assigned_tutors = LessonRequest.objects.filter(
+        student=request.user,  # Filter by the logged-in student
+        tutor__isnull=False,   # Ensure a tutor is assigned
+        status='Allocated'     # Optional: Only show allocated tutors
     ).values(
         'tutor__id',
         'tutor__first_name',
@@ -264,11 +266,10 @@ def see_my_tutor(request):
     ).distinct()
 
     context = {
-        'tutors': assigned_tutors,
+        'tutors': assigned_tutors,  # Pass the tutors to the template
     }
 
     return render(request, 'my_tutor_profile.html', context)
-
 
 
 @login_required
