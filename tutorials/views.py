@@ -337,14 +337,14 @@ def cancel_request(request, lesson_request_id):
 
 @login_required
 def all_tutor_profiles(request):
-    # Fetch all tutors (users with role='tutor')
+    # Fetch all tutors (users with role='tutor') FOR ADMIN
     tutors = User.objects.filter(role='tutor')
     context = {'tutors': tutors}
     return render(request, 'all_tutor_profiles.html', context)
 
 @login_required
 def all_student_profiles(request):
-    # Fetch all student (users with role='student')
+    # Fetch all student (users with role='student') FOR ADMIN
     tutors = User.objects.filter(role='student')
     context = {'tutors': tutors}
     return render(request, 'all_student_profiles.html', context)
