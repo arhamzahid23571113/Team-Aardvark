@@ -3,6 +3,7 @@ from tutorials.models import User, LessonRequest, LessonBooking, Invoice
 from faker import Faker
 import random
 from datetime import timedelta, date
+import uuid
 
 faker = Faker('en_GB')
 
@@ -20,33 +21,39 @@ class Command(BaseCommand):
         print("Seeding complete.")
 
     def create_users(self):
-    """Seed users with admin, tutor, and student roles."""
-    print("Creating users...")
-    roles = ['student', 'tutor']
-    for i in range(self.USER_COUNT):
-        role = random.choice(roles)
-        username = f"@{faker.first_name().lower()}{i}"
-        email = f"{username}{random.randint(1, 10000)}@example.com"  # Ensure unique email
-        expertise = "Python, JavaScript" if role == 'tutor' else None
-        User.objects.create_user(
-            username=username,
-            email=email,
-            password=self.DEFAULT_PASSWORD,
-            first_name=faker.first_name(),
-            last_name=faker.last_name(),
-            role=role,
-            expertise=expertise,
-        )
-    # Add admin user
-    User.objects.create_superuser(
-        username='@admin',
-        email='admin@example.com',
-        password=self.DEFAULT_PASSWORD,
-        first_name='Admin',
-        last_name='User',
-        role='admin',
-    )
-    print("Users created.")
+        """Seed users with admin, tutor, and student roles."""
+        print("Creating users...")
+        roles = ['student', 'tutor']
+        for i in range(self.USER_COUNT):
+            role = random.choice(roles)
+            username = f"@{faker.first_name().lower()}{i}"
+            # Ensure unique email by appending a UUID
+            email = f"{username}{uuid.uuid4().hex[:6]}@example.com"
+            expertise = "Python, JavaScript" if role == 'tutor' else None
+            User.objects.create_user(
+                username=username,
+                email=email,
+                password=self.DEFAULT_PASSWORD,
+                first_name=faker.first_name(),
+                last_name=faker.last_name(),
+                role=role,
+                expertise=expertise,
+            )
+
+        # Add admin user if not already present
+        if not User.objects.filter(username='@admin', email='admin@example.com').exists():
+            User.objects.create_superuser(
+                username='@admin',
+                email='admin@example.com',
+                password=self.DEFAULT_PASSWORD,
+                first_name='Admin',
+                last_name='User',
+                role='admin',
+            )
+            print("Admin user created.")
+        else:
+            print("Admin user already exists. Skipping creation.")
+        print("Users created.")
 
     def create_lesson_requests(self):
         """Seed lesson requests."""
