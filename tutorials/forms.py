@@ -2,8 +2,7 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
-from .models import User
-from .models import LessonRequest
+from .models import User, LessonRequest
 
 
 class LogInForm(forms.Form):
@@ -26,9 +25,19 @@ class UserForm(forms.ModelForm):
     """Form to update user profiles."""
 
     class Meta:
-        """Form options."""
         model = User
         fields = ['first_name', 'last_name', 'username', 'email', 'role']
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError("This email address is already in use.")
+        return email
+
+    def save(self, commit=True):
+        if not self.is_valid():
+            raise ValueError("The form contains invalid data.")
+        return super().save(commit=commit)
 
 
 class NewPasswordMixin(forms.Form):
@@ -39,14 +48,12 @@ class NewPasswordMixin(forms.Form):
         widget=forms.PasswordInput(),
         validators=[RegexValidator(
             regex=r'^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).*$',
-            message='Password must contain an uppercase character, a lowercase '
-                    'character, and a number'
+            message='Password must contain an uppercase character, a lowercase character, and a number'
         )]
     )
     password_confirmation = forms.CharField(label='Password confirmation', widget=forms.PasswordInput())
 
     def clean(self):
-        """Validate new_password and password_confirmation fields."""
         super().clean()
         new_password = self.cleaned_data.get('new_password')
         password_confirmation = self.cleaned_data.get('password_confirmation')
@@ -60,25 +67,20 @@ class PasswordForm(NewPasswordMixin):
     password = forms.CharField(label='Current password', widget=forms.PasswordInput())
 
     def __init__(self, user=None, **kwargs):
-        """Construct new form instance with a user instance."""
         super().__init__(**kwargs)
         self.user = user
+        if not user:
+            raise ValueError("A valid user must be provided.")
 
     def clean(self):
-        """Validate the current password."""
         super().clean()
         password = self.cleaned_data.get('password')
-        if self.user is not None:
-            user = authenticate(username=self.user.username, password=password)
-        else:
-            user = None
-        if user is None:
+        if self.user and not authenticate(username=self.user.username, password=password):
             self.add_error('password', "Password is invalid")
 
     def save(self):
-        """Save the user's new password."""
         new_password = self.cleaned_data['new_password']
-        if self.user is not None:
+        if self.user:
             self.user.set_password(new_password)
             self.user.save()
         return self.user
@@ -88,13 +90,12 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
     """Form enabling unregistered users to sign up."""
 
     class Meta:
-        """Form options."""
         model = User
-        fields = ['first_name', 'last_name', 'username', 'email', 'role']  # Removed 'lesson_preferences'
+        fields = ['first_name', 'last_name', 'username', 'email', 'role']
 
-    def save(self):
-        """Create a new user."""
-        super().save(commit=False)
+    def save(self, commit=True):
+        if not self.is_valid():
+            raise ValueError("The form contains invalid data.")
         user = User.objects.create_user(
             username=self.cleaned_data.get('username'),
             first_name=self.cleaned_data.get('first_name'),
@@ -103,9 +104,11 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
             password=self.cleaned_data.get('new_password'),
             role=self.cleaned_data.get('role'),
         )
-        user.save()
+        if commit:
+            user.save()
         return user
-    
+
+
 class LessonBookingForm(forms.ModelForm):
     class Meta:
         model = LessonRequest
@@ -151,5 +154,3 @@ class LessonBookingForm(forms.ModelForm):
                 ("advanced", "Advanced"),
             ]),
         }
-
-        
