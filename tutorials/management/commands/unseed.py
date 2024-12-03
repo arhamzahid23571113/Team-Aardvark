@@ -20,8 +20,8 @@ class Command(BaseCommand):
         LessonRequest.objects.all().delete()
         self.stdout.write("All lesson requests removed.")
 
-        # Remove non-staff users
-        User.objects.filter(is_staff=False).delete()
-        self.stdout.write("All non-staff users removed.")
+        # Remove non-staff users with a specific email pattern
+        User.objects.filter(is_staff=False, email__endswith='@example.com').delete()
+        self.stdout.write("All seeded users removed.")
 
         self.stdout.write("Database unseeding complete.")
