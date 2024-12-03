@@ -1,32 +1,106 @@
-{% extends 'base.html' %}
+{% extends 'dashboard_base_student.html' %}
 {% block title %}Student Dashboard{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-  <h1 class="mb-4">Student Dashboard</h1>
-  
-  <div class="card mb-3">
-    <div class="card-header">Your Lesson Schedule</div>
-    <div class="card-body">
-      <p>View your upcoming lessons and any changes to your schedule.</p>
-      <a href="#" class="btn btn-primary">View Schedule</a>
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="text-center text-dashboard-purple mt-4">Welcome to your dashboard, {{ user.username }}!</h1>
     </div>
   </div>
-  
-  <div class="card mb-3">
-    <div class="card-header">Invoices</div>
-    <div class="card-body">
-      <p>Access and download your invoices.</p>
-      <a href="#" class="btn btn-primary">View Invoices</a>
+</div>
+
+<div class="container-fluid">
+  <h2 class="text-center text-dashboard-purple mt-4">Student Dashboard</h2>
+
+  <!-- First Row with Three Cards -->
+  <div class="row mt-4">
+    <!-- Schedule Card -->
+    <div class="col-md-4 mb-4">
+      <div class="card shadow text-center h-100">
+        <div class="card-header">
+          <i class="fas fa-calendar-alt"></i> Your Timetable
+        </div>
+        <div class="card-body">
+          <p>View your upcoming lessons and availability here.</p>
+          <a href="#" class="btn btn-outline-light">View Timetable</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- My Tutor Card -->
+    <div class="col-md-4 mb-4">
+      <div class="card shadow text-center h-100">
+        <div class="card-header">
+          <i class="fas fa-user-graduate"></i> My Tutor
+        </div>
+        <div class="card-body">
+          <p>Access profile of Tutor assigned to you.</p>
+          <a href="{% url 'my_tutor_profile'%}" class="btn btn-outline-light">View Profile</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Communicate with Admin Card -->
+    <div class="col-md-4 mb-4">
+      <div class="card shadow text-center h-100">
+        <div class="card-header">
+          <i class="fas fa-envelope"></i> Contact with Admin
+        </div>
+        <div class="card-body">
+          <p>Send messages or report issues to the admin team.</p>
+          <a href="{% url 'contact_admin' %}" class="btn btn-outline-light">Contact Admin</a>
+        </div>
+      </div>
     </div>
   </div>
-  
-  <div class="card mb-3">
-    <div class="card-header">Request Changes</div>
-    <div class="card-body">
-      <p>Submit requests to change or cancel your lessons.</p>
-      <a href="#" class="btn btn-primary">Submit Request</a>
+
+  <!-- Second Row with Three Cards -->
+  <div class="row mt-4">
+    <!-- Update Details Card -->
+    <div class="col-md-4 mb-4">
+      <div class="card shadow text-center h-100">
+        <div class="card-header">
+          <i class="fas fa-edit"></i> Update Details
+        </div>
+        <div class="card-body">
+          <p>Update your profile and other personal details.</p>
+          <a href="{% url 'profile' %}" class="btn btn-outline-light">Update Details</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- My Invoices Card -->
+    <div class="col-md-4 mb-4">
+      <div class="card shadow text-center h-100">
+        <div class="card-header">
+          <i class="fas fa-file-invoice-dollar"></i> My Invoices
+        </div>
+        <div class="card-body">
+          <p>View financial information.</p>
+          <a href="#" class="btn btn-outline-light">View Invoices</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Request a Lesson Card -->
+    <div class="col-md-4 mb-4">
+      <div class="card shadow text-center h-100">
+        <div class="card-header">
+          <i class="fas fa-book-open"></i> Request a Lesson
+        </div>
+        <div class="card-body">
+          <p>
+        <pre>
+    Book a new lesson with your tutor.
+(Admin will have to review 
+booking request once made.)
+        </pre></p>
+          <a href="{% url 'request_lesson' %}" class="btn btn-outline-light">Request a Lesson</a>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 {% endblock %}
+

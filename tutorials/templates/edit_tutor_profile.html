@@ -1,0 +1,18 @@
+{% extends 'dashboard_base_admin.html' %}
+{% block title %}Edit Tutor Profile{% endblock %}
+<!-- For Admins to edit tutor profiles -->
+
+{% block content %}
+<div class="container mt-5">
+  <h2>Edit Profile: {{ tutor.full_name }}</h2>
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="expertise" class="form-label">Expertise</label>
+      <textarea id="expertise" name="expertise" class="form-control" rows="4">{{ tutor.expertise }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-success">Save Changes</button>
+    <a href="{% url 'all_tutor_profiles' %}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+{% endblock %}

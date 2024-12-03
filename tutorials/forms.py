@@ -3,6 +3,8 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
 from .models import User
+from .models import LessonRequest
+
 
 class LogInForm(forms.Form):
     """Form enabling registered users to log in."""
@@ -103,3 +105,51 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
         )
         user.save()
         return user
+    
+class LessonBookingForm(forms.ModelForm):
+    class Meta:
+        model = LessonRequest
+        fields = [
+            "requested_topic",
+            "requested_frequency",
+            "requested_duration",
+            "requested_time",
+            "preferred_day",
+            "experience_level",
+            "additional_notes",
+        ]
+        widgets = {
+            "requested_topic": forms.Select(choices=[
+                ("python_programming", "Python Programming"),
+                ("web_development_with_js", "Web Development with JavaScript"),
+                ("ruby_on_rails", "Ruby on Rails"),
+                ("ai_and_ml", "AI and Machine Learning"),
+            ]),
+            "requested_duration": forms.Select(choices=[
+                ("30", "30 Minutes"),
+                ("60", "1 Hour"),
+                ("90", "1 Hour and 30 Minutes"),
+                ("120", "2 Hours"),
+            ]),
+            "requested_frequency": forms.Select(choices=[
+                ("weekly", "Weekly"),
+                ("fortnightly", "Fortnightly"),
+            ]),
+            "preferred_day": forms.Select(choices=[
+                ("monday", "Monday"),
+                ("tuesday", "Tuesday"),
+                ("wednesday", "Wednesday"),
+                ("thursday", "Thursday"),
+                ("friday", "Friday"),
+                ("saturday", "Saturday"),
+                ("sunday", "Sunday"),
+            ]),
+            "experience_level": forms.Select(choices=[
+                ("no_experience", "No Experience"),
+                ("beginner", "Beginner"),
+                ("intermediate", "Intermediate"),
+                ("advanced", "Advanced"),
+            ]),
+        }
+
+        

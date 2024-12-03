@@ -1,0 +1,33 @@
+{% extends 'dashboard_base_student.html' %}
+{% block title %}My Tutor{% endblock %}
+<!-- For Students to view their tutor profiles  based on who admin has manually assigned them-->
+
+{% block content %}
+<div class="container mt-4">
+  <h1 class="text-center text-dashboard-purple mt-4">My Tutor</h1>
+  <p class="text-center text-dashboard-purple mb-4">Here is the profile of the tutor assigned to you.</p>
+
+  <div class="row">
+    {% if tutors %}
+      {% for tutor in tutors %}
+      <div class="col-md-4">
+        <div class="card p-3 mb-4 bg-dark-purple text-white rounded">
+          <div class="card-header text-center bg-purple-gradient">
+            <h4>{{ tutor.tutor__first_name }} {{ tutor.tutor__last_name }}</h4>
+          </div>
+          <div class="card-body">
+            <p><strong>Email:</strong> {{ tutor.tutor__email }}</p>
+            <p><strong>Expertise:</strong> {{ tutor.tutor__expertise|default:"Not provided" }}</p>
+          </div>
+          <div class="card-footer text-center">
+            <a href="{% url 'tutor_more_info' tutor.tutor__id %}" class="btn btn-outline-light btn-sm">More Information</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-center text-white">No tutor has been assigned to you yet.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
