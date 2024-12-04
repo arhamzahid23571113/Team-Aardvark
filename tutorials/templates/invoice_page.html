@@ -62,7 +62,7 @@ Invoice Page {% endblock %} {% block extra_css %}
     aria-label="Info:"
     width="24"
     height="24"
-    style="fill: #9b66c7"
+    style="fill: #ffffff"
   >
     <use xlink:href="#info-fill" />
   </svg>
@@ -75,7 +75,8 @@ Invoice Page {% endblock %} {% block extra_css %}
 
 <div class="alert header-alert" role="alert">
   <h1 class="alert-heading invoice-text">
-    Here are your invoices, {{invoice.student.first_name}}.
+    <i class="fas fa-receipt me-2"></i>Here are your invoices,
+    {{invoice.student.first_name}}.
   </h1>
   <hr />
   <p class="mb-0 invoice-text">
@@ -131,7 +132,9 @@ Invoice Page {% endblock %} {% block extra_css %}
 <hr class="my-4" />
 
 <div class="invoice-page">
-  <div class="card shadow-lg bg-transparent border-0 text-center">
+  <div
+    class="card shadow-lg p-3 mb-5 bg-transparent rounded border-0 text-center"
+  >
     <div class="card-body">
       {% for booking in lesson_bookings %}
       <div class="row justify-content-md-start">
@@ -159,8 +162,27 @@ Invoice Page {% endblock %} {% block extra_css %}
   class="scrollspy-example bg-body-tertiary p-3 rounded-2"
   tabindex="0"
 >
-  <h4 id="scrollspyHeading1">First heading</h4>
-  <p>hihi</p>
+  <div class="invoice-page">
+    <div id="scrollspyHeading1" class="card">
+      <div class="card-header fs-4">
+        <i class="fas fa-money-check"></i> Our Prices
+      </div>
+      <div class="card-body">
+        <h4 class="card-title">
+          All lessons are charged at a flat rate of £10 per hour, regardless of
+          the subject covered.
+        </h4>
+        <p class="card-text">
+          This ensures transparent and consistent pricing for all tutoring
+          services.
+        </p>
+        <br />
+        <p class="card-text">Still have questions?</p>
+
+        <button type="button" class="btn btn-link">Contact Admin.</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 {% endblock %}
