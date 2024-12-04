@@ -10,6 +10,7 @@
 
 /* Full-height sidebar with dark purple background */
 #sidebar {
+    position: sticky;
     height: 100vh;
     padding-top: 20px;
     background-color: #4b0082 !important; /* Dark purple */

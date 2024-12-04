@@ -67,8 +67,9 @@ Invoice Page {% endblock %} {% block extra_css %}
     <use xlink:href="#info-fill" />
   </svg>
   <div>
-    Click <a href="#" class="alert-link invoice-text">here</a> to see more on
-    lesson pricing.
+    Click
+    <a class="nav-link d-inline fw-bold p-0" href="#scrollspyHeading1">here</a>
+    to see more on lesson pricing.
   </div>
 </div>
 
@@ -135,7 +136,7 @@ Invoice Page {% endblock %} {% block extra_css %}
       {% for booking in lesson_bookings %}
       <div class="row justify-content-md-start">
         <div class="col">{{booking.standardised_date}}</div>
-        <div class="col">{{booking.duration}}min</div>
+        <div class="col">{{booking.duration}} min</div>
         <div class="col">{{booking.tutor}}</div>
         <div class="col">£{{booking.lesson_price}}</div>
       </div>
@@ -148,6 +149,18 @@ Invoice Page {% endblock %} {% block extra_css %}
 
 <div class="invoice-text" style="text-align: right">
   <p>Total: {{invoice.amount_due}}</p>
+</div>
+
+<div
+  data-bs-spy="scroll"
+  data-bs-target="#sidebar"
+  data-bs-root-margin="0px 0px -40%"
+  data-bs-smooth-scroll="true"
+  class="scrollspy-example bg-body-tertiary p-3 rounded-2"
+  tabindex="0"
+>
+  <h4 id="scrollspyHeading1">First heading</h4>
+  <p>hihi</p>
 </div>
 
 {% endblock %}
