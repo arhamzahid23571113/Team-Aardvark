@@ -141,7 +141,7 @@ Invoice Page {% endblock %} {% block extra_css %}
         <div class="col">{{booking.standardised_date}}</div>
         <div class="col">{{booking.duration}} min</div>
         <div class="col">{{booking.tutor}}</div>
-        <div class="col">£{{booking.lesson_price|floatformat:2 }}</div>
+        <div class="col">£{{booking.lesson_price|floatformat:2}}</div>
       </div>
       {% endfor %}
     </div>
@@ -151,7 +151,7 @@ Invoice Page {% endblock %} {% block extra_css %}
 <hr class="my-4" />
 
 <div class="invoice-text" style="text-align: right">
-  <p>Total: {{invoice.amount_due}}</p>
+  <p>Total: £{{total|floatformat:2}}</p>
 </div>
 
 <div
@@ -162,25 +162,23 @@ Invoice Page {% endblock %} {% block extra_css %}
   class="scrollspy-example bg-body-tertiary p-3 rounded-2"
   tabindex="0"
 >
-  <div class="invoice-page">
-    <div id="scrollspyHeading1" class="card">
-      <div class="card-header fs-4">
-        <i class="fas fa-money-check"></i> Our Prices
-      </div>
-      <div class="card-body">
-        <h4 class="card-title">
-          All lessons are charged at a flat rate of £10 per hour, regardless of
-          the subject covered.
-        </h4>
-        <p class="card-text">
-          This ensures transparent and consistent pricing for all tutoring
-          services.
-        </p>
-        <br />
-        <p class="card-text">Still have questions?</p>
+  <div id="scrollspyHeading1" class="card">
+    <div class="card-header fs-4">
+      <i class="fas fa-money-check"></i> Our Prices
+    </div>
+    <div class="card-body">
+      <h4 class="card-title">
+        All lessons are charged at a flat rate of £10 per hour, regardless of
+        the subject covered.
+      </h4>
+      <p class="card-text">
+        This ensures transparent and consistent pricing for all tutoring
+        services.
+      </p>
+      <br />
+      <p class="card-text">Still have questions?</p>
 
-        <button type="button" class="btn btn-link">Contact Admin.</button>
-      </div>
+      <button type="button" class="btn btn-link">Contact Admin.</button>
     </div>
   </div>
 </div>

@@ -69,14 +69,7 @@ def invoice_page(request, invoice_id, term_name):
     """Display user invoice."""
     invoice = Invoice.objects.get(id=invoice_id)
 
-    '''autumn_start = date(2024, 9, 1)
-    autumn_end = date(2024, 12, 31)
-
-    spring_start = date(2024, 1, 1)
-    spring_end = date(2025, 5, 31)
-
-    summer_start = date(2024, 6, 1)
-    summer_end = date(2024, 8, 31)'''
+    total = 0
 
     terms = {
         'autumn': (date(2024, 9, 1), date(2024, 12, 31)),
@@ -97,11 +90,14 @@ def invoice_page(request, invoice_id, term_name):
 
     for booking in lesson_bookings:
         booking.lesson_price = (booking.duration / 60) * settings.HOURLY_RATE
+        total += booking.lesson_price 
+
         booking.standardised_date = booking.lesson_date.strftime("%d/%m/%Y")
 
     return render(request, 'invoice_page.html', {
         'invoice': invoice, 
-        'lesson_bookings': lesson_bookings, 
+        'lesson_bookings': lesson_bookings,
+        'total': total, 
         'term_name': term_name.title(),
         'previous_term': previous_term,
         'next_term': next_term,
