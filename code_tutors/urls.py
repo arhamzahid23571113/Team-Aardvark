@@ -57,7 +57,7 @@ urlpatterns = [
     path('tutor-profile/<int:tutor_id>/edit/', views.edit_tutor_profile, name='edit_tutor_profile'),
     path('all-students/', views.all_student_profiles, name='all_students'),
     path('tutor/<int:tutor_id>/info/', views.tutor_more_info, name='tutor_more_info'),
-    path('admin/messages/', views.admin_messages, name='admin_messages'),
+    path('admin-messages/', views.admin_messages, name='admin_messages'),
 
 
 
