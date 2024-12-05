@@ -65,7 +65,7 @@ def available_courses(request):
 
 
 #@login_required
-def invoice_page(request, invoice_id, term_name):
+def invoice_page(request, invoice_id, term_name = None):
     """Display user invoice."""
     invoice = Invoice.objects.get(id=invoice_id)
 
@@ -76,6 +76,14 @@ def invoice_page(request, invoice_id, term_name):
         'spring': (date(2025, 1, 1), date (2025, 5, 31)),
         'summer': (date(2025, 6, 1), date(2025, 8, 31)),
     }
+
+    if term_name is None:
+        today = date.today()
+
+        for term, (start, end) in terms.items():
+            if start <= today <= end:
+                term_name = term 
+                break 
 
     term_dates = terms.get(term_name)
     term_start, term_end = term_dates
