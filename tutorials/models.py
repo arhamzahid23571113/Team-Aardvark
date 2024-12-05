@@ -6,7 +6,7 @@ from django.conf import settings
 
 
 class User(AbstractUser):
-    """Model used for user authentication, and team member related information."""
+    """Model used for user authentication, and team member-related information."""
 
     username = models.CharField(
         max_length=30,
@@ -28,8 +28,10 @@ class User(AbstractUser):
     )
     role = models.CharField(max_length=10, choices=ROLES, default='student')
 
-    expertise = models.TextField(blank=True, null=True,
-                                 help_text="Comma-separated list of programming languages or topics the tutor specializes in.")
+    expertise = models.TextField(
+        blank=True, null=True,
+        help_text="Comma-separated list of programming languages or topics the tutor specializes in."
+    )
 
     class Meta:
         """Model options."""
@@ -42,8 +44,7 @@ class User(AbstractUser):
     def gravatar(self, size=120):
         """Return a URL to the user's gravatar."""
         gravatar_object = Gravatar(self.email)
-        gravatar_url = gravatar_object.get_image(size=size, default='mp')
-        return gravatar_url
+        return gravatar_object.get_image(size=size, default='mp')
 
     def mini_gravatar(self):
         """Return a URL to a miniature version of the user's gravatar."""
@@ -51,10 +52,17 @@ class User(AbstractUser):
 
 class Invoice(models.Model):
     """Model for invoices and tracking payment status"""
-    student = models.ForeignKey(User, related_name="invoices", on_delete=models.CASCADE)
+    student = models.ForeignKey(
+        User,
+        related_name="invoices",  # Unique related_name for Invoice
+        on_delete=models.CASCADE
+    )
     amount_due = models.DecimalField(max_digits=8, decimal_places=2)
     due_date = models.DateField()
-    payment_status = models.CharField(max_length=20, choices=[('Paid', 'Paid'),('Unpaid', 'Unpaid')])
+    payment_status = models.CharField(
+        max_length=20,
+        choices=[('Paid', 'Paid'), ('Unpaid', 'Unpaid')]
+    )
     invoice_date = models.DateField(auto_now_add=True)
     payment_date = models.DateField(null=True, blank=True)
 
@@ -145,37 +153,22 @@ class LessonBooking(models.Model):
     time = models.TimeField()  
     lesson_date = models.DateField()  
 
-    frequency = models.CharField(max_length=20)  
-    preferred_day = models.CharField(max_length=10)  
-    experience_level = models.CharField(max_length=20)  
-    additional_notes = models.TextField(blank=True, null=True)  
 
-    def __str__(self):
-        return f"{self.student.username} - {self.topic} with {self.tutor.username}"
+
+
+
+#AMINA'S:
+
+
+class Timetable(models.Model):
     
-class ContactMessage(models.Model):
-    ROLES = [
-        ('student', 'Student'),
-        ('tutor', 'Tutor'),
-    ]
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='messages')
-    role = models.CharField(max_length=10, choices = ROLES)
-    message = models.TextField(
-        blank = True,
-        default="",
-        help_text="Write your message to the admin here"
-    )
-    reply = models.TextField(
-        blank = True,
-        default="",
-        help_text="Admins reply to message"
-    )
-    timestamp = models.DateTimeField(auto_now_add=True)
-    reply_timestamp = models.DateTimeField(
-    blank=True, null=True,
-    help_text="Timestamp of admin's reply"
-    )
-
+    tutor = models.ForeignKey(User, related_name="tutor_timetables", on_delete=models.CASCADE)
+    student = models.ForeignKey(User, related_name="student_timetables", on_delete=models.CASCADE)
+    date = models.DateField(help_text="The date of the lesson")
+    start_time = models.TimeField(help_text="Lesson start time")
+    end_time = models.TimeField(help_text="Lesson end time")
+    is_attended = models.BooleanField(default=False, help_text="Has the student attended this lesson?")
+    notes = models.TextField(blank=True, null=True, help_text="Additional notes about the lesson")
 
     def __str__(self):
         return f"{self.role.capitalize()} - {self.timestamp}"

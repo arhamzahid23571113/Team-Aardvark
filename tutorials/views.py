@@ -6,6 +6,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ImproperlyConfigured
 from django.shortcuts import redirect, render
 from django.urls import reverse
+from calendar import monthrange
+from datetime import date
+from django.shortcuts import render
 from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from tutorials.forms import LogInForm, PasswordForm, UserForm, SignUpForm
@@ -540,6 +543,33 @@ def tutor_timetable(request):
     return render(request, 'tutor_timetable.html', {'timetable': timetable})
 
 def student_timetable(request):
-    """View for students to see their timetable."""
-    timetable = Timetable.objects.filter(student=request.user)
+    
+    timetable = Timetable.objects.filter(student=request.user).order_by('date', 'start_time')
     return render(request, 'student_timetable.html', {'timetable': timetable})
+
+def timetable_view(request):
+    today = date.today()
+    current_month = today.month
+    current_year = today.year
+
+    # Get the first weekday and total number of days in the current month
+    first_weekday, total_days = monthrange(current_year, current_month)
+
+    # Generate empty days for alignment
+    empty_days = range(first_weekday)
+
+    # Create calendar days with dummy data
+    calendar_days = []
+    for day in range(1, total_days + 1):
+        day_date = date(current_year, current_month, day)
+        lessons = [
+            {'student': {'first_name': 'John'}, 'notes': 'Math Lesson', 'start_time': '10:00 AM', 'end_time': '11:00 AM'}
+        ] if day % 2 == 0 else []
+        calendar_days.append({'date': day_date, 'lessons': lessons})
+
+    context = {
+        'current_month': today,
+        'empty_days': empty_days,
+        'calendar_days': calendar_days,
+    }
+    return render(request, 'timetable.html', context)
