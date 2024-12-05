@@ -14,6 +14,8 @@ from .models import User,LessonBooking
 from .models import LessonRequest
 from django.shortcuts import get_object_or_404, redirect
 from .forms import LessonBookingForm
+from .models import ContactMessage
+
 
 
 
@@ -426,3 +428,14 @@ def tutor_more_info(request, tutor_id):
     }
 
     return render(request, 'tutor_more_info.html', context)
+
+  #ADMIN
+def admin_messages(request):
+    # Default: No messages displayed until a button is clicked
+    role_filter = request.GET.get('role')
+    if role_filter:
+        messages = ContactMessage.objects.filter(role=role_filter).order_by('-timestamp')
+    else:
+        messages = []
+
+    return render(request, 'admin_messages.html', {'messages': messages, 'role_filter': role_filter})
