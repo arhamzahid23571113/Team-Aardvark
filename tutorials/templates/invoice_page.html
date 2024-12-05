@@ -141,7 +141,7 @@ Invoice Page {% endblock %} {% block extra_css %}
         <div class="col">{{booking.standardised_date}}</div>
         <div class="col">{{booking.duration}} min</div>
         <div class="col">{{booking.tutor}}</div>
-        <div class="col">£{{booking.lesson_price}}</div>
+        <div class="col">£{{booking.lesson_price|floatformat:2 }}</div>
       </div>
       {% endfor %}
     </div>
