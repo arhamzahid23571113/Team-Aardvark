@@ -607,3 +607,252 @@ def timetable_view(request):
     }
 
     return render(request, 'student_timetable.html', context)
+
+
+@login_required
+def admin_dashboard(request):
+    """Admin-specific dashboard."""
+    return render(request, 'admin_dashboard.html')
+
+@login_required
+def tutor_dashboard(request):
+    """Tutor-specific dashboard."""
+    return render(request, 'tutor_dashboard.html')
+
+
+@login_required
+def student_dashboard(request):
+    """Student-specific dashboard."""
+    return render(request, 'student_dashboard.html')
+
+
+#STUDENTS
+@login_required
+def request_lesson(request):
+    if request.method == 'POST':
+        form = LessonBookingForm(request.POST)
+        if form.is_valid():
+            lesson_request = form.save(commit=False)
+            lesson_request.student = request.user  # Associate with the logged-in user
+            lesson_request.save()
+            return redirect('lesson_request_success')  # Redirect to a success page
+        else:
+            # Debugging form errors if needed
+            print(form.errors)
+    else:
+        form = LessonBookingForm()
+
+    return render(request, 'request_lesson.html', {'form': form})
+
+#STUDENT OR TUTOR
+@login_required
+def contact_admin(request):
+        # Determine the base template based on the user's role 
+    if request.user.is_authenticated:
+        if request.user.role == 'tutor':
+            base_template = 'dashboard_base_tutor.html'
+        elif request.user.role == 'student':
+            base_template = 'dashboard_base_student.html'
+        elif request.user.role == 'admin':
+            base_template = 'dashboard_base_admin.html'
+        else:
+            base_template = 'dashboard.html'  # Default for other roles
+    else:
+        base_template = 'dashboard.html'  # Default for unauthenticated users
+
+    
+    return render(request, 'contact_admin.html', {'base_template': base_template})
+
+
+#STUDENTS
+@login_required
+def see_my_tutor(request):
+    # Ensure only students can access this page
+    if request.user.role != 'student':
+        return redirect('dashboard')
+
+    # Fetch the tutor assigned to the logged-in student via LessonRequest
+    assigned_tutors = LessonRequest.objects.filter(
+        student=request.user,  # Filter by the logged-in student
+        tutor__isnull=False,   # Ensure a tutor is assigned
+        status='Allocated'     # Optional: Only show allocated tutors
+    ).values(
+        'tutor__id',
+        'tutor__first_name',
+        'tutor__last_name',
+        'tutor__email',
+        'tutor__expertise'
+    ).distinct()
+
+    context = {
+        'tutors': assigned_tutors,  # Pass the tutors to the template
+    }
+
+    return render(request, 'my_tutor_profile.html', context)
+
+#TUTORS
+@login_required
+def see_my_students_profile(request):
+ # Ensure only tutors can access this page 
+    if request.user.role != 'tutor':
+        return redirect('dashboard')
+
+    # Fetch all unique students assigned to the current tutor
+    assigned_students = (
+        User.objects.filter(
+            lesson_requests__tutor=request.user  # Filter users linked to lesson requests for this tutor
+        )
+        .distinct()
+    )
+
+    context = {
+        'students': assigned_students,
+    }
+    return render(request, 'my_students_profile.html', context)
+
+
+#STUDENTS
+@login_required
+def lesson_request_success(request):
+    return render(request, 'lesson_request_success.html')
+
+
+#ADMINS
+@login_required
+def student_requests(request):
+    lesson_requests = LessonRequest.objects.select_related('student').order_by('student')
+
+    # Group requests by student 
+    students_with_requests = {}
+    for req in lesson_requests:
+        if req.student not in students_with_requests:
+            students_with_requests[req.student] = []
+        students_with_requests[req.student].append(req)
+
+    tutors = User.objects.filter(role='tutor')  # Fetch all tutors
+
+    context = {
+        'students_with_requests': students_with_requests,
+        'tutors': tutors,
+    }
+    return render(request, 'student_requests.html', context)
+
+
+
+#ADMINS
+@login_required
+def assign_tutor(request, lesson_request_id):
+    if request.method == 'POST':
+        # Fetch the lesson request and selected tutor 
+        lesson_request = get_object_or_404(LessonRequest, id=lesson_request_id)
+        tutor_id = request.POST.get('tutor_id')
+
+        if tutor_id:
+            tutor = get_object_or_404(User, id=tutor_id, role='tutor')
+            # Assign the tutor to the lesson request (assuming you have a 'tutor' field)
+            lesson_request.tutor = tutor
+            lesson_request.status = 'Allocated'
+            lesson_request.save()
+
+        return redirect('student_requests')  # Redirect back to the requests page
+    
+
+#ADMINS
+@login_required
+def unassign_tutor(request, lesson_request_id):
+    if request.method == 'POST':
+        # Fetch the lesson request 
+        lesson_request = get_object_or_404(LessonRequest, id=lesson_request_id)
+
+        # Unassign the tutor and update the status
+        lesson_request.tutor = None
+        lesson_request.status = 'Unallocated'
+        lesson_request.save()
+
+        # Redirect back to the student requests page
+        return redirect('student_requests')
+    
+
+#ADMINS
+@login_required
+def cancel_request(request, lesson_request_id):
+    if request.method == 'POST':
+        # Fetch the lesson request 
+        lesson_request = get_object_or_404(LessonRequest, id=lesson_request_id)
+        # Update the status to 'Cancelled'
+        lesson_request.status = 'Cancelled'
+        lesson_request.tutor = None  # Unassign the tutor
+        lesson_request.save()
+        # Redirect back to the student requests page
+        return redirect('student_requests')
+
+
+#ADMINS
+@login_required
+def all_tutor_profiles(request):
+    # Fetch all tutors (users with role='tutor') 
+    tutors = User.objects.filter(role='tutor')
+    context = {'tutors': tutors}
+    return render(request, 'all_tutor_profiles.html', context)
+
+#ADMINS
+@login_required
+def all_student_profiles(request):
+    # Fetch all students (users with role='student') 
+    students = User.objects.filter(role='student')
+    context = {'students': students}
+    return render(request, 'all_student_profiles.html', context)
+
+
+#ADMINS
+@login_required
+def view_tutor_profile(request, tutor_id):
+    # Fetch a specific tutor by ID 
+    tutor = get_object_or_404(User, id=tutor_id, role='tutor')
+    return render(request, 'view_tutor_profile.html', {'tutor': tutor})
+
+
+#ADMINS
+@login_required
+def edit_tutor_profile(request, tutor_id):
+    # Fetch a specific tutor by ID 
+    tutor = get_object_or_404(User, id=tutor_id, role='tutor')
+    if request.method == 'POST':
+        # Handle the form submission for editing tutor details (e.g., expertise)
+        tutor.expertise = request.POST.get('expertise', tutor.expertise)
+        tutor.save()
+        return redirect('all_tutor_profiles')
+    return render(request, 'edit_tutor_profile.html', {'tutor': tutor})
+    
+
+  #STUDENTS
+@login_required
+def tutor_more_info(request, tutor_id):
+    # Ensure only students can access this page 
+    if request.user.role != 'student':
+        return redirect('dashboard')
+
+    # Get the tutor's details
+    tutor = get_object_or_404(User, id=tutor_id, role='tutor')
+
+    # Get the lesson requests where the logged-in student is linked to the tutor
+    lessons = LessonRequest.objects.filter(student=request.user, tutor=tutor)
+
+    context = {
+        'tutor': tutor,
+        'lessons': lessons,
+    }
+
+    return render(request, 'tutor_more_info.html', context)
+
+
+  #ADMIN
+def admin_messages(request):
+    # Default: No messages displayed until a button is clicked
+    role_filter = request.GET.get('role')
+    if role_filter:
+        messages = ContactMessage.objects.filter(role=role_filter).order_by('-timestamp')
+    else:
+        messages = []
+
+    return render(request, 'admin_messages.html', {'messages': messages, 'role_filter': role_filter})
