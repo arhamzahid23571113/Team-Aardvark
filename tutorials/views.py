@@ -847,6 +847,7 @@ def tutor_more_info(request, tutor_id):
 
 
   #ADMIN
+@login_required
 def admin_messages(request):
     # Default: No messages displayed until a button is clicked
     role_filter = request.GET.get('role')
