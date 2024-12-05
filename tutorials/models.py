@@ -4,7 +4,7 @@ from django.db import models
 from libgravatar import Gravatar
 
 class User(AbstractUser):
-    """Model used for user authentication, and team member related information."""
+    """Model used for user authentication, and team member-related information."""
 
     username = models.CharField(
         max_length=30,
@@ -26,8 +26,10 @@ class User(AbstractUser):
     )
     role = models.CharField(max_length=10, choices=ROLES, default='student')
 
-    expertise = models.TextField(blank=True, null=True,
-                                 help_text="Comma-separated list of programming languages or topics the tutor specializes in.")
+    expertise = models.TextField(
+        blank=True, null=True,
+        help_text="Comma-separated list of programming languages or topics the tutor specializes in."
+    )
 
     class Meta:
         """Model options."""
@@ -40,8 +42,7 @@ class User(AbstractUser):
     def gravatar(self, size=120):
         """Return a URL to the user's gravatar."""
         gravatar_object = Gravatar(self.email)
-        gravatar_url = gravatar_object.get_image(size=size, default='mp')
-        return gravatar_url
+        return gravatar_object.get_image(size=size, default='mp')
 
     def mini_gravatar(self):
         """Return a URL to a miniature version of the user's gravatar."""
@@ -49,23 +50,43 @@ class User(AbstractUser):
 
 class Invoice(models.Model):
     """Model for invoices and tracking payment status"""
-    student = models.ForeignKey(User, related_name="invoices", on_delete=models.CASCADE)
+    student = models.ForeignKey(
+        User,
+        related_name="invoices",  # Unique related_name for Invoice
+        on_delete=models.CASCADE
+    )
     amount_due = models.DecimalField(max_digits=8, decimal_places=2)
     due_date = models.DateField()
-    payment_status = models.CharField(max_length=20, choices=[('Paid', 'Paid'),('Unpaid', 'Unpaid')])
+    payment_status = models.CharField(
+        max_length=20,
+        choices=[('Paid', 'Paid'), ('Unpaid', 'Unpaid')]
+    )
     invoice_date = models.DateField(auto_now_add=True)
     payment_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return f"Invoice for {self.student.first_name} {self.student.last_name}"
-    
+
 class LessonRequest(models.Model):
     """Model for students to request lessons"""
-    student = models.ForeignKey(User, related_name="lesson_requests", on_delete=models.CASCADE)
-    status = models.CharField(max_length=20, choices=[('Unallocated', 'Unallocated'), ('Allocated', 'Allocated'), ('Pending', 'Pending'), ('Cancelled', 'Cancelled')], default='Unallocated')
+    student = models.ForeignKey(
+        User,
+        related_name="lesson_requests",  # Unique related_name for LessonRequest
+        on_delete=models.CASCADE
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=[
+            ('Unallocated', 'Unallocated'),
+            ('Allocated', 'Allocated'),
+            ('Pending', 'Pending'),
+            ('Cancelled', 'Cancelled')
+        ],
+        default='Unallocated'
+    )
     request_date = models.DateTimeField(auto_now_add=True)
     requested_topic = models.TextField(
-        blank = True,
+        blank=True,
         help_text="Describe what you would like to learn (e.g Web Development with Django)"
     )
     requested_frequency = models.TextField(
@@ -74,18 +95,23 @@ class LessonRequest(models.Model):
     )
     requested_duration = models.IntegerField(help_text="Lesson duration in minutes")
     requested_time = models.TimeField(help_text="Preferred time for the lesson")
-    experience_level = models.TextField(help_text="Describe your level of experience with this topic.")
-    additional_notes = models.TextField(blank=True, help_text="Additional information or requests")
+    experience_level = models.TextField(
+        help_text="Describe your level of experience with this topic."
+    )
+    additional_notes = models.TextField(
+        blank=True,
+        help_text="Additional information or requests"
+    )
 
 class LessonBooking(models.Model):
     student = models.ForeignKey(
         User,
-        related_name="lesson_bookings_as_student",  # Unique related name for student
+        related_name="lesson_bookings_as_student",  # Unique related_name for student in LessonBooking
         on_delete=models.CASCADE
     )
     tutor = models.ForeignKey(
         User,
-        related_name="lesson_bookings_as_tutor",  # Unique related name for tutor
+        related_name="lesson_bookings_as_tutor",  # Unique related_name for tutor in LessonBooking
         on_delete=models.CASCADE
     )
     topic = models.TextField(max_length=100)
@@ -93,22 +119,28 @@ class LessonBooking(models.Model):
     time = models.TimeField()
     lesson_date = models.DateField()
 
-
-
-
-
-#AMINA'S:
-
-
 class Timetable(models.Model):
-    
-    tutor = models.ForeignKey(User, related_name="tutor_timetables", on_delete=models.CASCADE)
-    student = models.ForeignKey(User, related_name="student_timetables", on_delete=models.CASCADE)
+    tutor = models.ForeignKey(
+        User,
+        related_name="tutor_timetables",  # Unique related_name for tutor in Timetable
+        on_delete=models.CASCADE
+    )
+    student = models.ForeignKey(
+        User,
+        related_name="student_timetables",  # Unique related_name for student in Timetable
+        on_delete=models.CASCADE
+    )
     date = models.DateField(help_text="The date of the lesson")
     start_time = models.TimeField(help_text="Lesson start time")
     end_time = models.TimeField(help_text="Lesson end time")
-    is_attended = models.BooleanField(default=False, help_text="Has the student attended this lesson?")
-    notes = models.TextField(blank=True, null=True, help_text="Additional notes about the lesson")
+    is_attended = models.BooleanField(
+        default=False,
+        help_text="Has the student attended this lesson?"
+    )
+    notes = models.TextField(
+        blank=True, null=True,
+        help_text="Additional notes about the lesson"
+    )
 
     def __str__(self):
         return f"Lesson: {self.tutor.full_name()} teaching {self.student.full_name()} on {self.date}"

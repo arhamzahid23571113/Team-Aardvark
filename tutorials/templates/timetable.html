@@ -2,9 +2,9 @@
 
 {% block content %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Tutor Timetable</title>
+    <title>Your Timetable</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
         body {
@@ -13,7 +13,7 @@
 
         .calendar {
             display: grid;
-            grid-template-columns: repeat(7, 1fr); /* 7 columns for 7 days */
+            grid-template-columns: repeat(7, 1fr); /* 7 columns for 7 days of the week */
             gap: 10px;
         }
 
@@ -21,7 +21,7 @@
             border: 1px solid #ddd;
             border-radius: 5px;
             padding: 10px;
-            min-height: 120px;
+            min-height: 150px;
             background-color: #f8f9fa;
             position: relative;
             display: flex;
@@ -39,19 +39,19 @@
 
         .day-number {
             position: absolute;
-            top: 10px;
+            top: 5px;
             right: 10px;
+            font-size: 0.8rem;
             font-weight: bold;
-            color: #555;
         }
 
-        .lesson {
+        .event {
             background-color: #007bff;
             color: white;
             padding: 5px;
             margin-top: 10px;
-            border-radius: 3px;
-            font-size: 0.9em;
+            border-radius: 5px;
+            font-size: 0.9rem;
         }
 
         .empty-day {
@@ -62,8 +62,8 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="mb-4">Welcome, {{ request.user.first_name }}!</h1>
-        <h2 class="mb-4">Your Timetable for {{ current_month|date:"F Y" }}</h2>
+        <h1>Welcome, {{ request.user.first_name }}!</h1>
+        <h2>Your Timetable for {{ current_month|date:"F Y" }}</h2>
 
         <div class="calendar">
             <!-- Render Day Headers -->
@@ -80,28 +80,20 @@
             <div class="day empty-day"></div>
             {% endfor %}
 
-            <!-- Render Calendar Days with Lessons -->
+            <!-- Render Calendar Days with Events -->
             {% for day in calendar_days %}
             <div class="day">
                 <div class="day-number">{{ day.date.day }}</div>
                 {% if day.lessons %}
                     {% for lesson in day.lessons %}
-                    <div class="lesson">
-                        Student: {{ lesson.student.first_name }}<br>
-                        Topic: {{ lesson.notes }}<br>
-                        Time: {{ lesson.start_time }} - {{ lesson.end_time }}
-                        <form method="POST" action="{% url 'mark_attendance' lesson.id %}" class="mt-2">
-                            {% csrf_token %}
-                            <label>
-                                <input type="checkbox" name="is_attended" {% if lesson.is_attended %}checked{% endif %}>
-                                Mark Attendance
-                            </label>
-                            <button type="submit" class="btn btn-sm btn-light mt-1">Save</button>
-                        </form>
+                    <div class="event">
+                        <strong>{{ lesson.student.first_name }}</strong><br>
+                        {{ lesson.notes|default:"Lesson" }}<br>
+                        {{ lesson.start_time }} - {{ lesson.end_time }}
                     </div>
                     {% endfor %}
                 {% else %}
-                <div class="lesson">No Lessons</div>
+                <div>No lessons scheduled</div>
                 {% endif %}
             </div>
             {% endfor %}
