@@ -156,3 +156,16 @@ class LessonBooking(models.Model):
 
     def __str__(self):
         return f"{self.student.username} - {self.topic} with {self.tutor.username}"
+    
+class ContactMessage(models.Model):
+    ROLE_CHOICES = [
+        ('student', 'Student'),
+        ('tutor', 'Tutor'),
+    ]
+    
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES)
+    message = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.role.capitalize()} - {self.timestamp}"
