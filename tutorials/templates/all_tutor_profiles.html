@@ -17,6 +17,7 @@
           <p><strong>Email:</strong> {{ tutor.email }}</p>
           <p><strong>Expertise:</strong> {{ tutor.expertise|default:"Not provided" }}</p>
           <p><strong>Registered On:</strong> {{ tutor.date_joined|date:"M d, Y" }}</p>
+          <p><strong>Username:</strong>{{tutor.username}}</p>
         </div>
         <div class="card-footer text-center">
           <a href="{% url 'view_tutor_profile' tutor.id %}" class="btn btn-outline-light btn-sm">View Profile</a>

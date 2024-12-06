@@ -254,7 +254,7 @@ def see_my_tutor(request):
     assigned_tutors = LessonRequest.objects.filter(
         student=request.user,  
         tutor__isnull=False,   
-        status='Allocated'     # Optional: Only show allocated tutors
+        status='Allocated'     #  Only show allocated tutors that the admin has manually allocated to them
     ).values(
         'tutor__id',
         'tutor__first_name',
