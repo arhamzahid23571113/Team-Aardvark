@@ -158,7 +158,7 @@ class ContactMessage(models.Model):
         ('student', 'Student'),
         ('tutor', 'Tutor'),
     ]
-    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='messages',default=1)
     role = models.CharField(max_length=10, choices = ROLES)
     message = models.TextField(
         blank = True,

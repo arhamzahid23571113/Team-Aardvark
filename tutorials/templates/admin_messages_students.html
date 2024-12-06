@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container mt-5">
  <h1 class="text-center text-dashboard-purple mt-4">Messages from Students</h1>
-    {% if message %}
+    {% if messages %}
     <div class="row"></div>
     {% for message in messages%}
        <div class="col-md-4 mb-4">
@@ -14,7 +14,8 @@
                     Student Message
                 </div>
                 <div class="card-body">
-                    <h5 class="card-title">Role: {{ message.role }}</h5>
+                    <h5 class="card-title">Name: {{message.user.first_name}} {{message.user.last_name}}</h5>
+                    <p class="card-text">Role: {{ message.role }}</p>
                     <p class="card-text">{{ message.message }}</p>
                 </div>
                 <div class="card-footer text-muted">
