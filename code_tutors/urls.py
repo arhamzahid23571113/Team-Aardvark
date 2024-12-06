@@ -50,14 +50,14 @@ urlpatterns = [
     path('request_success/', views.lesson_request_success, name='lesson_request_success'),
     path('student_requests/', views.student_requests, name='student_requests'),
     path('assign_tutor/<int:lesson_request_id>/', views.assign_tutor, name='assign_tutor'),
-    path('unassign-tutor/<int:lesson_request_id>/', views.unassign_tutor, name='unassign_tutor'),
-    path('cancel-request/<int:lesson_request_id>/', views.cancel_request, name='cancel_request'),
-    path('tutor-profiles/', views.all_tutor_profiles, name='all_tutor_profiles'),
-    path('tutor-profile/<int:tutor_id>/', views.view_tutor_profile, name='view_tutor_profile'),
-    path('tutor-profile/<int:tutor_id>/edit/', views.edit_tutor_profile, name='edit_tutor_profile'),
-    path('all-students/', views.all_student_profiles, name='all_students'),
+    path('unassign_tutor/<int:lesson_request_id>/', views.unassign_tutor, name='unassign_tutor'),
+    path('cancel_request/<int:lesson_request_id>/', views.cancel_request, name='cancel_request'),
+    path('all_tutor_profiles/', views.all_tutor_profiles, name='all_tutor_profiles'),
+    path('view_tutor_profile/<int:tutor_id>/', views.view_tutor_profile, name='view_tutor_profile'),
+    path('edit_tutor_profile/<int:tutor_id>/edit/', views.edit_tutor_profile, name='edit_tutor_profile'),
+    path('all_students/', views.all_student_profiles, name='all_students'),
     path('tutor/<int:tutor_id>/info/', views.tutor_more_info, name='tutor_more_info'),
-    path('admin-messages/', views.admin_messages, name='admin_messages'),
+    path('admin_messages/', views.admin_messages, name='admin_messages'),
 
 
 
