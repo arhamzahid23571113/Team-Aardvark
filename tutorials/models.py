@@ -160,7 +160,11 @@ class ContactMessage(models.Model):
     ]
     
     role = models.CharField(max_length=10, choices = ROLES)
-    message = models.TextField()
+    message = models.TextField(
+        blank = True,
+        default="",
+        help_text="Write your message to the admin here"
+    )
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

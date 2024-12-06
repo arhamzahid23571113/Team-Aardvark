@@ -58,6 +58,7 @@ urlpatterns = [
     path('all_students/', views.all_student_profiles, name='all_students'),
     path('tutor/<int:tutor_id>/info/', views.tutor_more_info, name='tutor_more_info'),
     path('admin_messages/', views.admin_messages, name='admin_messages'),
+    path('contact_admin_form_page/',views.send_message_to_admin,name='send_message_to_admin'),
 
 
 

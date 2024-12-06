@@ -13,7 +13,7 @@ from tutorials.helpers import login_prohibited
 from .models import User,LessonBooking
 from .models import LessonRequest
 from django.shortcuts import get_object_or_404, redirect
-from .forms import LessonBookingForm
+from .forms import LessonBookingForm,ContactMessages
 from .models import ContactMessage
 
 
@@ -404,3 +404,32 @@ def admin_messages(request):
     else:
         messages = []
     return render(request, 'admin_messages.html', {'messages': messages, 'role_filter': role_filter})
+
+@login_required
+def send_message_to_admin(request):
+    if request.user.is_authenticated:
+        if request.user.role == 'tutor':
+            base_template = 'dashboard_base_tutor.html'
+        elif request.user.role == 'student':
+            base_template = 'dashboard_base_student.html'
+        elif request.user.role == 'admin':
+            base_template = 'dashboard_base_admin.html'
+        else:
+            base_template = 'dashboard.html'  
+    else:
+        base_template = 'dashboard.html'  
+
+    if request.method == 'POST':
+        form = ContactMessages(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your message has been submitted successfully!')
+            return redirect('lesson_request_success')
+        else:
+            messages.error(request, 'There was an error with your submission.')
+    else:
+        form = ContactMessages()
+
+    return render(request, 'contact_admin.html', {'form': form,'base_template': base_template})
+
+    
