@@ -4,6 +4,8 @@ from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
 from .models import User, LessonRequest,ContactMessage
 
+from .models import User, LessonRequest,ContactMessage
+
 
 
 class LogInForm(forms.Form):
