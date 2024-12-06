@@ -64,7 +64,7 @@ class Invoice(models.Model):
 
 
 class LessonRequest(models.Model):
-    """Model for students to request lessons"""
+    """Model for students to make request lessons"""
     student = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="lesson_requests",
@@ -84,7 +84,6 @@ class LessonRequest(models.Model):
         choices=[
             ('Unallocated', 'Unallocated'),
             ('Allocated', 'Allocated'),
-            ('Pending', 'Pending'),
             ('Cancelled', 'Cancelled')
         ],
         default='Unallocated',
@@ -96,34 +95,34 @@ class LessonRequest(models.Model):
     )
     requested_topic = models.TextField(
         blank=True,
-        default="Python Programming",  # Default topic
+        default="Python Programming",  
         help_text="Describe what you would like to learn (e.g Web Development with Django)."
     )
     requested_frequency = models.CharField(
         max_length=20,
-        default="Weekly",  # Default frequency
+        default="Weekly",  
         help_text="How often would you like your lessons (e.g Weekly, Fortnightly)?"
     )
     requested_duration = models.PositiveIntegerField(
-        default=60,  # Default duration in minutes
+        default=60,  
         help_text="Lesson duration in minutes."
     )
     requested_time = models.TimeField(
-        default="09:00:00",  # Default time (9:00 AM)
+        default="09:00:00",  
         help_text="Preferred time for the lesson."
     )
     preferred_day = models.CharField(
         max_length=10,
-        default="Monday",  # Default preferred day
+        default="Monday",  
         help_text="Preferred day for the lesson."
     )
     experience_level = models.TextField(
-        default="No Experience",  # Default experience level
+        default="No Experience",  
         help_text="Describe your level of experience with this topic."
     )
     additional_notes = models.TextField(
         blank=True,
-        default="",  # Empty string as default for additional notes
+        default="",  
         help_text="Additional information or requests."
     )
 
@@ -138,32 +137,29 @@ class LessonRequest(models.Model):
 class LessonBooking(models.Model):
     """Models used for showing lesson bookings between students and tutors"""
 
-    # Relationships
     student = models.ForeignKey(User, related_name="student_lessons", on_delete=models.CASCADE)
     tutor = models.ForeignKey(User, related_name="tutor_lessons", on_delete=models.CASCADE,null=True,blank=True)
 
-    # Fields matching the template
-    topic = models.CharField(max_length=100)  # Use CharField for the dropdown of topics
-    duration = models.IntegerField()  # Duration as int (e.g., "30 Minutes")
-    time = models.TimeField()  # Time input for preferred time
-    lesson_date = models.DateField()  # Placeholder for the actual date
+    topic = models.CharField(max_length=100)  
+    duration = models.IntegerField() 
+    time = models.TimeField()  
+    lesson_date = models.DateField()  
 
-    # New fields from the template
-    frequency = models.CharField(max_length=20)  # Weekly/Fortnightly
-    preferred_day = models.CharField(max_length=10)  # Dropdown of weekdays
-    experience_level = models.CharField(max_length=20)  # No Experience/Beginner/Intermediate/Advanced
-    additional_notes = models.TextField(blank=True, null=True)  # Additional Notes
+    frequency = models.CharField(max_length=20)  
+    preferred_day = models.CharField(max_length=10)  
+    experience_level = models.CharField(max_length=20)  
+    additional_notes = models.TextField(blank=True, null=True)  
 
     def __str__(self):
         return f"{self.student.username} - {self.topic} with {self.tutor.username}"
     
 class ContactMessage(models.Model):
-    ROLE_CHOICES = [
+    ROLES = [
         ('student', 'Student'),
         ('tutor', 'Tutor'),
     ]
     
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES)
+    role = models.CharField(max_length=10, choices = ROLES)
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
