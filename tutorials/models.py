@@ -222,32 +222,29 @@ class Timetable(models.Model):
 class LessonBooking(models.Model):
     """Models used for showing lesson bookings between students and tutors"""
 
-    # Relationships
     student = models.ForeignKey(User, related_name="student_lessons", on_delete=models.CASCADE)
     tutor = models.ForeignKey(User, related_name="tutor_lessons", on_delete=models.CASCADE,null=True,blank=True)
 
-    # Fields matching the template
-    topic = models.CharField(max_length=100)  # Use CharField for the dropdown of topics
-    duration = models.IntegerField()  # Duration as int (e.g., "30 Minutes")
-    time = models.TimeField()  # Time input for preferred time
-    lesson_date = models.DateField()  # Placeholder for the actual date
+    topic = models.CharField(max_length=100)  
+    duration = models.IntegerField() 
+    time = models.TimeField()  
+    lesson_date = models.DateField()  
 
-    # New fields from the template
-    frequency = models.CharField(max_length=20)  # Weekly/Fortnightly
-    preferred_day = models.CharField(max_length=10)  # Dropdown of weekdays
-    experience_level = models.CharField(max_length=20)  # No Experience/Beginner/Intermediate/Advanced
-    additional_notes = models.TextField(blank=True, null=True)  # Additional Notes
+    frequency = models.CharField(max_length=20)  
+    preferred_day = models.CharField(max_length=10)  
+    experience_level = models.CharField(max_length=20)  
+    additional_notes = models.TextField(blank=True, null=True)  
 
     def __str__(self):
         return f"{self.student.username} - {self.topic} with {self.tutor.username}"
     
 class ContactMessage(models.Model):
-    ROLE_CHOICES = [
+    ROLES = [
         ('student', 'Student'),
         ('tutor', 'Tutor'),
     ]
     
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES)
+    role = models.CharField(max_length=10, choices = ROLES)
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
