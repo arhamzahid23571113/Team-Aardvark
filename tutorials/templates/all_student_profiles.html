@@ -17,6 +17,7 @@
           <p><strong>Email:</strong> {{ student.email }}</p>
           <p><strong>Expertise:</strong> {{ student.expertise|default:"Not provided" }}</p>
           <p><strong>Registered On:</strong> {{ student.date_joined|date:"M d, Y" }}</p>
+          <p><strong>Username:</strong>{{student.username}}</p>
         </div>
         <div class="card-footer text-center">
           <a href="#" class="btn btn-outline-light btn-sm">View Profile</a>
