@@ -4,6 +4,7 @@ from django.db import models
 from libgravatar import Gravatar
 from django.conf import settings
 
+from django.conf import settings
 
 class User(AbstractUser):
     """Model used for user authentication, and team member-related information."""
@@ -152,6 +153,31 @@ class LessonBooking(models.Model):
     duration = models.IntegerField() 
     time = models.TimeField()  
     lesson_date = models.DateField()  
+
+#amina
+
+class Lesson(models.Model):
+    title = models.CharField(max_length=255, help_text="The title of the lesson")
+    content = models.TextField(help_text="Content or description of the lesson")
+    date = models.DateField(help_text="Date of the lesson")
+    tutor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="lessons_as_tutor"
+    )
+    student = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="lessons_as_student"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+
+
 
 
 

@@ -62,8 +62,12 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h1>Welcome, {{ request.user.first_name }}!</h1>
-        <h2>Your Timetable for {{ current_month|date:"F Y" }}</h2>
+        <!-- Navigation for Months -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <a href="?month={{ prev_month }}&year={{ prev_year }}" class="btn btn-primary">&larr; Previous</a>
+            <h2>Your Timetable for {{ current_month|date:"F Y" }}</h2>
+            <a href="?month={{ next_month }}&year={{ next_year }}" class="btn btn-primary">Next &rarr;</a>
+        </div>
 
         <div class="calendar">
             <!-- Render Day Headers -->
@@ -80,18 +84,26 @@
             <div class="day empty-day"></div>
             {% endfor %}
 
-            <!-- Render Calendar Days with Events -->
+            <!-- Render Calendar Days with Lessons -->
             {% for day in calendar_days %}
-            <div class="day">
+            <div class="day {% if day.lessons %}scheduled-day{% endif %}"></div>
                 <div class="day-number">{{ day.date.day }}</div>
                 {% if day.lessons %}
                     {% for lesson in day.lessons %}
                     <div class="event">
-                        <strong>{{ lesson.student.first_name }}</strong><br>
-                        {{ lesson.notes|default:"Lesson" }}<br>
+                        {% if is_tutor %}
+                        <strong>Student: {{ lesson.student.first_name }}</strong>
+                        {% else %}
+                        <strong>Tutor: {{ lesson.tutor.first_name }}</strong>
+                        {% endif %}
+                        <br>
+                        Notes: {{ lesson.notes|default:"Lesson" }}<br>
                         {{ lesson.start_time }} - {{ lesson.end_time }}
                     </div>
                     {% endfor %}
+                    <!-- Link to a view to take attendance -->
+                    <a href="{% url 'take_attendance' day.date|date:'Y-m-d' %}" class="btn btn-light mt-2">Take Attendance</a>
+
                 {% else %}
                 <div>No lessons scheduled</div>
                 {% endif %}

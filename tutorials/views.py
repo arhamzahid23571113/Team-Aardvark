@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ImproperlyConfigured
 from django.shortcuts import redirect, render
 from django.urls import reverse
-from calendar import monthrange
+from calendar import monthrange, SUNDAY
 from datetime import date
 from django.shortcuts import render
 from django.views import View
@@ -25,6 +25,7 @@ from django.utils.timezone import now
 
 
 
+from .models import Lesson
 #AMINA
 from django.shortcuts import render
 from .models import Timetable
@@ -547,29 +548,77 @@ def student_timetable(request):
     timetable = Timetable.objects.filter(student=request.user).order_by('date', 'start_time')
     return render(request, 'student_timetable.html', {'timetable': timetable})
 
+from django.shortcuts import redirect, render
+from datetime import date
+from calendar import monthrange, SUNDAY
+from .models import Lesson
+
 def timetable_view(request):
     today = date.today()
-    current_month = today.month
-    current_year = today.year
+    selected_month = int(request.GET.get('month', today.month))  # Default to current month
+    selected_year = int(request.GET.get('year', today.year))  # Default to current year
+
+    # Redirect to login if user is not authenticated
+    user = request.user
+    if not user.is_authenticated:
+        return redirect('log_in')  # Replace 'log_in' with the name of your login view or URL
 
     # Get the first weekday and total number of days in the current month
-    first_weekday, total_days = monthrange(current_year, current_month)
+    first_weekday, total_days = monthrange(selected_year, selected_month)
+    adjusted_first_weekday = (first_weekday - SUNDAY) % 7
 
     # Generate empty days for alignment
-    empty_days = range(first_weekday)
+    empty_days = range(adjusted_first_weekday)
 
-    # Create calendar days with dummy data
+    # Check user role and query lessons accordingly
+    lessons = []
+    if hasattr(user, 'role'):  # Ensure the user has a `role` attribute
+        if user.role == 'tutor':
+            # Fetch lessons where the logged-in user is the tutor
+            lessons = Lesson.objects.filter(
+                tutor=user,
+                date__year=selected_year,
+                date__month=selected_month,
+            )
+        elif user.role == 'student':
+            # Fetch lessons where the logged-in user is the student
+            lessons = Lesson.objects.filter(
+                student=user,
+                date__year=selected_year,
+                date__month=selected_month,
+            )
+
+    # Map lessons to calendar days
     calendar_days = []
     for day in range(1, total_days + 1):
-        day_date = date(current_year, current_month, day)
-        lessons = [
-            {'student': {'first_name': 'John'}, 'notes': 'Math Lesson', 'start_time': '10:00 AM', 'end_time': '11:00 AM'}
-        ] if day % 2 == 0 else []
-        calendar_days.append({'date': day_date, 'lessons': lessons})
+        day_date = date(selected_year, selected_month, day)
+        daily_lessons = lessons.filter(date=day_date)
+        calendar_days.append({'date': day_date, 'lessons': daily_lessons})
 
+    # Previous and next month logic
+    if selected_month == 1:
+        prev_month = 12
+        prev_year = selected_year - 1
+    else:
+        prev_month = selected_month - 1
+        prev_year = selected_year
+
+    if selected_month == 12:
+        next_month = 1
+        next_year = selected_year + 1
+    else:
+        next_month = selected_month + 1
+        next_year = selected_year
+
+    # Pass context to the template
     context = {
-        'current_month': today,
+        'current_month': date(selected_year, selected_month, 1),
         'empty_days': empty_days,
         'calendar_days': calendar_days,
+        'prev_month': prev_month,
+        'prev_year': prev_year,
+        'next_month': next_month,
+        'next_year': next_year,
+        'is_tutor': hasattr(user, 'role') and user.role == 'tutor',  # Check if the user is a tutor
     }
     return render(request, 'timetable.html', context)
