@@ -159,3 +159,9 @@ class LessonBookingForm(forms.ModelForm):
 class ContactMessages(forms.ModelForm):
     class Meta:
         model = ContactMessage
+        fields = ['role','message']
+        exclude = ['timestamp']
+        Widgets = {
+            'message': forms.Textarea(attrs={'rows':4})
+        }
+           
