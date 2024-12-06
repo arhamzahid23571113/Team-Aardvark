@@ -22,7 +22,7 @@ from django.contrib.auth import views as auth_views
 from tutorials import views
 from django.urls import path, include 
 from tutorials.views import timetable_view
-
+from django.contrib.auth.views import LoginView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -54,8 +54,8 @@ urlpatterns = [
     path('tutor/timetable/', views.tutor_timetable, name='tutor_timetable'),
     path('student/timetable/', views.student_timetable, name='student_timetable'), 
     path('timetable/', timetable_view, name='timetable'),
-
-   
+    path('login/', LoginView.as_view(), name='log_in'),
+    path('login/', LoginView.as_view(template_name='log_in.html'), name='log_in'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
