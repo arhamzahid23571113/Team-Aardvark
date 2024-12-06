@@ -7,12 +7,26 @@
 <div class="container mt-4">
   <h1 class="text-center text-dashboard-purple mt-4">Contact Admin</h1>
   <p class="text-center text-dashboard-purple mb-4">Here you can communicate with admin if there are any issues</p>
+
+   <!-- Display form errors if any -->
+   {% if form.errors %}
+   <div class="alert alert-danger">
+     <p><strong>There were errors with your submission:</strong></p>
+     <ul>
+       {% for field, errors in form.errors.items %}
+         <li><strong>{{ field }}</strong>: {{ errors|join:", " }}</li>
+       {% endfor %}
+     </ul>
+   </div>
+   {% endif %}
   
+  <!-- Contact Admin form -->
   <form method="post" action="" class="p-4 bg-dark-purple rounded">
-   
+    {% csrf_token %}
+
     <!-- Your Role Dropdown -->
     <div class="mb-3">
-      <label for="language" class="form-label text-white font-weight-bold">Select Your Role</label>
+      <label for="role" class="form-label text-white font-weight-bold">Select Your Role</label>
       <select class="form-select" id="role" name="role">
         <option selected disabled>Select Your Role</option>
         <option value="student">Student</option>

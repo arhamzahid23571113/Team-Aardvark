@@ -162,6 +162,10 @@ class ContactMessages(forms.ModelForm):
         fields = ['role','message']
         exclude = ['timestamp']
         Widgets = {
-            'message': forms.Textarea(attrs={'rows':4})
+            'message': forms.Textarea(attrs={'rows':4}),
+            'role': forms.Select(choices=[
+                ("student","Student"),
+                ("tutor","Tutor"),
+            ])
         }
            
