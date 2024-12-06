@@ -1,16 +1,31 @@
 {% extends "dashboard_base_admin.html" %}
 {% block title %} Admin messages from students {% endblock %}
+<!-- For Admins to view all student messages -->
+
 {% block content %}
-
-
-
-
-
-
-
-
-
-
-
-
+<div class="container mt-5">
+ <h1 class="text-center text-dashboard-purple mt-4">Messages from Students</h1>
+    {% if message %}
+    <div class="row"></div>
+    {% for message in messages%}
+       <div class="col-md-4 mb-4">
+          <div class="card bg-light shadow">
+                <div class="card-header bg-dashboard-purple text-white">
+                    Student Message
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Role: {{ message.role }}</h5>
+                    <p class="card-text">{{ message.message }}</p>
+                </div>
+                <div class="card-footer text-muted">
+                    Sent on: {{ message.timestamp|date:"F j, Y, g:i a" }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-center text-muted">No messages from students yet.</p>
+   {% endif %}
+</div>
 {% endblock %}
