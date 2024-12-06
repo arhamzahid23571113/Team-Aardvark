@@ -87,7 +87,6 @@ urlpatterns = [
     path('student/timetable/', views.student_timetable, name='student_timetable'), 
     path('timetable/', timetable_view, name='timetable'),
     path('login/', LoginView.as_view(), name='log_in'),
-    path('login/', LoginView.as_view(template_name='log_in.html'), name='log_in'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
