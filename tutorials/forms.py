@@ -2,7 +2,8 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
-from .models import User, LessonRequest
+from .models import User, LessonRequest,ContactMessage
+
 
 
 class LogInForm(forms.Form):
@@ -154,3 +155,7 @@ class LessonBookingForm(forms.ModelForm):
                 ("advanced", "Advanced"),
             ]),
         }
+
+class ContactMessages(forms.ModelForm):
+    class Meta:
+        model = ContactMessage
