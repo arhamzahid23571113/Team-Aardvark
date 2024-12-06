@@ -432,4 +432,13 @@ def send_message_to_admin(request):
 
     return render(request, 'contact_admin.html', {'form': form,'base_template': base_template})
 
+@login_required
+def view_student_messages(request):
+    if request.user.role == 'admin':
+        student_messages = ContactMessage.objects.filter(role='student').order_by('timestamp')
+        return render(request,'admin_messages_students.html',{'messages':student_messages})
+    else:
+        return redirect('admin_dashboard')
+
+
     
