@@ -535,28 +535,39 @@ def tutor_timetable(request):
     return render(request, 'tutor_timetable.html', {'timetable': timetable})
 
 @login_required
-def timetable_view(request, year=None, month=None):
+@login_required
+@login_required
+def timetable_view(request):
     """View for students and tutors to see their timetable in a calendar layout."""
-    today = date.today()
+    year = int(request.GET.get('year', datetime.now().year))
+    month = int(request.GET.get('month', datetime.now().month))
 
-    # Default to current year and month if not provided
-    year = int(year) if year else today.year
-    month = int(month) if month else today.month
+    # Calculate previous and next months
+    if month == 1:
+        prev_month = 12
+        prev_year = year - 1
+    else:
+        prev_month = month - 1
+        prev_year = year
 
-    # Calculate previous and next month/year
-    prev_month = month - 1 if month > 1 else 12
-    next_month = month + 1 if month < 12 else 1
-    prev_year = year if month > 1 else year - 1
-    next_year = year if month < 12 else year + 1
+    if month == 12:
+        next_month = 1
+        next_year = year + 1
+    else:
+        next_month = month + 1
+        next_year = year
 
-    # Calculate empty days for calendar alignment
+    # Determine the first day of the month and its weekday
     first_day_of_month = date(year, month, 1)
     _, days_in_month = calendar.monthrange(year, month)
-    empty_days = (first_day_of_month.weekday() + 1) % 7
+    empty_days = (first_day_of_month.weekday() + 1) % 7  # Adjust for Sunday start
 
-    # Build the calendar structure
+    # Generate a range of empty days for template
+    empty_days_range = range(empty_days)
+
+    # Build a calendar structure
     month_days = []
-    for week in calendar.Calendar(firstweekday=calendar.SUNDAY).monthdatescalendar(year, month):
+    for week in calendar.Calendar(firstweekday=SUNDAY).monthdatescalendar(year, month):
         week_days = []
         for day in week:
             lessons = []
@@ -564,11 +575,13 @@ def timetable_view(request, year=None, month=None):
                 lessons = Timetable.objects.filter(student=request.user, date=day).order_by('start_time')
             elif request.user.role == 'tutor':
                 lessons = Timetable.objects.filter(tutor=request.user, date=day).order_by('start_time')
+
             week_days.append({'date': day, 'lessons': lessons})
         month_days.append(week_days)
 
-    # Pass all data to the template
     return render(request, 'student_timetable.html', {
+        'month_days': month_days,
+        'empty_days_range': empty_days_range,
         'year': year,
         'month': month,
         'month_name': calendar.month_name[month],
@@ -576,6 +589,4 @@ def timetable_view(request, year=None, month=None):
         'prev_month': prev_month,
         'next_year': next_year,
         'next_month': next_month,
-        'empty_days': empty_days,
-        'month_days': month_days,
     })

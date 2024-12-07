@@ -84,7 +84,8 @@ urlpatterns = [
     # Timetable URLs
     path('tutor/timetable/', views.tutor_timetable, name='tutor_timetable'),
     path('timetable/', views.timetable_view, name='student_timetable'),  # Default to current month
-    path('timetable/<int:year>/<int:month>/', views.timetable_view, name='student_timetable_with_date'),  # Specific year/month
+    path('timetable/<int:year>/<int:month>/', views.timetable_view, name='student_timetable_with_date'),
+
 
 
     # Login
