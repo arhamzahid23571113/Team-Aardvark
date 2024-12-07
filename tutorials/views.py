@@ -443,5 +443,9 @@ def view_student_messages(request):
     else:
         return redirect('admin_dashboard')
 
-
+@login_required
+def view_tutor_messages(request):
+    if request.user.role == 'admin':
+        tutor_messages = ContactMessage.objects.filter(role='tutor').order_by('timestamp')
+        return render(request,'admin_messages_tutors.html',{'messages':tutor_messages})
     
