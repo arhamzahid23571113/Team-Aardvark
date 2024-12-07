@@ -1,0 +1,18 @@
+{% extends 'dashboard_base_admin.html' %}
+{% block title %}Student Profile{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="card">
+    <div class="card-header text-center text-white" style="background-color: #6a0dad;">
+      {{ student.full_name }}
+    </div>
+    <div class="card-body">
+      <p><strong>Email:</strong> {{ student.email }}</p>
+      <p><strong>Registered On:</strong> {{ student.date_joined|date:"M d, Y" }}</p>
+      <p><strong>Username:</strong>{{student.username}}</p>
+      <p><strong>Gravatar Url:</strong> {{student.gravatar}}</p>
+    </div>
+  </div>
+</div>
+{% endblock %}
