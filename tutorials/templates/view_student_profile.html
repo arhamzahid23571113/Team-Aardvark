@@ -13,6 +13,9 @@
       <p><strong>Username:</strong>{{student.username}}</p>
       <p><strong>Gravatar Url:</strong> {{student.gravatar}}</p>
     </div>
+    <div class="card-footer text-center">
+        <a href="{% url 'all_students' %}" class="btn btn-outline-light btn-sm">Return to all profiles</a>
+    </div>
   </div>
 </div>
 {% endblock %}

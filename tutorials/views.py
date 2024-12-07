@@ -382,7 +382,7 @@ def edit_tutor_profile(request, tutor_id):
     return render(request, 'edit_tutor_profile.html', {'tutor': tutor})
 
 @login_required
-def view_student_profiles(request, student_id):
+def view_student_profile(request, student_id):
     student = get_object_or_404(User, id=student_id, role='student')
     return render(request, 'view_student_profile.html',{'student': student})
     
