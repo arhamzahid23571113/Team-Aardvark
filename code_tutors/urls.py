@@ -60,6 +60,7 @@ urlpatterns = [
     path('admin_messages/', views.admin_messages, name='admin_messages'),
     path('contact_admin_form_page/',views.send_message_to_admin,name='send_message_to_admin'),
     path('view_student_messages/',views.view_student_messages,name='view_student_messages'),
+    path('view_tutor_messages/',views.view_tutor_messages,name='view_tutor_messages'),
 
 
 
