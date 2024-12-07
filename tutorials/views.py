@@ -7,8 +7,10 @@ from django.core.exceptions import ImproperlyConfigured
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from calendar import monthrange, SUNDAY
-from datetime import date
+from datetime import date, datetime
 from django.shortcuts import render
+from datetime import datetime, date
+import calendar
 from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from tutorials.forms import LogInForm, PasswordForm, UserForm, SignUpForm
@@ -44,44 +46,36 @@ def dashboard(request):
         messages.error(request, "Invalid user role!")
         return redirect('home')
 
-
 @login_prohibited
 def home(request):
     """Display the application's start/home screen."""
     return render(request, 'home.html')
-
 
 @login_required
 def admin_dashboard(request):
     """Admin-specific dashboard."""
     return render(request, 'admin_dashboard.html')
 
-
 @login_required
 def tutor_dashboard(request):
     """Tutor-specific dashboard."""
     return render(request, 'tutor_dashboard.html')
-
 
 @login_required
 def student_dashboard(request):
     """Student-specific dashboard."""
     return render(request, 'student_dashboard.html')
 
-
 def learn_more(request):
     """Display the Learn More page."""
     return render(request, 'learn_more.html')
-
 
 def available_courses(request):
     """Display the Available Courses page."""
     return render(request, 'available_courses.html')
 
-
 class LoginProhibitedMixin:
     """Mixin that redirects when a user is logged in."""
-
     redirect_when_logged_in_url = None
 
     def dispatch(self, *args, **kwargs):
@@ -102,10 +96,8 @@ class LoginProhibitedMixin:
             )
         return self.redirect_when_logged_in_url
 
-
 class LogInView(LoginProhibitedMixin, View):
     """Display login screen and handle user login."""
-
     http_method_names = ['get', 'post']
     redirect_when_logged_in_url = settings.REDIRECT_URL_WHEN_LOGGED_IN
 
@@ -127,16 +119,13 @@ class LogInView(LoginProhibitedMixin, View):
         form = LogInForm()
         return render(self.request, 'log_in.html', {'form': form, 'next': self.next})
 
-
 def log_out(request):
     """Log out the current user."""
     logout(request)
     return redirect('home')
 
-
 class PasswordView(LoginRequiredMixin, FormView):
     """Display password change screen and handle password change requests."""
-
     template_name = 'password.html'
     form_class = PasswordForm
 
@@ -152,7 +141,7 @@ class PasswordView(LoginRequiredMixin, FormView):
 
     def get_success_url(self):
         messages.success(self.request, "Password updated!")
-        return reverse('log_in')
+        return reverse('dashboard')
 
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
@@ -191,7 +180,6 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 
 class SignUpView(LoginProhibitedMixin, FormView):
     """Display the sign up screen and handle sign ups."""
-
     form_class = SignUpForm
     template_name = "sign_up.html"
     redirect_when_logged_in_url = settings.REDIRECT_URL_WHEN_LOGGED_IN
@@ -538,87 +526,56 @@ def student_messages(request):
     studentMessages = ContactMessage.objects.filter(user=student).order_by('timestamp')
     return render(request,'student_messages.html',{'messages':studentMessages})    
 #AMINA    
+        return reverse('dashboard')
+
+@login_required
 def tutor_timetable(request):
     """View for tutors to see their timetable."""
     timetable = Timetable.objects.filter(tutor=request.user)
     return render(request, 'tutor_timetable.html', {'timetable': timetable})
 
-def student_timetable(request):
-    
-    timetable = Timetable.objects.filter(student=request.user).order_by('date', 'start_time')
-    return render(request, 'student_timetable.html', {'timetable': timetable})
-
-from django.shortcuts import redirect, render
-from datetime import date
-from calendar import monthrange, SUNDAY
-from .models import Lesson
-
-def timetable_view(request):
+@login_required
+def timetable_view(request, year=None, month=None):
+    """View for students and tutors to see their timetable in a calendar layout."""
     today = date.today()
-    selected_month = int(request.GET.get('month', today.month))  # Default to current month
-    selected_year = int(request.GET.get('year', today.year))  # Default to current year
 
-    # Redirect to login if user is not authenticated
-    user = request.user
-    if not user.is_authenticated:
-        return redirect('log_in')  # Replace 'log_in' with the name of your login view or URL
+    # Default to current year and month if not provided
+    year = int(year) if year else today.year
+    month = int(month) if month else today.month
 
-    # Get the first weekday and total number of days in the current month
-    first_weekday, total_days = monthrange(selected_year, selected_month)
-    adjusted_first_weekday = (first_weekday - SUNDAY) % 7
+    # Calculate previous and next month/year
+    prev_month = month - 1 if month > 1 else 12
+    next_month = month + 1 if month < 12 else 1
+    prev_year = year if month > 1 else year - 1
+    next_year = year if month < 12 else year + 1
 
-    # Generate empty days for alignment
-    empty_days = range(adjusted_first_weekday)
+    # Calculate empty days for calendar alignment
+    first_day_of_month = date(year, month, 1)
+    _, days_in_month = calendar.monthrange(year, month)
+    empty_days = (first_day_of_month.weekday() + 1) % 7
 
-    # Check user role and query lessons accordingly
-    lessons = []
-    if hasattr(user, 'role'):  # Ensure the user has a `role` attribute
-        if user.role == 'tutor':
-            # Fetch lessons where the logged-in user is the tutor
-            lessons = Lesson.objects.filter(
-                tutor=user,
-                date__year=selected_year,
-                date__month=selected_month,
-            )
-        elif user.role == 'student':
-            # Fetch lessons where the logged-in user is the student
-            lessons = Lesson.objects.filter(
-                student=user,
-                date__year=selected_year,
-                date__month=selected_month,
-            )
+    # Build the calendar structure
+    month_days = []
+    for week in calendar.Calendar(firstweekday=calendar.SUNDAY).monthdatescalendar(year, month):
+        week_days = []
+        for day in week:
+            lessons = []
+            if request.user.role == 'student':
+                lessons = Timetable.objects.filter(student=request.user, date=day).order_by('start_time')
+            elif request.user.role == 'tutor':
+                lessons = Timetable.objects.filter(tutor=request.user, date=day).order_by('start_time')
+            week_days.append({'date': day, 'lessons': lessons})
+        month_days.append(week_days)
 
-    # Map lessons to calendar days
-    calendar_days = []
-    for day in range(1, total_days + 1):
-        day_date = date(selected_year, selected_month, day)
-        daily_lessons = lessons.filter(date=day_date)
-        calendar_days.append({'date': day_date, 'lessons': daily_lessons})
-
-    # Previous and next month logic
-    if selected_month == 1:
-        prev_month = 12
-        prev_year = selected_year - 1
-    else:
-        prev_month = selected_month - 1
-        prev_year = selected_year
-
-    if selected_month == 12:
-        next_month = 1
-        next_year = selected_year + 1
-    else:
-        next_month = selected_month + 1
-        next_year = selected_year
-
-    # Pass context to the template
-    context = {
-        'current_month': date(selected_year, selected_month, 1),
-        'empty_days': empty_days,
-        'calendar_days': calendar_days,
-        'prev_month': prev_month,
+    # Pass all data to the template
+    return render(request, 'student_timetable.html', {
+        'year': year,
+        'month': month,
+        'month_name': calendar.month_name[month],
         'prev_year': prev_year,
-        'next_month': next_month,
+        'prev_month': prev_month,
         'next_year': next_year,
-        'is_tutor': hasattr(user, 'role') and user.role == 'tutor',  # Check if the user is a tutor
-    }
-    return render(request, 'timetable.html', context)
+        'next_month': next_month,
+        'empty_days': empty_days,
+        'month_days': month_days,
+    })
