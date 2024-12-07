@@ -405,6 +405,7 @@ def admin_messages(request):
         messages = []
     return render(request, 'admin_messages.html', {'messages': messages, 'role_filter': role_filter})
 
+
 @login_required
 def send_message_to_admin(request):
     if request.user.is_authenticated:
@@ -415,14 +416,16 @@ def send_message_to_admin(request):
         elif request.user.role == 'admin':
             base_template = 'dashboard_base_admin.html'
         else:
-            base_template = 'dashboard.html'  
+            base_template = 'dashboard.html'
     else:
-        base_template = 'dashboard.html'  
+        base_template = 'dashboard.html'
 
     if request.method == 'POST':
         form = ContactMessages(request.POST)
         if form.is_valid():
-            form.save()
+            contact_message = form.save(commit=False)
+            contact_message.user = request.user  
+            contact_message.save()
             messages.success(request, 'Your message has been submitted successfully!')
             return redirect('lesson_request_success')
         else:
@@ -430,7 +433,7 @@ def send_message_to_admin(request):
     else:
         form = ContactMessages()
 
-    return render(request, 'contact_admin.html', {'form': form,'base_template': base_template})
+    return render(request, 'contact_admin.html', {'form': form, 'base_template': base_template})
 
 @login_required
 def view_student_messages(request):
