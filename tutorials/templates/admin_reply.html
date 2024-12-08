@@ -1,1 +1,24 @@
 {% extends "dashboard_base_admin.html" %}
+{% blocktitle %} Respond Back to message {% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center text-dashboard-purple mt-4">Reply to {{ message.user.first_name }}'s Message</h1>
+    <div class="card bg-light shadow mt-4">
+        <div class="card-header bg-dashboard-purple text-white">
+            Original Message
+        </div>
+        <div class="card-body">
+            <p><strong>From:</strong> {{ message.user.first_name }} {{ message.user.last_name }}</p>
+            <p><strong>Message:</strong> {{ message.message }}</p>
+        </div>
+    </div>
+    <form method="post" class="mt-4">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ form.reply.label_tag }}
+            {{ form.reply }}
+        </div>
+        <button type="submit" class="btn btn-dashboard-purple mt-3">Submit Reply</button>
+    </form>
+</div>
+{% endblock %}

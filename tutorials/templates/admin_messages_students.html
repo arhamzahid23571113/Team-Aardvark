@@ -17,7 +17,7 @@
                     <h5 class="card-title">Name: {{message.user.first_name}} {{message.user.last_name}}</h5>
                     <p class="card-text">Role: {{ message.role }}</p>
                     <p class="card-text">{{ message.message }}</p>
-                    <a href="#" class="btn btn-outline-light btn-sm">Respond Back</a>
+                    <a href="{% url 'admin_reply' %}" class="btn btn-outline-light btn-sm">Respond Back</a>
                 </div>
                 <div class="card-footer text-muted">
                     Sent on: {{ message.timestamp|date:"F j, Y, g:i a" }}
