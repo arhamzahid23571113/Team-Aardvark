@@ -17,9 +17,11 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 from django.contrib.auth import views as auth_views
 from tutorials import views
+from django.urls import path, include 
+from tutorials.views import timetable_view
 from django.contrib.auth.views import LoginView
 
 urlpatterns = [
@@ -48,16 +50,12 @@ urlpatterns = [
     # New Pages
     path('learn-more/', views.learn_more, name='learn_more'),
     path('available-courses/', views.available_courses, name='available_courses'),
-    
-    # Timetable URLs
+    #AMINA
     path('tutor/timetable/', views.tutor_timetable, name='tutor_timetable'),
-    path('timetable/', views.timetable_view, name='student_timetable'),  # Default to current month
-    path('timetable/<int:year>/<int:month>/', views.timetable_view, name='student_timetable_with_date'),
-
-
-
-    # Login
+    path('student/timetable/', views.student_timetable, name='student_timetable'), 
+    path('timetable/', timetable_view, name='timetable'),
     path('login/', LoginView.as_view(), name='log_in'),
+    path('login/', LoginView.as_view(template_name='log_in.html'), name='log_in'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

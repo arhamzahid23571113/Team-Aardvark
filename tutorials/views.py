@@ -7,15 +7,17 @@ from django.core.exceptions import ImproperlyConfigured
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from calendar import monthrange, SUNDAY
-from datetime import date, datetime
+from datetime import date
+from calendar import Calendar, monthrange
 from django.shortcuts import render
-from datetime import datetime, date
-import calendar
 from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from tutorials.forms import LogInForm, PasswordForm, UserForm, SignUpForm
 from tutorials.helpers import login_prohibited
-from .models import User, Lesson, Timetable
+from .models import User
+from .models import Lesson
+#AMINA
+from django.shortcuts import render
 from .models import Timetable
 
 @login_required
@@ -32,36 +34,44 @@ def dashboard(request):
         messages.error(request, "Invalid user role!")
         return redirect('home')
 
+
 @login_prohibited
 def home(request):
     """Display the application's start/home screen."""
     return render(request, 'home.html')
+
 
 @login_required
 def admin_dashboard(request):
     """Admin-specific dashboard."""
     return render(request, 'admin_dashboard.html')
 
+
 @login_required
 def tutor_dashboard(request):
     """Tutor-specific dashboard."""
     return render(request, 'tutor_dashboard.html')
+
 
 @login_required
 def student_dashboard(request):
     """Student-specific dashboard."""
     return render(request, 'student_dashboard.html')
 
+
 def learn_more(request):
     """Display the Learn More page."""
     return render(request, 'learn_more.html')
+
 
 def available_courses(request):
     """Display the Available Courses page."""
     return render(request, 'available_courses.html')
 
+
 class LoginProhibitedMixin:
     """Mixin that redirects when a user is logged in."""
+
     redirect_when_logged_in_url = None
 
     def dispatch(self, *args, **kwargs):
@@ -82,8 +92,10 @@ class LoginProhibitedMixin:
             )
         return self.redirect_when_logged_in_url
 
+
 class LogInView(LoginProhibitedMixin, View):
     """Display login screen and handle user login."""
+
     http_method_names = ['get', 'post']
     redirect_when_logged_in_url = settings.REDIRECT_URL_WHEN_LOGGED_IN
 
@@ -105,13 +117,16 @@ class LogInView(LoginProhibitedMixin, View):
         form = LogInForm()
         return render(self.request, 'log_in.html', {'form': form, 'next': self.next})
 
+
 def log_out(request):
     """Log out the current user."""
     logout(request)
     return redirect('home')
 
+
 class PasswordView(LoginRequiredMixin, FormView):
     """Display password change screen and handle password change requests."""
+
     template_name = 'password.html'
     form_class = PasswordForm
 
@@ -129,8 +144,10 @@ class PasswordView(LoginRequiredMixin, FormView):
         messages.success(self.request, "Password updated!")
         return reverse('dashboard')
 
+
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     """Display user profile editing screen and handle profile modifications."""
+
     model = User
     template_name = "profile.html"
     form_class = UserForm
@@ -142,8 +159,10 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
         messages.success(self.request, "Profile updated!")
         return reverse('dashboard')
 
+
 class SignUpView(LoginProhibitedMixin, FormView):
     """Display the sign up screen and handle sign ups."""
+
     form_class = SignUpForm
     template_name = "sign_up.html"
     redirect_when_logged_in_url = settings.REDIRECT_URL_WHEN_LOGGED_IN
@@ -155,66 +174,70 @@ class SignUpView(LoginProhibitedMixin, FormView):
 
     def get_success_url(self):
         return reverse('dashboard')
-
-@login_required
+    
+#AMINA  PART DONE =)  
 def tutor_timetable(request):
     """View for tutors to see their timetable."""
     timetable = Timetable.objects.filter(tutor=request.user)
     return render(request, 'tutor_timetable.html', {'timetable': timetable})
 
-@login_required
-@login_required
-@login_required
+def student_timetable(request):
+    
+    timetable = Timetable.objects.filter(student=request.user).order_by('date', 'start_time')
+    return render(request, 'student_timetable.html', {'timetable': timetable})
+
+from django.shortcuts import redirect, render
+from datetime import date
+from calendar import monthrange, SUNDAY
+from .models import Lesson
+
 def timetable_view(request):
-    """View for students and tutors to see their timetable in a calendar layout."""
-    year = int(request.GET.get('year', datetime.now().year))
-    month = int(request.GET.get('month', datetime.now().month))
+    today = date.today()
+    selected_month = int(request.GET.get('month', today.month))  # Default to current month
+    selected_year = int(request.GET.get('year', today.year))  # Default to current year
+
+    # Ensure user is authenticated
+    if not request.user.is_authenticated:
+        return redirect('log_in')
+
+    user = request.user
+
+    # Get calendar for the selected month and year
+    cal = Calendar(SUNDAY)
+    month_days = cal.monthdayscalendar(selected_year, selected_month)
+
+    # Prepare lessons for each day
+    structured_month_days = []
+    for week in month_days:
+        week_data = []
+        for day in week:
+            if day == 0:  # Empty day for alignment
+                week_data.append({'date': None, 'lessons': None})
+            else:
+                day_date = date(selected_year, selected_month, day)
+                lessons = []
+                if user.role == 'student':
+                    lessons = Lesson.objects.filter(student=user, date=day_date)
+                elif user.role == 'tutor':
+                    lessons = Lesson.objects.filter(tutor=user, date=day_date).order_by('start_time')
+                week_data.append({'date': day_date, 'lessons': lessons})
+        structured_month_days.append(week_data)
 
     # Calculate previous and next months
-    if month == 1:
-        prev_month = 12
-        prev_year = year - 1
-    else:
-        prev_month = month - 1
-        prev_year = year
+    prev_month = selected_month - 1 if selected_month > 1 else 12
+    prev_year = selected_year - 1 if prev_month == 12 else selected_year
+    next_month = selected_month + 1 if selected_month < 12 else 1
+    next_year = selected_year + 1 if next_month == 1 else selected_year
 
-    if month == 12:
-        next_month = 1
-        next_year = year + 1
-    else:
-        next_month = month + 1
-        next_year = year
-
-    # Determine the first day of the month and its weekday
-    first_day_of_month = date(year, month, 1)
-    _, days_in_month = calendar.monthrange(year, month)
-    empty_days = (first_day_of_month.weekday() + 1) % 7  # Adjust for Sunday start
-
-    # Generate a range of empty days for template
-    empty_days_range = range(empty_days)
-
-    # Build a calendar structure
-    month_days = []
-    for week in calendar.Calendar(firstweekday=SUNDAY).monthdatescalendar(year, month):
-        week_days = []
-        for day in week:
-            lessons = []
-            if request.user.role == 'student':
-                lessons = Timetable.objects.filter(student=request.user, date=day).order_by('start_time')
-            elif request.user.role == 'tutor':
-                lessons = Timetable.objects.filter(tutor=request.user, date=day).order_by('start_time')
-
-            week_days.append({'date': day, 'lessons': lessons})
-        month_days.append(week_days)
-
-    return render(request, 'student_timetable.html', {
-        'month_days': month_days,
-        'empty_days_range': empty_days_range,
-        'year': year,
-        'month': month,
-        'month_name': calendar.month_name[month],
-        'prev_year': prev_year,
+    context = {
+        'month_days': structured_month_days,
+        'year': selected_year,
+        'month': selected_month,
+        'month_name': date(selected_year, selected_month, 1).strftime('%B'),
         'prev_month': prev_month,
-        'next_year': next_year,
+        'prev_year': prev_year,
         'next_month': next_month,
-    })
+        'next_year': next_year,
+    }
+
+    return render(request, 'student_timetable.html', context)
