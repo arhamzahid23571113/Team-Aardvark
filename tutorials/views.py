@@ -477,3 +477,9 @@ def admin_reply(request,message_id):
 
 
     return render(request,'admin_reply.html',{'form':adminForm,'message':message})
+
+
+#ADMINS
+@login_required
+def response_submitted_success(request):
+    return render(request, 'response_submitted.html')
