@@ -1,131 +1,105 @@
-{% extends "base_content.html" %}
-{% load static %}
+"""Forms for the tutorials app."""
+from django import forms
+from django.contrib.auth import authenticate
+from django.core.validators import RegexValidator
+from .models import User
 
-{% block head %}
-<style>
-    .calendar-grid {
-        display: flex;
-        flex-direction: column; /* Allow each week to stack */
-        gap: 10px; /* Space between rows */
-    }
+class LogInForm(forms.Form):
+    """Form enabling registered users to log in."""
 
-    .week-row {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr); /* 7 days per row */
-        gap: 10px; /* Space between cells */
-    }
+    username = forms.CharField(label="Username")
+    password = forms.CharField(label="Password", widget=forms.PasswordInput())
 
-    .day-cell {
-        border: 1px solid #ddd;
-        padding: 10px;
-        text-align: center;
-        background-color: #f9f9f9;
-        min-height: 120px; /* Adjust height for uniformity */
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        border-radius: 8px; /* Rounded corners */
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
+    def get_user(self):
+        """Returns authenticated user if possible."""
+        user = None
+        if self.is_valid():
+            username = self.cleaned_data.get('username')
+            password = self.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+        return user
 
-    .day-cell.bg-light {
-        background-color: #eaeaea; /* Highlight empty or out-of-month days */
-    }
 
-    .day-cell .date {
-        font-weight: bold;
-        margin-bottom: 5px;
-        color: #333;
-    }
+class UserForm(forms.ModelForm):
+    """Form to update user profiles."""
 
-    .day-cell ul {
-        padding: 0;
-        margin: 0;
-        list-style: none;
-    }
+    class Meta:
+        """Form options."""
+        model = User
+        fields = ['first_name', 'last_name', 'username', 'email', 'role']
 
-    .day-header {
-        text-align: center;
-        font-weight: bold;
-        background-color: #007bff;
-        color: white;
-        padding: 10px;
-        border-radius: 8px;
-        text-transform: uppercase;
-    }
 
-    .calendar-navigation {
-        margin-bottom: 20px;
-    }
+class NewPasswordMixin(forms.Form):
+    """Form mixing for new_password and password_confirmation fields."""
 
-    .calendar-navigation .btn {
-        padding: 10px 20px;
-        font-size: 16px;
-    }
-</style>
-{% endblock %}
+    new_password = forms.CharField(
+        label='Password',
+        widget=forms.PasswordInput(),
+        validators=[RegexValidator(
+            regex=r'^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).*$',
+            message='Password must contain an uppercase character, a lowercase '
+                    'character, and a number'
+        )]
+    )
+    password_confirmation = forms.CharField(label='Password confirmation', widget=forms.PasswordInput())
 
-{% block content %}
-<div class="container mt-5">
-    <h1 class="mb-4">Welcome, {{ request.user.first_name }}!</h1>
-    <h2 class="mb-4 text-center">Your Timetable for {{ month_name }} {{ year }}</h2>
+    def clean(self):
+        """Validate new_password and password_confirmation fields."""
+        super().clean()
+        new_password = self.cleaned_data.get('new_password')
+        password_confirmation = self.cleaned_data.get('password_confirmation')
+        if new_password != password_confirmation:
+            self.add_error('password_confirmation', 'Confirmation does not match password.')
 
-    <!-- Navigation Buttons -->
-    <div class="d-flex justify-content-between calendar-navigation">
-        {% if prev_year and prev_month %}
-        <a href="{% url 'student_timetable_with_date' prev_year prev_month %}" class="btn btn-primary">← Previous</a>
-        {% else %}
-        <a href="#" class="btn btn-secondary disabled">← Previous</a>
-        {% endif %}
 
-        {% if next_year and next_month %}
-        <a href="{% url 'student_timetable_with_date' next_year next_month %}" class="btn btn-primary">Next →</a>
-        {% else %}
-        <a href="#" class="btn btn-secondary disabled">Next →</a>
-        {% endif %}
-    </div>
+class PasswordForm(NewPasswordMixin):
+    """Form enabling users to change their password."""
 
-    <!-- Calendar Grid -->
-    <div class="calendar-grid">
-        <!-- Render Day Headers -->
-        <div class="week-row">
-            <div class="day-header">Sunday</div>
-            <div class="day-header">Monday</div>
-            <div class="day-header">Tuesday</div>
-            <div class="day-header">Wednesday</div>
-            <div class="day-header">Thursday</div>
-            <div class="day-header">Friday</div>
-            <div class="day-header">Saturday</div>
-        </div>
+    password = forms.CharField(label='Current password', widget=forms.PasswordInput())
 
-        <!-- Render Empty Days Before the First Day of the Month -->
-        {% if empty_days_range %}
-        <div class="week-row">
-            {% for _ in empty_days_range %}
-            <div class="day-cell bg-light"></div>
-            {% endfor %}
-        </div>
-        {% endif %}
+    def __init__(self, user=None, **kwargs):
+        """Construct new form instance with a user instance."""
+        super().__init__(**kwargs)
+        self.user = user
 
-        <!-- Render Weeks -->
-        {% for week in month_days %}
-        <div class="week-row">
-            {% for day in week %}
-            <div class="day-cell {% if day.date.month != month %}bg-light{% endif %}">
-                <div class="date">{{ day.date.day }}</div>
-                {% if day.lessons %}
-                <ul>
-                    {% for lesson in day.lessons %}
-                    <li>{{ lesson.start_time }} - {{ lesson.end_time }}: {{ lesson.notes }}</li>
-                    {% endfor %}
-                </ul>
-                {% else %}
-                <p class="text-muted">No lessons scheduled</p>
-                {% endif %}
-            </div>
-            {% endfor %}
-        </div>
-        {% endfor %}
-    </div>
-</div>
-{% endblock %}
+    def clean(self):
+        """Validate the current password."""
+        super().clean()
+        password = self.cleaned_data.get('password')
+        if self.user is not None:
+            user = authenticate(username=self.user.username, password=password)
+        else:
+            user = None
+        if user is None:
+            self.add_error('password', "Password is invalid")
+
+    def save(self):
+        """Save the user's new password."""
+        new_password = self.cleaned_data['new_password']
+        if self.user is not None:
+            self.user.set_password(new_password)
+            self.user.save()
+        return self.user
+
+
+class SignUpForm(NewPasswordMixin, forms.ModelForm):
+    """Form enabling unregistered users to sign up."""
+
+    class Meta:
+        """Form options."""
+        model = User
+        fields = ['first_name', 'last_name', 'username', 'email', 'role']  # Removed 'lesson_preferences'
+
+    def save(self):
+        """Create a new user."""
+        super().save(commit=False)
+        user = User.objects.create_user(
+            username=self.cleaned_data.get('username'),
+            first_name=self.cleaned_data.get('first_name'),
+            last_name=self.cleaned_data.get('last_name'),
+            email=self.cleaned_data.get('email'),
+            password=self.cleaned_data.get('new_password'),
+            role=self.cleaned_data.get('role'),
+        )
+        user.save()
+        return user

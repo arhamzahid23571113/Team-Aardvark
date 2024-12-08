@@ -22,7 +22,7 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=50, blank=False)
     email = models.EmailField(unique=True, blank=False)
 
-    ROLES = ( 
+    ROLES = (
         ('admin', 'Admin'),
         ('tutor', 'Tutor'),
         ('student', 'Student'),
@@ -51,14 +51,11 @@ class User(AbstractUser):
         """Return a URL to a miniature version of the user's gravatar."""
         return self.gravatar(size=60)
 
-
-
-
 class Invoice(models.Model):
     """Model for invoices and tracking payment status"""
     student = models.ForeignKey(
         User,
-        related_name="invoices",
+        related_name="invoices",  # Unique related_name for Invoice
         on_delete=models.CASCADE
     )
     amount_due = models.DecimalField(max_digits=8, decimal_places=2)
@@ -71,10 +68,7 @@ class Invoice(models.Model):
     payment_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
-        return f"Invoice for {self.student.user.full_name()}"
-
-    
-
+        return f"Invoice for {self.student.first_name} {self.student.last_name}"
 
 class LessonRequest(models.Model):
     """Model for students to make request lessons"""
@@ -147,6 +141,13 @@ class LessonRequest(models.Model):
     def __str__(self):
         return f"Lesson Request by {self.student.username} for {self.requested_topic}"
 
+    class Meta:
+        verbose_name = "Lesson Request"
+        verbose_name_plural = "Lesson Requests"
+        ordering = ['-request_date']
+
+    def __str__(self):
+        return f"Lesson Request by {self.student.username} for {self.requested_topic}"
 
 class LessonBooking(models.Model):
     """Models used for showing lesson bookings between students and tutors"""
@@ -159,18 +160,21 @@ class LessonBooking(models.Model):
     time = models.TimeField()  
     lesson_date = models.DateField()  
 
+#amina
 
 class Lesson(models.Model):
     title = models.CharField(max_length=255, help_text="The title of the lesson")
     content = models.TextField(help_text="Content or description of the lesson")
     date = models.DateField(help_text="Date of the lesson")
+    start_time = models.TimeField(help_text="Start time of the lesson")  # Add this
+    end_time = models.TimeField(help_text="End time of the lesson")      # Add this
     tutor = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="lessons_as_tutor"
     )
     student = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="lessons_as_student"
     )
@@ -196,12 +200,12 @@ class Timetable(models.Model):
     student = models.ForeignKey(User, related_name="student_timetables", on_delete=models.CASCADE)
     tutor = models.ForeignKey(
         User,
-        related_name="tutor_timetables",
+        related_name="tutor_timetables",  # Unique related_name for tutor in Timetable
         on_delete=models.CASCADE
     )
     student = models.ForeignKey(
         User,
-        related_name="student_timetables",
+        related_name="student_timetables",  # Unique related_name for student in Timetable
         on_delete=models.CASCADE
     )
     date = models.DateField(help_text="The date of the lesson")
