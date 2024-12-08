@@ -95,7 +95,7 @@ main {
 
 /* Animated form controls */
 .form-select, .form-control {
-    background-color: #4b0082; /* Dark purple background */
+    background-color: #4b0082; /* Dark purple background for forms*/
     color: #ffffff; /* White text */
     border: 1px solid #6a0dad; /* Lighter purple border */
     border-radius: 5px;
@@ -106,12 +106,12 @@ main {
     background-color: #6a0dad; /* Lighter purple when focused */
     color: #ffffff;
     border-color: #4b0082; /* Darker purple border */
-    box-shadow: 0 0 10px rgba(75, 0, 130, 0.5); /* Glowing purple border */
+    box-shadow: 0 0 10px rgba(75, 0, 130, 0.5); /* Glowing purple border for forms */
 }
 
 /* Submit button with gradient animation */
 .btn-dashboard-purple {
-    background: linear-gradient(135deg, #4b0082, #6a0dad); /* Gradient background */
+    background: linear-gradient(135deg, #4b0082, #6a0dad); /* Gradient background for dashboards*/
     color: #ffffff; /* White text */
     border: none;
     border-radius: 5px;
@@ -196,6 +196,11 @@ main {
 
 /* Add Rounded Corners to Table */
 .table-bordered {
-    border-radius: 10px; /* Rounded corners */
-    overflow: hidden; /* Ensures the corners apply to the content */
+    border-radius: 10px; /* Rounded corners for tables*/
+    overflow: hidden; 
+}
+
+.table-bordered tbody td,
+.table-bordered thead th {
+    color: #ffffff !important; /*  white text for all fields  contents etc*/
 }
