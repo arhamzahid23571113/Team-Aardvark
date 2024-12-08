@@ -469,7 +469,7 @@ def admin_reply(request,message_id):
         if adminForm.is_valid():
             adminForm.save()
             messages.success(request, f"Reply successfully sent to {message.user.first_name}!")
-            return redirect('admin_messages',role=message.role)
+            return redirect('response_success')
         else:
             messages.error(request, "There was an error with your reply, it has not been saved successfully.")
     else:
