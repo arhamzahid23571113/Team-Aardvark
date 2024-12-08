@@ -16,6 +16,8 @@ from django.shortcuts import get_object_or_404, redirect
 from .forms import LessonBookingForm,ContactMessages
 from .models import ContactMessage
 from .forms import AdminReplyBack
+from django.utils.timezone import now
+
 
 
 
@@ -459,24 +461,26 @@ def view_tutor_messages(request,role=None):
         return render(request,'admin_messages_tutors.html',{'messages':tutor_messages})
 
 @login_required
-def admin_reply(request,message_id):
-    if request.user.role != 'admin':
+def admin_reply(request, message_id):
+    if request.user.role != 'admin':  
         return redirect('dashboard')
-    message = get_object_or_404(ContactMessage,id=message_id) 
+
+    message = get_object_or_404(ContactMessage, id=message_id)
 
     if request.method == 'POST':
-        adminForm = AdminReplyBack(request.POST,instance=message)
+        adminForm = AdminReplyBack(request.POST, instance=message)
         if adminForm.is_valid():
-            adminForm.save()
+            reply_message = adminForm.save(commit=False)
+            reply_message.reply_timestamp = now()  
+            reply_message.save()
             messages.success(request, f"Reply successfully sent to {message.user.first_name}!")
             return redirect('response_success')
         else:
             messages.error(request, "There was an error with your reply, it has not been saved successfully.")
     else:
-        adminForm = AdminReplyBack(instance=message)        
+        adminForm = AdminReplyBack(instance=message)
 
-
-    return render(request,'admin_reply.html',{'form':adminForm,'message':message})
+    return render(request, 'admin_reply.html', {'form': adminForm, 'message': message})
 
 
 #ADMINS

@@ -171,6 +171,11 @@ class ContactMessage(models.Model):
         help_text="Admins reply to message"
     )
     timestamp = models.DateTimeField(auto_now_add=True)
+    reply_timestamp = models.DateTimeField(
+    blank=True, null=True,
+    help_text="Timestamp of admin's reply"
+    )
+
 
     def __str__(self):
         return f"{self.role.capitalize()} - {self.timestamp}"
