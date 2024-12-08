@@ -165,6 +165,11 @@ class ContactMessage(models.Model):
         default="",
         help_text="Write your message to the admin here"
     )
+    reply = models.TextField(
+        blank = True,
+        default=""
+        help_text="Admins reply to message"
+    )
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
