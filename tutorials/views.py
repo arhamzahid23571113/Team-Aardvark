@@ -483,3 +483,10 @@ def admin_reply(request,message_id):
 @login_required
 def response_submitted_success(request):
     return render(request, 'response_submitted.html')
+
+#TUTORS
+@login_required
+def tutor_messages(request):
+    tutor = request.user
+    tutorMessages = ContactMessage.objects.filter(sender=tutor).order_by('timestamp')
+    return render(request,'tutor_messages.htm',{'tutor_messages':tutorMessages})
