@@ -489,4 +489,10 @@ def response_submitted_success(request):
 def tutor_messages(request):
     tutor = request.user
     tutorMessages = ContactMessage.objects.filter(sender=tutor).order_by('timestamp')
-    return render(request,'tutor_messages.htm',{'tutor_messages':tutorMessages})
+    return render(request,'tutor_messages.html',{'messages':tutorMessages})
+
+@login_required
+def student_messages(request):
+    student = request.user
+    studentMessages = ContactMessage.objects.filter(sender=student).order_by('timestamp')
+    return render(request,'student_messages.html',{'messages':studentMessages})
