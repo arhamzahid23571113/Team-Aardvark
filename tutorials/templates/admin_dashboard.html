@@ -1,31 +1,76 @@
-{% extends 'base.html' %}
+{% extends 'dashboard_base_admin.html' %}
 {% block title %}Admin Dashboard{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-  <h1 class="mb-4">Admin Dashboard</h1>
+  <h1 class="text-center text-dashboard-purple mt-4">Admin Dashboard</h1>
   
-  <div class="card mb-3">
-    <div class="card-header">Student Requests</div>
-    <div class="card-body">
-      <p>View and manage all pending student lesson requests here.</p>
-      <a href="#" class="btn btn-primary">View Requests</a>
+  <!-- Grid for Cards -->
+  <div class="row">
+    <!-- Student Requests Card -->
+    <div class="col-md-4 mb-3">
+      <div class="card">
+        <div class="card-header">Student Requests</div>
+        <div class="card-body">
+          <p>View and manage all pending student lesson requests here.</p>
+          <a href="{% url 'student_requests' %}" class="btn btn-outline-light">View Requests</a>
+        </div>
+      </div>
     </div>
-  </div>
-  
-  <div class="card mb-3">
-    <div class="card-header">Tutor Schedules</div>
-    <div class="card-body">
-      <p>Manage tutor schedules and availability.</p>
-      <a href="#" class="btn btn-primary">View Schedules</a>
+
+    <!-- Tutor Schedules Card -->
+    <div class="col-md-4 mb-3">
+      <div class="card">
+        <div class="card-header">Tutor Schedules</div>
+        <div class="card-body">
+          <p>Manage tutor schedules and availability.</p>
+          <a href="#" class="btn btn-outline-light">View Schedules</a>
+        </div>
+      </div>
     </div>
-  </div>
-  
-  <div class="card mb-3">
-    <div class="card-header">Invoices</div>
-    <div class="card-body">
-      <p>Generate and track payment statuses for student invoices.</p>
-      <a href="#" class="btn btn-primary">Manage Invoices</a>
+
+    <!-- Invoices Card -->
+    <div class="col-md-4 mb-3">
+      <div class="card">
+        <div class="card-header">Invoices</div>
+        <div class="card-body">
+          <p>Generate and track payment statuses for student invoices.</p>
+          <a href="#" class="btn btn-outline-light">Manage Invoices</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Messages Card -->
+    <div class="col-md-4 mb-3">
+      <div class="card">
+        <div class="card-header">Messages</div>
+        <div class="card-body">
+          <p>Review messages from students and tutors.</p>
+          <a href="#" class="btn btn-outline-light">View Messages</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tutor Profiles Card -->
+    <div class="col-md-4 mb-3">
+      <div class="card">
+        <div class="card-header">Tutor Profiles</div>
+        <div class="card-body">
+          <p>View and manage all tutor profiles.</p>
+          <a href="{% url 'all_tutor_profiles' %}" class="btn btn-outline-light">View Tutor Profiles</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Student Profiles Card -->
+    <div class="col-md-4 mb-3">
+      <div class="card">
+        <div class="card-header">Student Profiles</div>
+        <div class="card-body">
+          <p>View and manage all student profiles.</p>
+          <a href="{% url 'all_students' %}" class="btn btn-outline-light">View Student Profiles</a>
+        </div>
+      </div>
     </div>
   </div>
 </div>

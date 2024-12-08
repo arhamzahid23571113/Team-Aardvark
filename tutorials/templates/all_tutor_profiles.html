@@ -1,0 +1,32 @@
+{% extends 'dashboard_base_admin.html' %}
+{% block title %}All Tutor Profiles{% endblock %}
+<!-- For Admins to view all tutor profiles -->
+
+{% block content %}
+<div class="container mt-5">
+  <h1 class="text-center text-dashboard-purple mt-4">All Tutor Profiles</h1>
+
+  <div class="row">
+    {% for tutor in tutors %}
+    <div class="col-md-4 mb-4">
+      <div class="card" style="background-color: #4b0082; color: #ffffff; border-color: #6a0dad;">
+        <div class="card-header text-center text-white" style="background-color: #6a0dad;">
+          {{ tutor.full_name }}
+        </div>
+        <div class="card-body">
+          <p><strong>Email:</strong> {{ tutor.email }}</p>
+          <p><strong>Expertise:</strong> {{ tutor.expertise|default:"Not provided" }}</p>
+          <p><strong>Registered On:</strong> {{ tutor.date_joined|date:"M d, Y" }}</p>
+        </div>
+        <div class="card-footer text-center">
+          <a href="{% url 'view_tutor_profile' tutor.id %}" class="btn btn-outline-light btn-sm">View Profile</a>
+          <a href="{% url 'edit_tutor_profile' tutor.id %}" class="btn btn-outline-warning btn-sm">Edit Profile</a>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-center mt-4">No tutors found.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

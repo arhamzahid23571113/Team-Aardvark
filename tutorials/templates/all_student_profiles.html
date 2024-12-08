@@ -1,0 +1,32 @@
+{% extends 'dashboard_base_admin.html' %}
+{% block title %}All Student Profiles{% endblock %}
+<!-- For Admins to view all student profiles -->
+
+{% block content %}
+<div class="container mt-5">
+  <h1 class="text-center text-dashboard-purple mt-4">All Student Profiles</h1>
+
+  <div class="row">
+    {% for student in students %}
+    <div class="col-md-4 mb-4">
+      <div class="card" style="background-color: #4b0082; color: #ffffff; border-color: #6a0dad;">
+        <div class="card-header text-center text-white" style="background-color: #6a0dad;">
+          {{ student.full_name }}
+        </div>
+        <div class="card-body">
+          <p><strong>Email:</strong> {{ student.email }}</p>
+          <p><strong>Expertise:</strong> {{ student.expertise|default:"Not provided" }}</p>
+          <p><strong>Registered On:</strong> {{ student.date_joined|date:"M d, Y" }}</p>
+        </div>
+        <div class="card-footer text-center">
+          <a href="#" class="btn btn-outline-light btn-sm">View Profile</a>
+          <a href="#" class="btn btn-outline-warning btn-sm">Edit Profile</a>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-center mt-4">No students found.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

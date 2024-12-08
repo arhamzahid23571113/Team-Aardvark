@@ -46,6 +46,26 @@ urlpatterns = [
     path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('tutor_dashboard/', views.tutor_dashboard, name='tutor_dashboard'),
     path('student_dashboard/', views.student_dashboard, name='student_dashboard'),
+    path('request_lesson/', views.request_lesson, name='request_lesson'),
+    path('contact_admin/',views.contact_admin,name='contact_admin'),
+    path('my_tutor_profile/',views.see_my_tutor,name='my_tutor_profile'),
+    path('my_students_profile/',views.see_my_students_profile,name='my_students_profile'),
+    path('request_success/', views.lesson_request_success, name='lesson_request_success'),
+    path('student_requests/', views.student_requests, name='student_requests'),
+    path('assign_tutor/<int:lesson_request_id>/', views.assign_tutor, name='assign_tutor'),
+    path('unassign-tutor/<int:lesson_request_id>/', views.unassign_tutor, name='unassign_tutor'),
+    path('cancel-request/<int:lesson_request_id>/', views.cancel_request, name='cancel_request'),
+    path('tutor-profiles/', views.all_tutor_profiles, name='all_tutor_profiles'),
+    path('tutor-profile/<int:tutor_id>/', views.view_tutor_profile, name='view_tutor_profile'),
+    path('tutor-profile/<int:tutor_id>/edit/', views.edit_tutor_profile, name='edit_tutor_profile'),
+    path('all-students/', views.all_student_profiles, name='all_students'),
+    path('tutor/<int:tutor_id>/info/', views.tutor_more_info, name='tutor_more_info'),
+
+
+
+
+
+
 
     # New Pages
     path('learn-more/', views.learn_more, name='learn_more'),
