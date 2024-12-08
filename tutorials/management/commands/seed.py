@@ -1,5 +1,7 @@
+
 from django.core.management.base import BaseCommand
 from tutorials.models import User, LessonRequest, LessonBooking, Invoice
+
 from faker import Faker
 import random
 from datetime import timedelta, date
@@ -13,12 +15,14 @@ class Command(BaseCommand):
     DEFAULT_PASSWORD = 'Password123'
     USER_COUNT = 50  # Example count for students and tutors
 
+
     def handle(self, *args, **kwargs):
         self.create_users()
         self.create_lesson_requests()
         self.create_lesson_bookings()
         self.create_invoices()
         print("Seeding complete.")
+
 
     def create_users(self):
         """Seed users with admin, tutor, and student roles."""
@@ -109,3 +113,4 @@ class Command(BaseCommand):
                 payment_status=random.choice(['Paid', 'Unpaid']),
             )
         print("Invoices created.")
+
