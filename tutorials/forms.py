@@ -168,4 +168,12 @@ class ContactMessages(forms.ModelForm):
                 ("tutor","Tutor"),
             ])
         }
+
+class AdminReplyBack(forms.ModelForm):
+    class Meta:
+        model = ContactMessage
+        fields = ['reply']
+        Widgets = {
+            'reply': forms.Textarea(attrs={'row':4, 'placeholder': 'Write response here'}),
+        }
            

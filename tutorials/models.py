@@ -167,7 +167,7 @@ class ContactMessage(models.Model):
     )
     reply = models.TextField(
         blank = True,
-        default=""
+        default="",
         help_text="Admins reply to message"
     )
     timestamp = models.DateTimeField(auto_now_add=True)
