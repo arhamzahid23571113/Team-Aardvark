@@ -64,6 +64,10 @@ urlpatterns = [
     path('view_student_messages/<str:role>/',views.view_student_messages,name='view_student_messages'),
     path('view_tutor_messages/<str:role>/',views.view_tutor_messages,name='view_tutor_messages'),
     path('admin_reply/<int:message_id>/', views.admin_reply, name='admin_reply'),
+    path('tutor_messages/', views.tutor_messages, name='tutor_messages'),
+    path('student_messages/', views.student_messages, name='student_messages'),
+
+
 
 
 
