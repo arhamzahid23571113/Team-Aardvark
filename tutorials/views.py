@@ -404,13 +404,15 @@ def tutor_more_info(request, tutor_id):
 
   #ADMIN
 @login_required
-def admin_messages(request):
-    role_filter = request.GET.get('role')
-    if role_filter:
-        messages = ContactMessage.objects.filter(role=role_filter).order_by('-timestamp')
+def admin_messages(request,role=None):
+    role = role or request.GET.get('role')
+    if role == "all":
+        messages = ContactMessage.objects.all().order_by('-timestamp')
+    elif role in ['student','tutor']:
+        messages = ContactMessage.objects.filter(role=role).order_by('-timestamp')
     else:
         messages = []
-    return render(request, 'admin_messages.html', {'messages': messages, 'role_filter': role_filter})
+    return render(request, 'admin_messages.html', {'messages': messages, 'role_filter': role})
 
 
 @login_required
@@ -443,7 +445,7 @@ def send_message_to_admin(request):
     return render(request, 'contact_admin.html', {'form': form, 'base_template': base_template})
 
 @login_required
-def view_student_messages(request):
+def view_student_messages(request,role=None):
     if request.user.role == 'admin':
         student_messages = ContactMessage.objects.filter(role='student').order_by('timestamp')
         return render(request,'admin_messages_students.html',{'messages':student_messages})
@@ -451,7 +453,7 @@ def view_student_messages(request):
         return redirect('admin_dashboard')
 
 @login_required
-def view_tutor_messages(request):
+def view_tutor_messages(request,role=None):
     if request.user.role == 'admin':
         tutor_messages = ContactMessage.objects.filter(role='tutor').order_by('timestamp')
         return render(request,'admin_messages_tutors.html',{'messages':tutor_messages})

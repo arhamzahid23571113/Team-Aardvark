@@ -58,10 +58,10 @@ urlpatterns = [
     path('view_student_profile/<int:student_id>/',views.view_student_profile,name='view_student_profile'),
     path('all_students/', views.all_student_profiles, name='all_students'),
     path('tutor/<int:tutor_id>/info/', views.tutor_more_info, name='tutor_more_info'),
-    path('admin_messages/', views.admin_messages, name='admin_messages'),
+    path('admin_messages/<str:role>/', views.admin_messages, name='admin_messages'),
     path('contact_admin_form_page/',views.send_message_to_admin,name='send_message_to_admin'),
-    path('view_student_messages/',views.view_student_messages,name='view_student_messages'),
-    path('view_tutor_messages/',views.view_tutor_messages,name='view_tutor_messages'),
+    path('view_student_messages/<str:role>/',views.view_student_messages,name='view_student_messages'),
+    path('view_tutor_messages/<str:role>/',views.view_tutor_messages,name='view_tutor_messages'),
     path('admin_reply/<int:message_id>/', views.admin_reply, name='admin_reply'),
 
 
