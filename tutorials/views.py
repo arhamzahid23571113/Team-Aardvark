@@ -153,7 +153,7 @@ class PasswordView(LoginRequiredMixin, FormView):
 
     def get_success_url(self):
         messages.success(self.request, "Password updated!")
-        return reverse('dashboard')
+        return reverse('log_in')
 
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
@@ -665,7 +665,7 @@ def contact_admin(request):
 @login_required
 def see_my_tutor(request):
     if request.user.role != 'student':
-        return redirect('dashboard')
+        return redirect('log_in')
     
     assigned_tutors = LessonRequest.objects.filter(
         student=request.user,  
@@ -688,7 +688,7 @@ def see_my_tutor(request):
 @login_required
 def see_my_students_profile(request):
     if request.user.role != 'tutor':
-        return redirect('dashboard')
+        return redirect('log_in')
     assigned_students = (
         User.objects.filter(
             lesson_requests__tutor=request.user  
@@ -704,7 +704,22 @@ def see_my_students_profile(request):
 #STUDENTS
 @login_required
 def lesson_request_success(request):
-    return render(request, 'lesson_request_success.html')
+    dashboard_url = reverse('log_in')
+    if request.user.is_authenticated:
+        if request.user.role == 'tutor':
+            base_template = 'dashboard_base_tutor.html'
+            dashboard_url = reverse('tutor_dashboard')
+        elif request.user.role == 'student':
+            base_template = 'dashboard_base_student.html'
+            dashboard_url = reverse('student_dashboard')
+        elif request.user.role == 'admin':
+            base_template = 'dashboard_base_admin.html'
+            dashboard_url = reverse('admin_dashboard')
+        else:
+            base_template = 'dashboard.html'
+    else:
+        base_template = 'dashboard.html'
+    return render(request, 'lesson_request_success.html',{'base_template':base_template,'dashboard_url':dashboard_url})
 
 
 #ADMINS
@@ -802,7 +817,7 @@ def edit_tutor_profile(request, tutor_id):
 @login_required
 def tutor_more_info(request, tutor_id):
     if request.user.role != 'student':
-        return redirect('dashboard')
+        return redirect('log_in')
     tutor = get_object_or_404(User, id=tutor_id, role='tutor')
     lessons = LessonRequest.objects.filter(student=request.user, tutor=tutor)
     context = {
@@ -820,4 +835,104 @@ def admin_messages(request):
         messages = ContactMessage.objects.filter(role=role_filter).order_by('-timestamp')
     else:
         messages = []
-    return render(request, 'admin_messages.html', {'messages': messages, 'role_filter': role_filter})
+    return render(request, 'admin_messages.html', {'messages': messages, 'role_filter': role})
+
+
+@login_required
+def send_message_to_admin(request):
+    if request.user.is_authenticated:
+        if request.user.role == 'tutor':
+            base_template = 'dashboard_base_tutor.html'
+        elif request.user.role == 'student':
+            base_template = 'dashboard_base_student.html'
+        elif request.user.role == 'admin':
+            base_template = 'dashboard_base_admin.html'
+        else:
+            base_template = 'dashboard.html'
+    else:
+        base_template = 'dashboard.html'
+
+    if request.method == 'POST':
+        form = ContactMessages(request.POST)
+        if form.is_valid():
+            contact_message = form.save(commit=False)
+            contact_message.user = request.user  
+            contact_message.save()
+            messages.success(request, 'Your message has been submitted successfully!')
+            return redirect('response_success')
+        else:
+            messages.error(request, 'There was an error with your submission.')
+    else:
+        form = ContactMessages()
+
+    return render(request, 'contact_admin.html', {'form': form, 'base_template': base_template})
+
+@login_required
+def view_student_messages(request,role=None):
+    if request.user.role == 'admin':
+        student_messages = ContactMessage.objects.filter(role='student').order_by('timestamp')
+        return render(request,'admin_messages_students.html',{'messages':student_messages})
+    else:
+        return redirect('admin_dashboard')
+
+@login_required
+def view_tutor_messages(request,role=None):
+    if request.user.role == 'admin':
+        tutor_messages = ContactMessage.objects.filter(role='tutor').order_by('timestamp')
+        return render(request,'admin_messages_tutors.html',{'messages':tutor_messages})
+
+@login_required
+def admin_reply(request, message_id):
+    if request.user.role != 'admin':  
+        return redirect('log_in')
+
+    message = get_object_or_404(ContactMessage, id=message_id)
+
+    if request.method == 'POST':
+        adminForm = AdminReplyBack(request.POST, instance=message)
+        if adminForm.is_valid():
+            reply_message = adminForm.save(commit=False)
+            reply_message.reply_timestamp = now()  
+            reply_message.save()
+            messages.success(request, f"Reply successfully sent to {message.user.first_name}!")
+            return redirect('response_success')
+        else:
+            messages.error(request, "There was an error with your reply, it has not been saved successfully.")
+    else:
+        adminForm = AdminReplyBack(instance=message)
+
+    return render(request, 'admin_reply.html', {'form': adminForm, 'message': message})
+
+
+#ADMINS
+@login_required
+def response_submitted_success(request):
+    dashboard_url = reverse('log_in')
+    if request.user.is_authenticated:
+        if request.user.role == 'tutor':
+            base_template = 'dashboard_base_tutor.html'
+            dashboard_url = reverse('tutor_dashboard')
+        elif request.user.role == 'student':
+            base_template = 'dashboard_base_student.html'
+            dashboard_url = reverse('student_dashboard')
+        elif request.user.role == 'admin':
+            base_template = 'dashboard_base_admin.html'
+            dashboard_url = reverse('admin_dashboard')
+        else:
+            base_template = 'home.html'
+    else:
+        base_template = 'home.html'
+    return render(request, 'response_submitted.html',{'base_template':base_template,'dashboard_url':dashboard_url})
+
+#TUTORS
+@login_required
+def tutor_messages(request):
+    tutor = request.user
+    tutorMessages = ContactMessage.objects.filter(user=tutor).order_by('timestamp')
+    return render(request,'tutor_messages.html',{'messages':tutorMessages})
+
+@login_required
+def student_messages(request):
+    student = request.user
+    studentMessages = ContactMessage.objects.filter(user=student).order_by('timestamp')
+    return render(request,'student_messages.html',{'messages':studentMessages})
