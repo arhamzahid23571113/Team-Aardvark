@@ -204,3 +204,53 @@ main {
 .table-bordered thead th {
     color: #ffffff !important; /*  white text for all fields  contents etc*/
 }
+
+
+
+  .calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7 columns for 7 days of the week */
+    gap: 10px;
+  }
+
+  .calendar .day {
+    border: 1px solid #ddd !important;
+    border-radius: 5px !important;
+    padding: 10px !important;
+    min-height: 120px !important;
+    background-color: #f8f9fa !important;
+    position: relative !important;
+    display: flex;
+    flex-direction: column !important;
+  }
+
+  .calendar .day-header {
+    font-weight: bold !important;
+    text-align: center !important;
+    background-color: #4e54c8 !important;
+    color: white !important;
+    padding: 5px !important;
+    border-radius: 5px !important;
+  }
+
+  .day-number {
+    position: absolute !important;
+    top: 10px !important;
+    right: 10px !important;
+    font-weight: bold !important;
+    color: #555 !important;
+  }
+
+  .event {
+    background-color: #4e54c8;
+    color: white;
+    padding: 5px;
+    margin-top: 10px;
+    border-radius: 3px;
+    font-size: 0.9em;
+  }
+
+  .empty-day {
+    background-color: #f0f0f0;
+    border: none;
+  }
