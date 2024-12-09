@@ -69,6 +69,8 @@ urlpatterns = [
     path('admin_reply/<int:message_id>/', views.admin_reply, name='admin_reply'),
     path('tutor_messages/', views.tutor_messages, name='tutor_messages'),
     path('student_messages/', views.student_messages, name='student_messages'),
+    path('tutor/my_profile/', views.tutor_profile, name='tutor_profile'),
+    path('tutor/edit_profile/', views.edit_profile, name='edit_profile'),
 
 
 
@@ -90,3 +92,4 @@ urlpatterns = [
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

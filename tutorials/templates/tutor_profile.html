@@ -1,0 +1,50 @@
+{% extends 'dashboard_base_tutor.html' %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center text-dashboard-purple mt-4">My Profile</h1>
+        </div>
+    </div>
+
+    <div class="row mt-4 justify-content-center">
+        <!-- Profile Card -->
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-dark text-white text-center">
+                    <i class="fas fa-user-graduate"></i> Profile Details
+                </div>
+                <div class="card-body">
+                    <!-- Profile Picture -->
+                    <div class="text-center mb-3">
+                        {% if tutor.profile_picture and tutor.profile_picture.url %}
+                            <img src="{{ tutor.profile_picture.url }}" class="rounded-circle" alt="Profile Picture" width="120" height="120">
+                        {% else %}
+                            <img src="/media/profile_pictures/default.jpg" class="rounded-circle" alt="Default Profile Picture" width="120" height="120">
+                        {% endif %}
+                    </div>
+
+                    <!-- User Details -->
+                    <h5 class="card-title text-center mt-4">{{ tutor.full_name }}</h5>
+                    <p class="text-center"><strong>Username:</strong> {{ tutor.username }}</p>
+                    <p class="text-center"><strong>Email:</strong> {{ tutor.email }}</p>
+                    <p class="text-center"><strong>Role:</strong> Tutor</p>
+                    <hr>
+                    <h6 class="text-center">Expertise</h6>
+                    <p class="text-center">{{ tutor.expertise|default:"No expertise listed" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Button -->
+    <div class="row mt-4 justify-content-center">
+        <div class="col-md-6 text-center">
+            <a href="{% url 'edit_profile' %}" class="btn btn-outline-dark">Edit Profile</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

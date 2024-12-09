@@ -164,20 +164,24 @@ class PasswordView(LoginRequiredMixin, FormView):
 
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
-     """Display user profile editing screen and handle profile modifications."""
+    """Display user profile editing screen and handle profile modifications."""
 
-     model = User
-     template_name = "profile.html"
-     form_class = UserForm
+    model = User
+    template_name = "profile.html"
+    form_class = UserForm
 
-     def get_object(self):
+    def get_object(self):
         return self.request.user
 
-     def get_success_url(self):
-        messages.success(self.request, "Profile updated!")
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, "Profile updated successfully!")
+        return response
+
+    def get_success_url(self):
         return reverse('dashboard')
 
-     def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         # Determine the base template based on the user's role
@@ -1014,3 +1018,45 @@ def student_messages(request):
     student = request.user
     studentMessages = ContactMessage.objects.filter(user=student).order_by('timestamp')
     return render(request,'student_messages.html',{'messages':studentMessages})
+
+@login_required
+def tutor_profile(request):
+    """Display the tutor's profile."""
+    if request.user.role != 'tutor':
+        messages.error(request, "Access denied. Only tutors can view this page.")
+        return redirect('dashboard')
+
+    tutor = request.user
+
+    context = {
+        'tutor': tutor,
+    }
+    return render(request, 'tutor_profile.html', context)
+
+
+@login_required
+def edit_profile(request):
+    """Allow the tutor to edit their profile details, including profile picture and expertise."""
+    user = request.user
+
+    if request.method == "POST":
+        form = UserForm(request.POST, request.FILES, instance=user, user=user)
+        if form.is_valid():
+            # Save profile changes, including expertise and profile picture
+            user = form.save(commit=False)
+            user.expertise = form.cleaned_data.get('expertise')  # Ensure expertise is saved
+            if 'profile_picture' in request.FILES:
+                user.profile_picture = request.FILES['profile_picture']
+            user.save()
+            messages.success(request, "Profile updated successfully!")
+            return redirect('tutor_profile')
+    else:
+        form = UserForm(instance=user, user=user)
+
+    # Determine the base template based on the user's role
+    profile_base_template = 'dashboard_base_tutor.html' if user.role == 'tutor' else 'dashboard.html'
+
+    return render(request, 'edit_my_tutor_profile.html', {
+        'form': form,
+        'profile_base_template': profile_base_template,
+    })
