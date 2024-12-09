@@ -157,7 +157,6 @@ class LessonBookingForm(forms.ModelForm):
                 ("advanced", "Advanced"),
             ]),
         }
-
 class ContactMessages(forms.ModelForm):
     class Meta:
         model = ContactMessage

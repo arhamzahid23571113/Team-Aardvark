@@ -539,7 +539,6 @@ def student_messages(request):
     studentMessages = ContactMessage.objects.filter(user=student).order_by('timestamp')
     return render(request,'student_messages.html',{'messages':studentMessages})    
 #AMINA    
-        return reverse('dashboard')
     
 #AMINA  PART DONE =)  
 def tutor_timetable(request):
@@ -829,10 +828,12 @@ def tutor_more_info(request, tutor_id):
 
   #ADMIN
 @login_required
-def admin_messages(request):
-    role_filter = request.GET.get('role')
-    if role_filter:
-        messages = ContactMessage.objects.filter(role=role_filter).order_by('-timestamp')
+def admin_messages(request,role=None):
+    role = role or request.GET.get('role')
+    if role == "all":
+        messages = ContactMessage.objects.all().order_by('-timestamp')
+    elif role in ['student','tutor']:
+        messages = ContactMessage.objects.filter(role=role).order_by('-timestamp')
     else:
         messages = []
     return render(request, 'admin_messages.html', {'messages': messages, 'role_filter': role})

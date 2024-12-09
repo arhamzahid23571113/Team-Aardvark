@@ -149,16 +149,6 @@ class LessonRequest(models.Model):
     def __str__(self):
         return f"Lesson Request by {self.student.username} for {self.requested_topic}"
 
-class LessonBooking(models.Model):
-    """Models used for showing lesson bookings between students and tutors"""
-
-    student = models.ForeignKey(User, related_name="student_lessons", on_delete=models.CASCADE)
-    tutor = models.ForeignKey(User, related_name="tutor_lessons", on_delete=models.CASCADE,null=True,blank=True)
-
-    topic = models.CharField(max_length=100)  
-    duration = models.IntegerField() 
-    time = models.TimeField()  
-    lesson_date = models.DateField()  
 
 #amina
 
@@ -183,13 +173,6 @@ class Lesson(models.Model):
 
     def __str__(self):
         return self.title
-
-
-
-
-
-
-
 
 #AMINA'S:
 
@@ -237,16 +220,30 @@ class LessonBooking(models.Model):
 
     def __str__(self):
         return f"{self.student.username} - {self.topic} with {self.tutor.username}"
-    
+        
 class ContactMessage(models.Model):
     ROLES = [
         ('student', 'Student'),
         ('tutor', 'Tutor'),
     ]
-    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='messages')
     role = models.CharField(max_length=10, choices = ROLES)
-    message = models.TextField()
+    message = models.TextField(
+        blank = True,
+        default="",
+        help_text="Write your message to the admin here"
+    )
+    reply = models.TextField(
+        blank = True,
+        default="",
+        help_text="Admins reply to message"
+    )
     timestamp = models.DateTimeField(auto_now_add=True)
+    reply_timestamp = models.DateTimeField(
+    blank=True, null=True,
+    help_text="Timestamp of admin's reply"
+    )
+
 
     def __str__(self):
         return f"{self.role.capitalize()} - {self.timestamp}"
