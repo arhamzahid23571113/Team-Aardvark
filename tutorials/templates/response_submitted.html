@@ -1,4 +1,4 @@
-{% extends 'dashboard_base_admin.html' %}
+{% extends base_template %}
 
 {% block title %} Response Successful{% endblock %}
 <!-- For  making successful  request -->
@@ -13,11 +13,11 @@
             <p class="text-secondary">
                 Redirecting to your dashboard in <span id="countdown">5</span> seconds...
             </p>
-            <a href="{% url 'admin_dashboard' %}" class="btn btn-success mt-3">Go to Dashboard Now</a>
+            <a href="{{dashboard_url}}" class="btn btn-success mt-3">Go to Dashboard Now</a>
         </div>
     </div>
 </div>
 
 <!-- Meta tag for auto-redirection -->
-<meta http-equiv="refresh" content="5; url={% url 'admin_dashboard' %}">
+<meta http-equiv="refresh" content="5; url={{dashboard_url}}">
 {% endblock %}
