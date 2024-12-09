@@ -7,7 +7,8 @@ from django.conf import settings
 from django.conf import settings
 
 class User(AbstractUser):
-    """Model for user authentication and profile information."""
+    """Model used for user authentication, and team member-related information."""
+    
     username = models.CharField(
         max_length=30,
         unique=True,
@@ -32,22 +33,25 @@ class User(AbstractUser):
         help_text="Comma-separated list of programming languages or topics the tutor specializes in."
     )
 
-    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
+    profile_picture = models.ImageField(
+        upload_to='profile_pictures/', 
+        default='profile_pictures/default.jpg', 
+        blank=True
+    )
 
     class Meta:
         ordering = ['last_name', 'first_name']
 
     def full_name(self):
-        """Return a string containing the user's full name."""
         return f'{self.first_name} {self.last_name}'
 
     def gravatar(self, size=120):
-        """Return a URL to the user's gravatar."""
+        if self.profile_picture and self.profile_picture.name != 'profile_pictures/default.jpg':
+            return self.profile_picture.url
         gravatar_object = Gravatar(self.email)
         return gravatar_object.get_image(size=size, default='mp')
 
     def mini_gravatar(self):
-        """Return a URL to a miniature version of the user's gravatar."""
         return self.gravatar(size=60)
 
 class Invoice(models.Model):
