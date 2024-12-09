@@ -107,6 +107,7 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
             password=self.cleaned_data.get('new_password'),
             role=self.cleaned_data.get('role'),
         )
+
         if commit:
             user.save()
         return user

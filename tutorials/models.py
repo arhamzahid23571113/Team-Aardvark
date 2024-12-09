@@ -8,6 +8,7 @@ from django.conf import settings
 
 class User(AbstractUser):
     """Model used for user authentication, and team member-related information."""
+    """Model used for user authentication, and team member-related information."""
 
     username = models.CharField(
         max_length=30,
@@ -29,6 +30,10 @@ class User(AbstractUser):
     )
     role = models.CharField(max_length=10, choices=ROLES, default='student')
 
+    expertise = models.TextField(
+        blank=True, null=True,
+        help_text="Comma-separated list of programming languages or topics the tutor specializes in."
+    )
     expertise = models.TextField(
         blank=True, null=True,
         help_text="Comma-separated list of programming languages or topics the tutor specializes in."
@@ -64,6 +69,10 @@ class Invoice(models.Model):
         max_length=20,
         choices=[('Paid', 'Paid'), ('Unpaid', 'Unpaid')]
     )
+    payment_status = models.CharField(
+        max_length=20,
+        choices=[('Paid', 'Paid'), ('Unpaid', 'Unpaid')]
+    )
     invoice_date = models.DateField(auto_now_add=True)
     payment_date = models.DateField(null=True, blank=True)
 
@@ -73,6 +82,7 @@ class Invoice(models.Model):
 class LessonRequest(models.Model):
     """Model for students to make request lessons"""
     student = models.ForeignKey(
+
         settings.AUTH_USER_MODEL,
         related_name="lesson_requests",
         on_delete=models.CASCADE,
@@ -85,6 +95,7 @@ class LessonRequest(models.Model):
         null=True,
         blank=True,
         help_text="The tutor assigned to this lesson request. Null if unallocated."
+
     )
     status = models.CharField(
         max_length=20,
@@ -93,6 +104,7 @@ class LessonRequest(models.Model):
             ('Allocated', 'Allocated'),
             ('Cancelled', 'Cancelled')
         ],
+
         default='Unallocated',
         help_text="The current status of the lesson request."
     )
@@ -104,12 +116,14 @@ class LessonRequest(models.Model):
         blank=True,
         default="Python Programming",  
         help_text="Describe what you would like to learn (e.g Web Development with Django)."
+
     )
     requested_frequency = models.CharField(
         max_length=20,
         default="Weekly",  
         help_text="How often would you like your lessons (e.g Weekly, Fortnightly)?"
     )
+
     requested_duration = models.PositiveIntegerField(
         default=60,  
         help_text="Lesson duration in minutes."

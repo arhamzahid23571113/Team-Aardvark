@@ -192,3 +192,4 @@ def create_email(first_name, last_name):
                 payment_status=random.choice(['Paid', 'Unpaid']),
             )
         print("Invoices created.")
+
