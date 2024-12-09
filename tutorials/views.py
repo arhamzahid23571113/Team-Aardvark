@@ -164,20 +164,24 @@ class PasswordView(LoginRequiredMixin, FormView):
 
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
-     """Display user profile editing screen and handle profile modifications."""
+    """Display user profile editing screen and handle profile modifications."""
 
-     model = User
-     template_name = "profile.html"
-     form_class = UserForm
+    model = User
+    template_name = "profile.html"
+    form_class = UserForm
 
-     def get_object(self):
+    def get_object(self):
         return self.request.user
 
-     def get_success_url(self):
-        messages.success(self.request, "Profile updated!")
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, "Profile updated successfully!")
+        return response
+
+    def get_success_url(self):
         return reverse('dashboard')
 
-     def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         # Determine the base template based on the user's role
