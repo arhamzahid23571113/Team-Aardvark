@@ -4,8 +4,10 @@ from django.db import models
 from libgravatar import Gravatar
 from django.conf import settings
 
+from django.conf import settings
 
 class User(AbstractUser):
+    """Model used for user authentication, and team member-related information."""
     """Model used for user authentication, and team member-related information."""
 
     username = models.CharField(
@@ -32,6 +34,10 @@ class User(AbstractUser):
         blank=True, null=True,
         help_text="Comma-separated list of programming languages or topics the tutor specializes in."
     )
+    expertise = models.TextField(
+        blank=True, null=True,
+        help_text="Comma-separated list of programming languages or topics the tutor specializes in."
+    )
 
     class Meta:
         """Model options."""
@@ -52,11 +58,17 @@ class User(AbstractUser):
 
 class Invoice(models.Model):
     """Model for invoices and tracking payment status"""
-
-    student = models.ForeignKey(User, related_name="invoices",on_delete=models.CASCADE)
-
+    student = models.ForeignKey(
+        User,
+        related_name="invoices",  # Unique related_name for Invoice
+        on_delete=models.CASCADE
+    )
     amount_due = models.DecimalField(max_digits=8, decimal_places=2)
     due_date = models.DateField()
+    payment_status = models.CharField(
+        max_length=20,
+        choices=[('Paid', 'Paid'), ('Unpaid', 'Unpaid')]
+    )
     payment_status = models.CharField(
         max_length=20,
         choices=[('Paid', 'Paid'), ('Unpaid', 'Unpaid')]
@@ -67,11 +79,8 @@ class Invoice(models.Model):
     def __str__(self):
         return f"Invoice for {self.student.first_name} {self.student.last_name}"
 
-
-
-
 class LessonRequest(models.Model):
-    """Model for students to request lessons"""
+    """Model for students to make request lessons"""
     student = models.ForeignKey(
 
         settings.AUTH_USER_MODEL,
@@ -93,7 +102,6 @@ class LessonRequest(models.Model):
         choices=[
             ('Unallocated', 'Unallocated'),
             ('Allocated', 'Allocated'),
-            ('Pending', 'Pending'),
             ('Cancelled', 'Cancelled')
         ],
 
@@ -106,39 +114,36 @@ class LessonRequest(models.Model):
     )
     requested_topic = models.TextField(
         blank=True,
-        default="Python Programming",  # Default topic
+        default="Python Programming",  
         help_text="Describe what you would like to learn (e.g Web Development with Django)."
 
     )
     requested_frequency = models.CharField(
         max_length=20,
-        default="Weekly",  # Default frequency
+        default="Weekly",  
         help_text="How often would you like your lessons (e.g Weekly, Fortnightly)?"
     )
 
     requested_duration = models.PositiveIntegerField(
-        default=60,  # Default duration in minutes
+        default=60,  
         help_text="Lesson duration in minutes."
     )
     requested_time = models.TimeField(
-        default="09:00:00",  # Default time (9:00 AM)
+        default="09:00:00",  
         help_text="Preferred time for the lesson."
     )
     preferred_day = models.CharField(
         max_length=10,
-        default="Monday",  # Default preferred day
+        default="Monday",  
         help_text="Preferred day for the lesson."
     )
     experience_level = models.TextField(
-        default="No Experience",  # Default experience level
-
+        default="No Experience",  
         help_text="Describe your level of experience with this topic."
     )
     additional_notes = models.TextField(
         blank=True,
-
-     
-            default="",  # Empty string as default for additional notes
+        default="",  
         help_text="Additional information or requests."
     )
 
@@ -150,8 +155,16 @@ class LessonRequest(models.Model):
     def __str__(self):
         return f"Lesson Request by {self.student.username} for {self.requested_topic}"
 
+    class Meta:
+        verbose_name = "Lesson Request"
+        verbose_name_plural = "Lesson Requests"
+        ordering = ['-request_date']
+
+    def __str__(self):
+        return f"Lesson Request by {self.student.username} for {self.requested_topic}"
 
 
+#amina
 
 class Lesson(models.Model):
     title = models.CharField(max_length=255, help_text="The title of the lesson")
@@ -175,10 +188,13 @@ class Lesson(models.Model):
     def __str__(self):
         return self.title
 
-
+#AMINA'S:
 
 
 class Timetable(models.Model):
+    
+    tutor = models.ForeignKey(User, related_name="tutor_timetables", on_delete=models.CASCADE)
+    student = models.ForeignKey(User, related_name="student_timetables", on_delete=models.CASCADE)
     tutor = models.ForeignKey(
         User,
         related_name="tutor_timetables",  # Unique related_name for tutor in Timetable
@@ -192,14 +208,8 @@ class Timetable(models.Model):
     date = models.DateField(help_text="The date of the lesson")
     start_time = models.TimeField(help_text="Lesson start time")
     end_time = models.TimeField(help_text="Lesson end time")
-    is_attended = models.BooleanField(
-        default=False,
-        help_text="Has the student attended this lesson?"
-    )
-    notes = models.TextField(
-        blank=True, null=True,
-        help_text="Additional notes about the lesson"
-    )
+    is_attended = models.BooleanField(default=False, help_text="Has the student attended this lesson?")
+    notes = models.TextField(blank=True, null=True, help_text="Additional notes about the lesson")
 
     def __str__(self):
         return f"Lesson: {self.tutor.full_name()} teaching {self.student.full_name()} on {self.date}"
@@ -209,22 +219,45 @@ class Timetable(models.Model):
 class LessonBooking(models.Model):
     """Models used for showing lesson bookings between students and tutors"""
 
-    # Relationships
     student = models.ForeignKey(User, related_name="student_lessons", on_delete=models.CASCADE)
     tutor = models.ForeignKey(User, related_name="tutor_lessons", on_delete=models.CASCADE,null=True,blank=True)
 
-    # Fields matching the template
-    topic = models.CharField(max_length=100)  # Use CharField for the dropdown of topics
-    duration = models.IntegerField()  # Duration as int (e.g., "30 Minutes")
-    time = models.TimeField()  # Time input for preferred time
-    lesson_date = models.DateField()  # Placeholder for the actual date
+    topic = models.CharField(max_length=100)  
+    duration = models.IntegerField() 
+    time = models.TimeField()  
+    lesson_date = models.DateField()  
 
-    # New fields from the template
-    frequency = models.CharField(max_length=20)  # Weekly/Fortnightly
-    preferred_day = models.CharField(max_length=10)  # Dropdown of weekdays
-    experience_level = models.CharField(max_length=20)  # No Experience/Beginner/Intermediate/Advanced
-    additional_notes = models.TextField(blank=True, null=True)  # Additional Notes
+    frequency = models.CharField(max_length=20)  
+    preferred_day = models.CharField(max_length=10)  
+    experience_level = models.CharField(max_length=20)  
+    additional_notes = models.TextField(blank=True, null=True)  
 
     def __str__(self):
         return f"{self.student.username} - {self.topic} with {self.tutor.username}"
+        
+class ContactMessage(models.Model):
+    ROLES = [
+        ('student', 'Student'),
+        ('tutor', 'Tutor'),
+    ]
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='messages')
+    role = models.CharField(max_length=10, choices = ROLES)
+    message = models.TextField(
+        blank = True,
+        default="",
+        help_text="Write your message to the admin here"
+    )
+    reply = models.TextField(
+        blank = True,
+        default="",
+        help_text="Admins reply to message"
+    )
+    timestamp = models.DateTimeField(auto_now_add=True)
+    reply_timestamp = models.DateTimeField(
+    blank=True, null=True,
+    help_text="Timestamp of admin's reply"
+    )
 
+
+    def __str__(self):
+        return f"{self.role.capitalize()} - {self.timestamp}"

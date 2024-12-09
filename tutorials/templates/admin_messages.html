@@ -1,0 +1,33 @@
+{% extends "dashboard_base_admin.html" %}
+
+{% block title %}Admin Messages Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1 class="text-center  text-dashboard-purple mt-4">Admin Messages</h1>
+  
+  <!-- Cards Section -->
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <!-- Student Card -->
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Student Messages</h5>
+          <p class="card-text">View all messages sent by students.</p>
+          <a href="{% url 'view_student_messages' role='student' %}" class="btn btn-outline-light">View Student Messages</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-6">
+      <!-- Tutor Card -->
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Tutor Messages</h5>
+          <p class="card-text">View all messages sent by tutors.</p>
+          <a href="{% url 'view_tutor_messages' role='tutor' %}" class="btn btn-outline-light">View Tutor Messages</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

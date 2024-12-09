@@ -95,7 +95,7 @@ main {
 
 /* Animated form controls */
 .form-select, .form-control {
-    background-color: #4b0082; /* Dark purple background */
+    background-color: #4b0082; /* Dark purple background for forms*/
     color: #ffffff; /* White text */
     border: 1px solid #6a0dad; /* Lighter purple border */
     border-radius: 5px;
@@ -106,12 +106,12 @@ main {
     background-color: #6a0dad; /* Lighter purple when focused */
     color: #ffffff;
     border-color: #4b0082; /* Darker purple border */
-    box-shadow: 0 0 10px rgba(75, 0, 130, 0.5); /* Glowing purple border */
+    box-shadow: 0 0 10px rgba(75, 0, 130, 0.5); /* Glowing purple border for forms */
 }
 
 /* Submit button with gradient animation */
 .btn-dashboard-purple {
-    background: linear-gradient(135deg, #4b0082, #6a0dad); /* Gradient background */
+    background: linear-gradient(135deg, #4b0082, #6a0dad); /* Gradient background for dashboards*/
     color: #ffffff; /* White text */
     border: none;
     border-radius: 5px;
@@ -155,9 +155,9 @@ main {
 }
 
 .table-bordered thead th {
-    background: linear-gradient(135deg, #6a0dad, #9b66c7); /* Gradient header */
-    color: #ffffff; /* White text */
-    border-bottom: 2px solid #8465cb; /* Slightly darker border */
+    background: linear-gradient(135deg, #6a0dad, #9b66c7) !; /* Gradient header */
+    color: #ffffff !important; /* White text */
+    border-bottom: 2px solid #8465cb !important; /* Slightly darker border */
 }
 
 .table-bordered tbody tr:nth-of-type(odd) {
@@ -169,7 +169,7 @@ main {
 }
 
 .table-bordered tbody tr:hover {
-    background: linear-gradient(135deg, #6a0dad, #4b0082); /* Highlight row on hover */
+    background: linear-gradient(135deg, #6a0dad, #4b0082) !important; /* Highlight row on hover */
     color: #ffffff; /* White text */
 }
 
@@ -196,6 +196,61 @@ main {
 
 /* Add Rounded Corners to Table */
 .table-bordered {
-    border-radius: 10px; /* Rounded corners */
-    overflow: hidden; /* Ensures the corners apply to the content */
+    border-radius: 10px; /* Rounded corners for tables*/
+    overflow: hidden; 
 }
+
+.table-bordered tbody td,
+.table-bordered thead th {
+    color: #ffffff !important; /*  white text for all fields  contents etc*/
+}
+
+
+
+  .calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7 columns for 7 days of the week */
+    gap: 10px;
+  }
+
+  .calendar .day {
+    border: 1px solid #ddd !important;
+    border-radius: 5px !important;
+    padding: 10px !important;
+    min-height: 120px !important;
+    background-color: #f8f9fa !important;
+    position: relative !important;
+    display: flex;
+    flex-direction: column !important;
+  }
+
+  .calendar .day-header {
+    font-weight: bold !important;
+    text-align: center !important;
+    background-color: #4e54c8 !important;
+    color: white !important;
+    padding: 5px !important;
+    border-radius: 5px !important;
+  }
+
+  .day-number {
+    position: absolute !important;
+    top: 10px !important;
+    right: 10px !important;
+    font-weight: bold !important;
+    color: #555 !important;
+  }
+
+  .event {
+    background-color: #4e54c8;
+    color: white;
+    padding: 5px;
+    margin-top: 10px;
+    border-radius: 3px;
+    font-size: 0.9em;
+  }
+
+  .empty-day {
+    background-color: #f0f0f0;
+    border: none;
+  }

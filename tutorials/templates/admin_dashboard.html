@@ -12,7 +12,7 @@
       <div class="card">
         <div class="card-header">Student Requests</div>
         <div class="card-body">
-          <p>View and manage all pending student lesson requests here.</p>
+          <p>View and manage all the pending student lesson requests here.</p>
           <a href="{% url 'student_requests' %}" class="btn btn-outline-light">View Requests</a>
         </div>
       </div>
@@ -21,10 +21,10 @@
     <!-- Tutor Schedules Card -->
     <div class="col-md-4 mb-3">
       <div class="card">
-        <div class="card-header">Tutor Schedules</div>
+        <div class="card-header">Tutor Timetable</div>
         <div class="card-body">
           <p>Manage tutor schedules and availability.</p>
-          <a href="#" class="btn btn-outline-light">View Schedules</a>
+          <a href="#" class="btn btn-outline-light">View Timetable</a>
         </div>
       </div>
     </div>
@@ -46,7 +46,7 @@
         <div class="card-header">Messages</div>
         <div class="card-body">
           <p>Review messages from students and tutors.</p>
-          <a href="#" class="btn btn-outline-light">View Messages</a>
+          <a href="{% url 'admin_messages' role='all' %}" class="btn btn-outline-light">View Messages</a>
         </div>
       </div>
     </div>

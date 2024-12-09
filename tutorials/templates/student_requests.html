@@ -36,9 +36,7 @@
                 <td>{{ request.requested_duration }} mins</td>
                 <td>{{ request.requested_time }}</td>
                 <td>
-                  {% if request.status == 'Pending' %}
-                    <span class="badge bg-warning text-dark">Pending</span>
-                  {% elif request.status == 'Allocated' %}
+                  {% if request.status == 'Allocated' %}
                     <span class="badge bg-success">Allocated</span>
                   {% elif request.status == 'Cancelled' %}
                     <span class="badge bg-danger">Cancelled</span>

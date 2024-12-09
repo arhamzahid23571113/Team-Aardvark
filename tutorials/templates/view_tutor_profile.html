@@ -11,7 +11,12 @@
       <p><strong>Email:</strong> {{ tutor.email }}</p>
       <p><strong>Expertise:</strong> {{ tutor.expertise|default:"Not provided" }}</p>
       <p><strong>Registered On:</strong> {{ tutor.date_joined|date:"M d, Y" }}</p>
+      <p><strong>Username:</strong>{{tutor.username}}</p>
+      <p><strong>Gravatar Url:</strong> {{tutor.gravatar}}</p>
     </div>
+    <div class="card-footer text-center">
+      <a href="{% url 'all_tutor_profiles' %}" class="btn btn-outline-light btn-sm">Return to all profiles</a>
+  </div>
   </div>
 </div>
 {% endblock %}
