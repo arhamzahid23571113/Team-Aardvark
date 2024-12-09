@@ -1,0 +1,42 @@
+{% extends 'dashboard_base_tutor.html' %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center text-dashboard-purple mt-4">My Profile</h1>
+        </div>
+    </div>
+
+    <div class="row mt-4 justify-content-center">
+        <!-- Profile Card -->
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-dark text-white text-center">
+                    <i class="fas fa-user-graduate"></i> Profile Details
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <img src="{{ user.gravatar }}" class="rounded-circle" alt="Profile Picture" width="120">
+                    </div>
+                    <h5 class="card-title text-center">{{ user.full_name }}</h5>
+                    <p class="text-center"><strong>Username:</strong> {{ user.username }}</p>
+                    <p class="text-center"><strong>Email:</strong> {{ user.email }}</p>
+                    <p class="text-center"><strong>Role:</strong> Tutor</p>
+                    <hr>
+                    <h6 class="text-center">Expertise</h6>
+                    <p class="text-center">{{ user.expertise|default:"No expertise listed" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4 justify-content-center">
+        <div class="col-md-6 text-center">
+            <a href="{% url 'profile' %}" class="btn btn-outline-dark">Edit Profile</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
