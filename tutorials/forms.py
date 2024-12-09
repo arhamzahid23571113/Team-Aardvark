@@ -29,7 +29,7 @@ class UserForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'username', 'email', 'role', 'profile_picture']
+        fields = ['first_name', 'last_name', 'username', 'email', 'role']
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
@@ -178,4 +178,8 @@ class AdminReplyBack(forms.ModelForm):
         Widgets = {
             'reply': forms.Textarea(attrs={'row':4, 'placeholder': 'Write response here'}),
         }
-           
+
+class ProfilePictureForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['profile_picture']           

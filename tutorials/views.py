@@ -14,6 +14,7 @@ from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from tutorials.forms import LogInForm, PasswordForm, UserForm, SignUpForm
 from tutorials.helpers import login_prohibited
+from .forms import ProfilePictureForm
 
 
 from .models import Lesson
@@ -1021,20 +1022,50 @@ def student_messages(request):
 
 @login_required
 def tutor_profile(request):
-    """Display the tutor's profile with relevant information."""
+    """Display and update the tutor's profile."""
     if request.user.role != 'tutor':
         messages.error(request, "Access denied. Only tutors can view this page.")
         return redirect('dashboard')
 
     tutor = request.user
-    lessons = Lesson.objects.filter(tutor=tutor).order_by('-date')
-    lesson_bookings = LessonBooking.objects.filter(tutor=tutor).order_by('-lesson_date')
-    timetable = Timetable.objects.filter(tutor=tutor).order_by('date', 'start_time')
+
+    if request.method == 'POST':
+        form = ProfilePictureForm(request.POST, request.FILES, instance=tutor)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profile picture updated successfully!")
+            return redirect('tutor_profile')
+    else:
+        form = ProfilePictureForm(instance=tutor)
 
     context = {
         'tutor': tutor,
-        'lessons': lessons,
-        'lesson_bookings': lesson_bookings,
-        'timetable': timetable,
+        'form': form,
     }
     return render(request, 'tutor_profile.html', context)
+
+@login_required
+def edit_profile(request):
+    """Allow the tutor to edit their profile details and profile picture."""
+    user = request.user
+
+    if request.method == "POST":
+        form = UserForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            profile_picture = request.FILES.get('profile_picture')
+            if profile_picture:
+                user.profile_picture = profile_picture
+                user.save()
+            messages.success(request, "Profile updated successfully!")
+            return redirect('tutor_profile')
+    else:
+        form = UserForm(instance=user)
+
+    # Determine the base template based on the user's role
+    profile_base_template = 'dashboard_base_tutor.html' if user.role == 'tutor' else 'dashboard.html'
+
+    return render(request, 'edit_my_tutor_profile.html', {
+        'form': form,
+        'profile_base_template': profile_base_template,
+    })
