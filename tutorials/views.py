@@ -292,7 +292,22 @@ def see_my_students_profile(request):
 #STUDENTS
 @login_required
 def lesson_request_success(request):
-    return render(request, 'lesson_request_success.html')
+    dashboard_url = reverse('dashboard')
+    if request.user.is_authenticated:
+        if request.user.role == 'tutor':
+            base_template = 'dashboard_base_tutor.html'
+            dashboard_url = reverse('tutor_dashboard')
+        elif request.user.role == 'student':
+            base_template = 'dashboard_base_student.html'
+            dashboard_url = reverse('student_dashboard')
+        elif request.user.role == 'admin':
+            base_template = 'dashboard_base_admin.html'
+            dashboard_url = reverse('admin_dashboard')
+        else:
+            base_template = 'dashboard.html'
+    else:
+        base_template = 'dashboard.html'
+    return render(request, 'lesson_request_success.html',{'base_template':base_template,'dashboard_url':dashboard_url})
 
 
 #ADMINS
