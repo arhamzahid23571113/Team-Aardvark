@@ -69,6 +69,7 @@ urlpatterns = [
     path('admin_reply/<int:message_id>/', views.admin_reply, name='admin_reply'),
     path('tutor_messages/', views.tutor_messages, name='tutor_messages'),
     path('student_messages/', views.student_messages, name='student_messages'),
+    path('tutor/my_profile/', views.tutor_profile, name='tutor_profile'),
 
 
 
