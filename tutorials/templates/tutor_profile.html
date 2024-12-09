@@ -19,7 +19,22 @@
                 </div>
                 <div class="card-body">
                     <div class="text-center mb-3">
-                        <img src="{{ user.gravatar }}" class="rounded-circle" alt="Profile Picture" width="120">
+                        <form action="{% url 'profile' %}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <img 
+                                src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}{{ user.gravatar }}{% endif %}" 
+                                class="rounded-circle mb-3" 
+                                alt="Profile Picture" 
+                                width="120"
+                            >
+                            <input 
+                                type="file" 
+                                name="profile_picture" 
+                                class="form-control mb-3"
+                                accept="image/*"
+                            >
+                            <button type="submit" class="btn btn-outline-dark">Update Picture</button>
+                        </form>
                     </div>
                     <h5 class="card-title text-center">{{ user.full_name }}</h5>
                     <p class="text-center"><strong>Username:</strong> {{ user.username }}</p>
