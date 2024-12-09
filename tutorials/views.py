@@ -1014,3 +1014,23 @@ def student_messages(request):
     student = request.user
     studentMessages = ContactMessage.objects.filter(user=student).order_by('timestamp')
     return render(request,'student_messages.html',{'messages':studentMessages})
+
+@login_required
+def tutor_profile(request):
+    """Display the tutor's profile with relevant information."""
+    if request.user.role != 'tutor':
+        messages.error(request, "Access denied. Only tutors can view this page.")
+        return redirect('dashboard')
+
+    tutor = request.user
+    lessons = Lesson.objects.filter(tutor=tutor).order_by('-date')
+    lesson_bookings = LessonBooking.objects.filter(tutor=tutor).order_by('-lesson_date')
+    timetable = Timetable.objects.filter(tutor=tutor).order_by('date', 'start_time')
+
+    context = {
+        'tutor': tutor,
+        'lessons': lessons,
+        'lesson_bookings': lesson_bookings,
+        'timetable': timetable,
+    }
+    return render(request, 'tutor_profile.html', context)
