@@ -2,34 +2,56 @@
     color: #ffffff !important;
 }
 
-.invoice-page .card-header {
+/*.invoice-page .card-header {
     background-color: transparent !important; 
     border-bottom: none;
     font-weight: bold;
+}*/
+
+.invoice-page .card-header {
+    background: transparent !important; 
+    color: #ffffff !important; 
+    border-bottom: none; 
+    border-radius: 20px 20px 0 0; 
+    padding: 15px; 
+    font-weight: bold; 
 }
 
-.card-body-prices {
+.invoice-page .card {
+    background: transparent !important; 
+    border: none;
+    color: #ffffff;
+    min-height: 150px;
+    transition: none!important;
+}
+
+.invoice-page .card:hover {
+    transform: none !important;
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.1) !important;
+}
+
+.invoice-page .card-body.card-body-prices {
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); 
     padding: 1rem; 
     margin-bottom: 1.25rem;
-    background-color: transparent !important;
+    background-color: #000000 !important;
     border-radius: 0.375rem; 
     border: none; 
     text-align: center; 
 }
 
 .pricing-alert {
-    background-color: #6a0dad;
+    background-color: #787de0;
     color: #ffffff;
-    border: 5px solid #4b0082;
+    border: 5px solid #4e54c8;
 }
 
 .header-alert {
-    background-color:#6a0dad
+    background: linear-gradient(135deg, #4e54c8 0%, #f2fcfe 100%)
 }
 
 .invoice-titles {
-    color: #ffffff; 
+    color: #787de0; 
     font-weight: bold;
     margin-top: 1px; 
     margin-bottom: 1px;
@@ -47,7 +69,7 @@ hr.my-4 {
 }
 
 .btn-prev:hover, .btn-next:hover {
-    color: #4b0082;
+    color: #4e54c8;
     transform: scale(1.1);
     box-shadow: 0 4px 20px rgba(106, 13, 173, 0.2); 
 

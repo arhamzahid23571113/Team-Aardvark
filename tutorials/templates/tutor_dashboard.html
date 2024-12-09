@@ -19,11 +19,11 @@
     <div class="col-md-4 mb-4">
       <div class="card shadow text-center h-100">
         <div class="card-header">
-          <i class="fas fa-calendar-alt"></i> Your Schedule
+          <i class="fas fa-calendar-alt"></i> Your Timetable
         </div>
         <div class="card-body">
           <p>View your upcoming lessons and availability here.</p>
-          <a href="#" class="btn btn-outline-light">View Schedule</a>
+          <a href="#" class="btn btn-outline-light">View Timetable</a>
         </div>
       </div>
     </div>
@@ -36,7 +36,7 @@
         </div>
         <div class="card-body">
           <p>Access profiles of students assigned to you.</p>
-          <a href="#" class="btn btn-outline-light">View Profiles</a>
+          <a href="{% url 'my_students_profile' %}" class="btn btn-outline-light">View Profiles</a>
         </div>
       </div>
     </div>
@@ -45,11 +45,11 @@
     <div class="col-md-4 mb-4">
       <div class="card shadow text-center h-100">
         <div class="card-header">
-          <i class="fas fa-envelope"></i> Communicate with Admin
+          <i class="fas fa-envelope"></i> Contact with Admin
         </div>
         <div class="card-body">
           <p>Send messages or report issues to the admin team.</p>
-          <a href="#" class="btn btn-outline-light">Contact Admin</a>
+          <a href="{% url 'contact_admin' %}" class="btn btn-outline-light">Contact Admin</a>
         </div>
       </div>
     </div>
@@ -62,7 +62,7 @@
         </div>
         <div class="card-body">
           <p>Update your profile and other personal details.</p>
-          <a href="#" class="btn btn-outline-light">Update Details</a>
+          <a href="profile" class="btn btn-outline-light">Update Details</a>
         </div>
       </div>
     </div>

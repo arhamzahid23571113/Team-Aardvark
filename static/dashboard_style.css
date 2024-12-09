@@ -1,62 +1,82 @@
 /* Purple color for the dashboard title */
 .text-dashboard-purple {
-    color: #fbf9fc !important; /* Light purple for the title */
+    color: #4e54c8 !important; /* Light purple for the title */
+    animation: gradientText 3s infinite !important; /* Animated gradient text */
 }
 
-/* Dark purple background for navbar */
+/* Dark purple background for navbar with gradient animation */
 .navbar-dark.bg-dark {
-    background-color: #4b0082 !important;
+    background: linear-gradient(135deg, #4e54c8 0%, #f2fcfe 100%) !important;
+    animation: gradientBg 5s infinite alternate; /* Animated gradient background */
 }
 
-/* Full-height sidebar with dark purple background */
+/* Full-height sidebar with animated dark purple gradient */
 #sidebar {
     position: sticky;
+    overflow-y: auto;
     height: 100vh;
     padding-top: 20px;
-    background-color: #4b0082 !important; /* Dark purple */
+    background: linear-gradient(135deg, #4e54c8 0%, #f2fcfe 100%) !important;
+    animation: gradientBg 5s infinite alternate; /* Animated gradient background */
+    color: #ffffff !important; /* Ensure white text */
 }
 
-/* Sidebar links */
+/* Sidebar links with transitions */
 #sidebar .nav-link {
     color: #ffffff !important;
     font-size: 1.1rem;
     padding: 10px 15px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 #sidebar .nav-link:hover {
     background-color: #6a0dad; /* Lighter purple for hover */
     color: #ffffff;
     border-radius: 5px;
+    transform: scale(1.05); /* Slight zoom on hover */
 }
 
 /* White text for navbar and sidebar brand */
 .navbar-brand, .nav-link {
     color: #ffffff !important;
+    transition: color 0.3s ease !important;
 }
 
 /* Light background for the main content area to create contrast */
 main {
     padding-top: 20px;
-    background-color: #8465cb !important;
+    background-color: #ddd6ee !important;
+    animation: fadeIn 1.5s ease-out !important; /* Smooth fade-in effect */
 }
 
-/* Card styling */
+/* Card styling with hover effect */
 .card {
-    background-color: #4b0082; /* Dark purple background */
+    background: linear-gradient(135deg, #4e54c8 0%, #f2fcfe 100%) !important; /* Gradient background */
     border: none;
     color: #ffffff; /* White text */
     min-height: 150px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.card:hover {
+    transform: translateY(-10px); /* Lift the card on hover */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
 }
 
 .card-header {
-    background-color: #6a0dad !important; /* Lighter purple for headers */
-    border-bottom: none;
+    background: linear-gradient(135deg, #4e54c8 0%, #f2fcfe 100%) !important; /* Gradient background */
+    color: #ffffff !important; /* White text for readability */
+    border-bottom: none; /* Remove border */
+    border-radius: 10px 10px 0 0; /* Rounded corners for the top of the card */
+    padding: 15px; /* Add some padding for spacing */
+    font-weight: bold; /* Make text bold for emphasis */
 }
 
-/* Button styling */
+/* Button styling with hover animations */
 .btn-outline-primary {
     color: #4b0082;
     border-color: #4b0082 !important;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .btn-outline-primary:hover {
@@ -64,10 +84,10 @@ main {
     color: rgb(223, 210, 210);
 }
 
-/* Light button style that fits the dark purple background */
 .btn-outline-light {
     color: #ffffff; /* White text */
     border-color: #ffffff !important; /* White border */
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .btn-outline-light:hover {
@@ -75,83 +95,109 @@ main {
     color: #4b0082 !important; /* Dark purple text on hover */
 }
 
-/* Adjust the card text color to ensure readability */
-.bg-dark-purple .card-header, .bg-dark-purple .card-body {
-    color: #ffffff !important;
-}
-
-/* Add some spacing around cards */
-.card {
-    margin-bottom: 20px;
-}
-
-/* Styles for the logo */
-.navbar-logo {
-    font-size: 1.5rem !important;         /* Make the logo larger */
-    font-weight: bold  !important;         /* Make the logo bold */
-    color: #fff  !important;               /* Ensure the logo text is white */
-    padding-left: 20px  !important;        /* Adds space to the left to shift it right */
-}
-
-.navbar-logo:hover {
-    color: #f0f0f0  !important;            /* Slight color change on hover */
-    text-decoration: none !important;     /* Remove underline on hover */
-}
-
-/* Center the logo on the navbar */
-.navbar .container-fluid {
-    justify-content: center  !important;  /* Centers the content inside the navbar */
-}
-/* Custom purple style for form labels */
-.form-label {
-    color: #ffffff; /* White text for labels to match the dark purple theme */
-    font-weight: bold;
-}
-
-/* Dark purple background for form select and input elements */
+/* Animated form controls */
 .form-select, .form-control {
     background-color: #4b0082; /* Dark purple background */
     color: #ffffff; /* White text */
     border: 1px solid #6a0dad; /* Lighter purple border */
     border-radius: 5px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .form-select:focus, .form-control:focus {
     background-color: #6a0dad; /* Lighter purple when focused */
     color: #ffffff;
     border-color: #4b0082; /* Darker purple border */
-    box-shadow: 0 0 5px rgba(75, 0, 130, 0.5); /* Subtle purple glow */
+    box-shadow: 0 0 10px rgba(75, 0, 130, 0.5); /* Glowing purple border */
 }
 
-/* Placeholder text color in input and textarea */
-::placeholder {
-    color: #9b66c7; /* Light lavender placeholder text for readability */
-}
-
-/* Additional styles for textarea */
-.form-control {
-    color: #ffffff;
-    resize: vertical; /* Allow vertical resizing */
-}
-
-/* Submit button styling */
+/* Submit button with gradient animation */
 .btn-dashboard-purple {
-    background-color: #4b0082; /* Dark purple background */
+    background: linear-gradient(135deg, #4b0082, #6a0dad); /* Gradient background */
     color: #ffffff; /* White text */
     border: none;
     border-radius: 5px;
     padding: 10px 20px;
     font-size: 1rem;
     font-weight: bold;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .btn-dashboard-purple:hover {
-    background-color: #6a0dad; /* Slightly lighter purple on hover */
+    background: linear-gradient(135deg, #6a0dad, #4b0082); /* Reverse gradient on hover */
     color: #ffffff;
+    transform: translateY(-2px); /* Slight lift effect */
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); /* Shadow on hover */
 }
 
-/* Make form labels bold and white */
-.form-label.text-white.font-weight-bold {
-    color: #ffffff !important;  /* White color */
-    font-weight: bold !important;  /* Bold font */
+/* Gradient text animation */
+@keyframes gradientText {
+    0% { color: #4b0082; }
+    50% { color: #6a0dad; }
+    100% { color: #4b0082; }
+}
+
+/* Background gradient animation */
+@keyframes gradientBg {
+    0% { background: linear-gradient(135deg, #4b0082, #6a0dad); }
+    100% { background: linear-gradient(135deg, #6a0dad, #4b0082); }
+}
+
+/* Smooth fade-in */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Gradient Purple Table Styling */
+.table-bordered {
+    background: linear-gradient(135deg, #4b0082, #6a0dad); /* Gradient background */
+    color: #ffffff; /* White text */
+    border-color: #6a0dad; /* Light purple borders */
+}
+
+.table-bordered thead th {
+    background: linear-gradient(135deg, #6a0dad, #9b66c7); /* Gradient header */
+    color: #ffffff; /* White text */
+    border-bottom: 2px solid #8465cb; /* Slightly darker border */
+}
+
+.table-bordered tbody tr:nth-of-type(odd) {
+    background: rgba(75, 0, 130, 0.3); /* Subtle purple for odd rows */
+}
+
+.table-bordered tbody tr:nth-of-type(even) {
+    background: rgba(75, 0, 130, 0.2); /* Lighter purple for even rows */
+}
+
+.table-bordered tbody tr:hover {
+    background: linear-gradient(135deg, #6a0dad, #4b0082); /* Highlight row on hover */
+    color: #ffffff; /* White text */
+}
+
+/* Gradient Badges for Status */
+.badge.bg-warning {
+    background: linear-gradient(135deg, #ffd700, #ffbf00) !important; /* Gradient yellow for pending */
+    color: #212529 !important; /* Dark text */
+}
+
+.badge.bg-success {
+    background: linear-gradient(135deg, #28a745, #85d887) !important; /* Gradient green for allocated */
+    color: #ffffff !important; /* White text */
+}
+
+.badge.bg-danger {
+    background: linear-gradient(135deg, #dc3545, #ff6b6b) !important; /* Gradient red for cancelled */
+    color: #ffffff !important; /* White text */
+}
+
+.badge.bg-secondary {
+    background: linear-gradient(135deg, #6c757d, #b3b6b8) !important; /* Gradient gray for unallocated */
+    color: #ffffff !important; /* White text */
+}
+
+/* Add Rounded Corners to Table */
+.table-bordered {
+    border-radius: 10px; /* Rounded corners */
+    overflow: hidden; /* Ensures the corners apply to the content */
 }

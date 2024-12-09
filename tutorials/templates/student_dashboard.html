@@ -36,7 +36,7 @@
         </div>
         <div class="card-body">
           <p>Access profile of Tutor assigned to you.</p>
-          <a href="#" class="btn btn-outline-light">View Profile</a>
+          <a href="{% url 'my_tutor_profile'%}" class="btn btn-outline-light">View Profile</a>
         </div>
       </div>
     </div>
@@ -45,11 +45,11 @@
     <div class="col-md-4 mb-4">
       <div class="card shadow text-center h-100">
         <div class="card-header">
-          <i class="fas fa-envelope"></i> Communicate with Admin
+          <i class="fas fa-envelope"></i> Contact with Admin
         </div>
         <div class="card-body">
           <p>Send messages or report issues to the admin team.</p>
-          <a href="#" class="btn btn-outline-light">Contact Admin</a>
+          <a href="{% url 'contact_admin' %}" class="btn btn-outline-light">Contact Admin</a>
         </div>
       </div>
     </div>
@@ -78,7 +78,7 @@
         </div>
         <div class="card-body">
           <p>View financial information.</p>
-          <a href="#" class="btn btn-outline-light">View Invoices</a>
+          <a href="{% url 'invoice_page' invoice.id}" class="btn btn-outline-light">View Invoices</a>
         </div>
       </div>
     </div>
@@ -93,7 +93,7 @@
           <p>
         <pre>
     Book a new lesson with your tutor.
-(Tutor will have to review 
+(Admin will have to review 
 booking request once made.)
         </pre></p>
           <a href="{% url 'request_lesson' %}" class="btn btn-outline-light">Request a Lesson</a>

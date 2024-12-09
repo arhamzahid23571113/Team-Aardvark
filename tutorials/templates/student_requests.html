@@ -1,0 +1,94 @@
+{% extends 'dashboard_base_admin.html' %}
+{% block title %}Student Requests{% endblock %}
+<!-- For Admins to view all student lesson requests -->
+
+{% block content %}
+<div class="container mt-5">
+  <h1 class="text-center text-dashboard-purple mt-4">Lesson Requests by Students</h1>
+
+  {% if students_with_requests %}
+    {% for student, requests in students_with_requests.items %}
+      <div class="card mb-3">
+        <div class="card-header text-white" style="background-color: #6a0dad;">
+          {{ student.full_name }} ({{ student.email }})
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">Lesson Requests</h5>
+          <table class="table table-bordered" style="background-color: #4b0082; color: #ffffff; border-color: #6a0dad;">
+            <thead>
+              <tr style="background-color: #6a0dad;">
+                <th>#</th>
+                <th>Topic</th>
+                <th>Frequency</th>
+                <th>Duration</th>
+                <th>Preferred Time</th>
+                <th>Status</th>
+                <th>Request Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for request in requests %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ request.requested_topic }}</td>
+                <td>{{ request.requested_frequency }}</td>
+                <td>{{ request.requested_duration }} mins</td>
+                <td>{{ request.requested_time }}</td>
+                <td>
+                  {% if request.status == 'Pending' %}
+                    <span class="badge bg-warning text-dark">Pending</span>
+                  {% elif request.status == 'Allocated' %}
+                    <span class="badge bg-success">Allocated</span>
+                  {% elif request.status == 'Cancelled' %}
+                    <span class="badge bg-danger">Cancelled</span>
+                  {% else %}
+                    <span class="badge bg-secondary">Unallocated</span>
+                  {% endif %}
+                </td>
+                <td>{{ request.request_date|date:"M d, Y H:i" }}</td>
+                <td>
+                  {% if request.status != 'Cancelled' %}
+                    <!-- Cancel Request Form -->
+                    <form method="post" action="{% url 'cancel_request' request.id %}" style="display: inline;">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-outline-danger btn-sm mt-2">Cancel</button>
+                    </form>
+
+                    {% if request.tutor %}
+                      <!-- Unassign Form -->
+                      <form method="post" action="{% url 'unassign_tutor' request.id %}" style="display: inline;">
+                        {% csrf_token %}
+                        <span>Assigned to: {{ request.tutor.full_name }}</span>
+                        <button type="submit" class="btn btn-outline-danger btn-sm mt-2">Unassign</button>
+                      </form>
+                    {% else %}
+                      <!-- Assign Form -->
+                      <form method="post" action="{% url 'assign_tutor' request.id %}" style="display: inline;">
+                        {% csrf_token %}
+                        <select name="tutor_id" class="form-select" style="background-color: #6a0dad; color: #fff; border: 1px solid #8465cb;">
+                          <option value="" selected disabled>Assign Tutor</option>
+                          {% for tutor in tutors %}
+                          <option value="{{ tutor.id }}">{{ tutor.full_name }}</option>
+                          {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-outline-light btn-sm mt-2">Assign</button>
+                      </form>
+                    {% endif %}
+                  {% else %}
+                    <!-- Show a message for canceled requests -->
+                    <span class="text-muted">Request Canceled</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="text-center mt-4">No lesson requests found.</p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'dashboard_base_tutor.html' %}
+{% block title %}My Students{% endblock %}
+<!-- For Tutors to view their student profiles that admins have manually given them -->
+
+{% block content %}
+<div class="container mt-4">
+  <h1 class="text-center text-dashboard-purple mt-4">My Students</h1>
+  <p class="text-center text-dashboard-purple mb-4">Here are the profiles of students assigned to you.</p>
+
+  <div class="row">
+    {% if students %}
+      {% for student in students %}
+      <div class="col-md-4">
+        <div class="card p-3 mb-4 bg-dark-purple text-white rounded">
+          <!-- Student Profile Section -->
+          <div class="text-center">
+            <i class="bi bi-person-circle text-dashboard-purple mb-3" style="font-size: 100px;"></i>
+            <h4>{{ student.full_name }}</h4>
+            <p class="text-white-50"><strong>Email:</strong> {{ student.email }}</p>
+          </div>
+
+          <!-- Optional: Add additional student details here -->
+
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-center text-white">No students have been assigned to you yet.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

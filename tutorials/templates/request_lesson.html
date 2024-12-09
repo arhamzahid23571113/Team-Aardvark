@@ -1,55 +1,105 @@
 {% extends 'dashboard_base_student.html' %}
 {% block title %}Request a Lesson{% endblock %}
+<!-- For Students to make a lesson request which goes to admin  -->
 
 {% block content %}
 <div class="container mt-4">
   <h1 class="text-center text-dashboard-purple mt-4">Request a Lesson</h1>
-  <p class="text-center text-dashboard-purple mb-4">Here you can request a new lesson with your tutor</p>
-  
+  <p class="text-center text-dashboard-purple mb-4">Here you can request a new lesson tailored to your needs.</p>
+
+  <!-- Display form errors if any -->
+  {% if form.errors %}
+  <div class="alert alert-danger">
+    <p><strong>There were errors with your submission:</strong></p>
+    <ul>
+      {% for field, errors in form.errors.items %}
+        <li><strong>{{ field }}</strong>: {{ errors|join:", " }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  <!-- Lesson Request Form -->
   <form method="post" action="" class="p-4 bg-dark-purple rounded">
-    <!-- Tutor Selection Dropdown -->
-    <div class="mb-3">
-      <label for="tutor" class="form-label text-white font-weight-bold">Select Tutor</label>
-      <select class="form-select" id="tutor" name="tutor">
-        <option selected disabled>Select a tutor</option>
-        <option value="1">Tutor 1</option>
-        <option value="2">Tutor 2</option>
-        <option value="3">Tutor 3</option>
-      </select>
+    {% csrf_token %}
+
+    <!-- Topic Card -->
+    <div class="card mb-4">
+      <div class="card-header bg-dashboard-purple text-white">
+        Topic
+      </div>
+      <div class="card-body">
+        <label for="id_requested_topic" class="form-label text-dark">Select the topic you'd like to learn:</label>
+        {{ form.requested_topic }}
+      </div>
     </div>
-    
-    <!-- Programming Language Dropdown -->
-    <div class="mb-3">
-      <label for="language" class="form-label text-white font-weight-bold">Select Programming Language</label>
-      <select class="form-select" id="language" name="language">
-        <option selected disabled>Select a programming language</option>
-        <option value="python">Python</option>
-        <option value="javascript">JavaScript</option>
-        <option value="java">Java</option>
-        <option value="csharp">C#</option>
-        <option value="cpp">C++</option>
-      </select>
+
+    <!-- Frequency Card -->
+    <div class="card mb-4">
+      <div class="card-header bg-dashboard-purple text-white">
+        Lesson Frequency
+      </div>
+      <div class="card-body">
+        <label for="id_requested_frequency" class="form-label text-dark">How often would you like lessons?</label>
+        {{ form.requested_frequency }}
+      </div>
     </div>
-    
-    <!-- Date Picker -->
-    <div class="mb-3">
-      <label for="date" class="form-label text-white font-weight-bold">Select Date</label>
-      <input type="date" class="form-control" id="date" name="date">
+
+    <!-- Duration Card -->
+    <div class="card mb-4">
+      <div class="card-header bg-dashboard-purple text-white">
+        Lesson Duration
+      </div>
+      <div class="card-body">
+        <label for="id_requested_duration" class="form-label text-dark">Select the duration of each lesson:</label>
+        {{ form.requested_duration }}
+      </div>
     </div>
-    
-    <!-- Time Picker -->
-    <div class="mb-3">
-      <label for="time" class="form-label text-white font-weight-bold">Select Time</label>
-      <input type="time" class="form-control" id="time" name="time">
+
+    <!-- Preferred Day Card -->
+    <div class="card mb-4">
+      <div class="card-header bg-dashboard-purple text-white">
+        Preferred Day
+      </div>
+      <div class="card-body">
+        <label for="id_preferred_day" class="form-label text-dark">Which day works best for you?</label>
+        {{ form.preferred_day }}
+      </div>
     </div>
-    
-    <!-- Additional Comments -->
-    <div class="mb-3">
-      <label for="comments" class="form-label text-white font-weight-bold">Additional Comments</label>
-      <textarea class="form-control" id="comments" name="comments" rows="3" placeholder="Add any additional details here"></textarea>
+
+    <!-- Preferred Time Card -->
+    <div class="card mb-4">
+      <div class="card-header bg-dashboard-purple text-white">
+        Preferred Time
+      </div>
+      <div class="card-body">
+        <label for="id_requested_time" class="form-label text-dark">Choose your preferred time:</label>
+        {{ form.requested_time }}
+      </div>
     </div>
-    
-    <!-- Submit Button -->
+
+    <!-- Experience Level Card -->
+    <div class="card mb-4">
+      <div class="card-header bg-dashboard-purple text-white">
+        Experience Level
+      </div>
+      <div class="card-body">
+        <label for="id_experience_level" class="form-label text-dark">Describe your current experience level:</label>
+        {{ form.experience_level }}
+      </div>
+    </div>
+
+    <!-- Additional Notes Card -->
+    <div class="card mb-4">
+      <div class="card-header bg-dashboard-purple text-white">
+        Additional Notes
+      </div>
+      <div class="card-body">
+        <label for="id_additional_notes" class="form-label text-dark">Any extra information or requests?</label>
+        {{ form.additional_notes }}
+      </div>
+    </div>
+
     <button type="submit" class="btn btn-dashboard-purple btn-lg w-100 mt-3">Submit</button>
   </form>
 </div>
