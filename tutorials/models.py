@@ -7,9 +7,7 @@ from django.conf import settings
 from django.conf import settings
 
 class User(AbstractUser):
-    """Model used for user authentication, and team member-related information."""
-    """Model used for user authentication, and team member-related information."""
-
+    """Model for user authentication and profile information."""
     username = models.CharField(
         max_length=30,
         unique=True,
@@ -18,7 +16,6 @@ class User(AbstractUser):
             message='Username must consist of @ followed by at least three alphanumericals'
         )]
     )
-
     first_name = models.CharField(max_length=50, blank=False)
     last_name = models.CharField(max_length=50, blank=False)
     email = models.EmailField(unique=True, blank=False)
@@ -34,13 +31,10 @@ class User(AbstractUser):
         blank=True, null=True,
         help_text="Comma-separated list of programming languages or topics the tutor specializes in."
     )
-    expertise = models.TextField(
-        blank=True, null=True,
-        help_text="Comma-separated list of programming languages or topics the tutor specializes in."
-    )
+
+    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
 
     class Meta:
-        """Model options."""
         ordering = ['last_name', 'first_name']
 
     def full_name(self):
