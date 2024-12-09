@@ -20,7 +20,11 @@
                 <div class="card-body">
                     <!-- Profile Picture -->
                     <div class="text-center mb-3">
-                        <img src="{{ tutor.profile_picture.url }}" class="rounded-circle" alt="Profile Picture" width="120" height="120" onerror="this.onerror=null; this.src='/media/profile_pictures/default.jpg';">
+                        {% if tutor.profile_picture and tutor.profile_picture.url %}
+                            <img src="{{ tutor.profile_picture.url }}" class="rounded-circle" alt="Profile Picture" width="120" height="120">
+                        {% else %}
+                            <img src="/media/profile_pictures/default.jpg" class="rounded-circle" alt="Default Profile Picture" width="120" height="120">
+                        {% endif %}
                     </div>
 
                     <!-- User Details -->

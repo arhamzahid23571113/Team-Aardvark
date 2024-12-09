@@ -29,7 +29,13 @@ class UserForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'username', 'email', 'role']
+        fields = ['first_name', 'last_name', 'username', 'email', 'role', 'profile_picture', 'expertise']
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        if user and user.role == 'tutor':
+            self.fields.pop('role')  # Remove the role field for tutors
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
@@ -41,7 +47,6 @@ class UserForm(forms.ModelForm):
         if not self.is_valid():
             raise ValueError("The form contains invalid data.")
         return super().save(commit=commit)
-
 
 class NewPasswordMixin(forms.Form):
     """Form mixing for new_password and password_confirmation fields."""
@@ -177,9 +182,4 @@ class AdminReplyBack(forms.ModelForm):
         fields = ['reply']
         Widgets = {
             'reply': forms.Textarea(attrs={'row':4, 'placeholder': 'Write response here'}),
-        }
-
-class ProfilePictureForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = ['profile_picture']           
+        }       

@@ -14,7 +14,6 @@ from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from tutorials.forms import LogInForm, PasswordForm, UserForm, SignUpForm
 from tutorials.helpers import login_prohibited
-from .forms import ProfilePictureForm
 
 
 from .models import Lesson
@@ -1022,45 +1021,37 @@ def student_messages(request):
 
 @login_required
 def tutor_profile(request):
-    """Display and update the tutor's profile."""
+    """Display the tutor's profile."""
     if request.user.role != 'tutor':
         messages.error(request, "Access denied. Only tutors can view this page.")
         return redirect('dashboard')
 
     tutor = request.user
 
-    if request.method == 'POST':
-        form = ProfilePictureForm(request.POST, request.FILES, instance=tutor)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Profile picture updated successfully!")
-            return redirect('tutor_profile')
-    else:
-        form = ProfilePictureForm(instance=tutor)
-
     context = {
         'tutor': tutor,
-        'form': form,
     }
     return render(request, 'tutor_profile.html', context)
 
+
 @login_required
 def edit_profile(request):
-    """Allow the tutor to edit their profile details and profile picture."""
+    """Allow the tutor to edit their profile details, including profile picture and expertise."""
     user = request.user
 
     if request.method == "POST":
-        form = UserForm(request.POST, request.FILES, instance=user)
+        form = UserForm(request.POST, request.FILES, instance=user, user=user)
         if form.is_valid():
-            form.save()
-            profile_picture = request.FILES.get('profile_picture')
-            if profile_picture:
-                user.profile_picture = profile_picture
-                user.save()
+            # Save profile changes, including expertise and profile picture
+            user = form.save(commit=False)
+            user.expertise = form.cleaned_data.get('expertise')  # Ensure expertise is saved
+            if 'profile_picture' in request.FILES:
+                user.profile_picture = request.FILES['profile_picture']
+            user.save()
             messages.success(request, "Profile updated successfully!")
             return redirect('tutor_profile')
     else:
-        form = UserForm(instance=user)
+        form = UserForm(instance=user, user=user)
 
     # Determine the base template based on the user's role
     profile_base_template = 'dashboard_base_tutor.html' if user.role == 'tutor' else 'dashboard.html'
