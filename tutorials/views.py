@@ -145,7 +145,7 @@ class PasswordView(LoginRequiredMixin, FormView):
 
     def get_success_url(self):
         messages.success(self.request, "Password updated!")
-        return reverse('dashboard')
+        return reverse('log_in')
 
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
@@ -195,7 +195,7 @@ class SignUpView(LoginProhibitedMixin, FormView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse('dashboard')
+        return reverse('log_in')
 
 @login_required
 def admin_dashboard(request):
@@ -253,7 +253,7 @@ def contact_admin(request):
 @login_required
 def see_my_tutor(request):
     if request.user.role != 'student':
-        return redirect('dashboard')
+        return redirect('log_in')
     
     assigned_tutors = LessonRequest.objects.filter(
         student=request.user,  
@@ -276,7 +276,7 @@ def see_my_tutor(request):
 @login_required
 def see_my_students_profile(request):
     if request.user.role != 'tutor':
-        return redirect('dashboard')
+        return redirect('log_in')
     assigned_students = (
         User.objects.filter(
             lesson_requests__tutor=request.user  
@@ -292,7 +292,7 @@ def see_my_students_profile(request):
 #STUDENTS
 @login_required
 def lesson_request_success(request):
-    dashboard_url = reverse('dashboard')
+    dashboard_url = reverse('log_in')
     if request.user.is_authenticated:
         if request.user.role == 'tutor':
             base_template = 'dashboard_base_tutor.html'
@@ -410,7 +410,7 @@ def view_student_profile(request, student_id):
 @login_required
 def tutor_more_info(request, tutor_id):
     if request.user.role != 'student':
-        return redirect('dashboard')
+        return redirect('log_in')
     tutor = get_object_or_404(User, id=tutor_id, role='tutor')
     lessons = LessonRequest.objects.filter(student=request.user, tutor=tutor)
     context = {
@@ -478,7 +478,7 @@ def view_tutor_messages(request,role=None):
 @login_required
 def admin_reply(request, message_id):
     if request.user.role != 'admin':  
-        return redirect('dashboard')
+        return redirect('log_in')
 
     message = get_object_or_404(ContactMessage, id=message_id)
 
@@ -501,7 +501,7 @@ def admin_reply(request, message_id):
 #ADMINS
 @login_required
 def response_submitted_success(request):
-    dashboard_url = reverse('dashboard')
+    dashboard_url = reverse('log_in')
     if request.user.is_authenticated:
         if request.user.role == 'tutor':
             base_template = 'dashboard_base_tutor.html'
@@ -513,9 +513,9 @@ def response_submitted_success(request):
             base_template = 'dashboard_base_admin.html'
             dashboard_url = reverse('admin_dashboard')
         else:
-            base_template = 'dashboard.html'
+            base_template = 'home.html'
     else:
-        base_template = 'dashboard.html'
+        base_template = 'home.html'
     return render(request, 'response_submitted.html',{'base_template':base_template,'dashboard_url':dashboard_url})
 
 #TUTORS
