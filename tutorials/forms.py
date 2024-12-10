@@ -163,19 +163,35 @@ class LessonBookingForm(forms.ModelForm):
                 ("advanced", "Advanced"),
             ]),
         }
+        
+#class ContactMessages(forms.ModelForm):
+ #   class Meta:
+  #      model = ContactMessage
+  #      fields = ['role','message']
+  #      exclude = ['timestamp']
+   #     widgets = {
+   #         'message': forms.Textarea(attrs={'rows':4}),
+   #         'role': forms.Select(choices=[
+    #            ("student","Student"),
+    #            ("tutor","Tutor"),
+     #       ])
+     #   }
 class ContactMessages(forms.ModelForm):
     class Meta:
         model = ContactMessage
-        fields = ['role','message']
+        fields = ['role', 'message']
         exclude = ['timestamp']
-        Widgets = {
-            'message': forms.Textarea(attrs={'rows':4}),
-            'role': forms.Select(choices=[
-                ("student","Student"),
-                ("tutor","Tutor"),
-            ])
+        widgets = {
+            'message': forms.Textarea(attrs={'rows': 4}),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['role'].widget = forms.Select(choices=[
+            ("student", "Student"),
+            ("tutor", "Tutor"),
+        ])
+        
 class AdminReplyBack(forms.ModelForm):
     class Meta:
         model = ContactMessage

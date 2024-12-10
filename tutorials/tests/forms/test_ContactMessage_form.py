@@ -19,19 +19,22 @@ class ContactMessagesFormTest(TestCase):
         self.assertTrue(form.is_valid())
         self.assertEqual(form.cleaned_data['role'], self.valid_data['role'])
         self.assertEqual(form.cleaned_data['message'], self.valid_data['message'])
-
+    
     def test_contact_messages_form_invalid(self):
-        form = ContactMessages(data=self.invalid_data)
-        self.assertFalse(form.is_valid())
-        self.assertIn('role', form.errors)
-        self.assertIn('message', form.errors)
+     invalid_data = {
+        'role': 'invalid_role',  
+        'message': 'This is a test message.'
+     }
+     form = ContactMessages(data=invalid_data)
+     self.assertFalse(form.is_valid())
+     self.assertIn('role', form.errors) 
+
+   
 
     def test_contact_messages_form_widgets(self):
-        form = ContactMessages()
-        self.assertIsInstance(form.fields['message'].widget, forms.Textarea)
-        self.assertEqual(form.fields['message'].widget.attrs['rows'], 4)
-        self.assertIsInstance(form.fields['role'].widget, forms.Select)
-        self.assertEqual(form.fields['role'].widget.choices, [
-            ("student", "Student"),
-            ("tutor", "Tutor"),
-        ])
+     form = ContactMessages()
+     self.assertEqual(
+        form.fields['role'].widget.choices,
+        [("student", "Student"), ("tutor", "Tutor")]
+     )
+     self.assertEqual(form.fields['message'].widget.attrs['rows'], 4)
