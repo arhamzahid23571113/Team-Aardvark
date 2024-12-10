@@ -9,11 +9,11 @@ A web-based information system built with **Django** for **Code Tutors**, a fict
 
 ## **Team Members**  
 The project was developed by the following team members:
-- [Full Name 1]
-- [Full Name 2]
-- [Full Name 3]
-- [Full Name 4]
-- [Full Name 5]
+- [Arham Zahid]
+- [Abiha Tasnim]
+- [Bleona Miftari]
+- [Amina Ali]
+- [Abdullah Muzahir]
 
 ---
 
