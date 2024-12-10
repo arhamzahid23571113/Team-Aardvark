@@ -191,11 +191,11 @@ class ContactMessages(forms.ModelForm):
             ("student", "Student"),
             ("tutor", "Tutor"),
         ])
-        
+
 class AdminReplyBack(forms.ModelForm):
     class Meta:
         model = ContactMessage
         fields = ['reply']
-        Widgets = {
-            'reply': forms.Textarea(attrs={'row':4, 'placeholder': 'Write response here'}),
+        widgets = {
+            'reply': forms.Textarea(attrs={'rows':4, 'placeholder': 'Write response here'}),
         }       

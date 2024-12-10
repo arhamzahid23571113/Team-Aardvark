@@ -247,6 +247,7 @@ class ContactMessage(models.Model):
     )
     reply = models.TextField(
         blank = True,
+        null=True,
         default="",
         help_text="Admins reply to message"
     )
