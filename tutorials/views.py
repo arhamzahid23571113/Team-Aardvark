@@ -54,8 +54,10 @@ def tutor_dashboard(request):
 #@login_required
 def student_dashboard(request):
     """Student-specific dashboard."""
+    '''student = request.user  
+    invoices = Invoice.objects.filter(student=student)
+    return render(request, 'student_dashboard.html', {'invoices': invoices})'''
     return render(request, 'student_dashboard.html')
-
 
 def learn_more(request):
     """Display the Learn More page."""
@@ -91,7 +93,7 @@ def invoice_page(request, invoice_id, term_name = None):
     term_dates = terms.get(term_name)
     term_start, term_end = term_dates
     
-    lesson_bookings = LessonBooking.objects.filter(student=invoice.student, lesson_date__range=[term_start, term_end])
+    lesson_requests = LessonRequest.objects.filter(student=invoice.student, request_date__range=[term_start, term_end], status='Allocated')
 
     term_keys = list(terms.keys())
     current_term_index = term_keys.index(term_name)
@@ -99,15 +101,15 @@ def invoice_page(request, invoice_id, term_name = None):
     previous_term = term_keys[(current_term_index - 1) % len(term_keys)]
     next_term = term_keys[(current_term_index + 1) % len(term_keys)]
 
-    for booking in lesson_bookings:
-        booking.lesson_price = (booking.duration / 60) * settings.HOURLY_RATE
+    for booking in lesson_requests:
+        booking.lesson_price = (booking.requested_duration / 60) * settings.HOURLY_RATE
         total += booking.lesson_price 
 
-        booking.standardised_date = booking.lesson_date.strftime("%d/%m/%Y")
+        booking.standardised_date = booking.request_date.strftime("%d/%m/%Y")
 
     return render(request, 'invoice_page.html', {
         'invoice': invoice, 
-        'lesson_bookings': lesson_bookings,
+        'lesson_requests': lesson_requests,
         'total': total, 
         'term_name': term_name.title(),
         'previous_term': previous_term,

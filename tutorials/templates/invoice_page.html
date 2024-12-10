@@ -96,10 +96,10 @@ Invoice Page {% endblock %} {% block extra_css %}
     class="card shadow-lg p-3 mb-5 bg-transparent rounded border-0 text-center"
   >
     <div class="card-body">
-      {% for booking in lesson_bookings %}
+      {% for booking in lesson_requests %}
       <div class="row justify-content-md-start">
         <div class="col">{{booking.standardised_date}}</div>
-        <div class="col">{{booking.duration}} min</div>
+        <div class="col">{{booking.requested_duration}} min</div>
         <div class="col">
           {{booking.tutor.first_name}} {{booking.tutor.last_name}}
         </div>
