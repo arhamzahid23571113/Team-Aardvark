@@ -1,6 +1,6 @@
 {% extends 'dashboard_base_admin.html' %} {% load static %} {% block title %}
 Manage Invoices {% endblock %} {% block extra_css %}
-<link rel="stylesheet" href="{% static 'invoice_page.css' %}" />
+<link rel="stylesheet" href="{% static 'manage_invoices.css' %}" />
 {% endblock %} {% block content %}
 <div class="container mt-5">
   <h1 class="text-center text-dashboard-purple mt-4">Invoice Management</h1>
@@ -28,7 +28,7 @@ Manage Invoices {% endblock %} {% block extra_css %}
       <td>unpaid</td>
       <td>11/11</td>
       <td> <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-        Dropdown
+        Edit
       </button>
       <ul class="dropdown-menu">
         <li><a class="dropdown-item" href="#">Dropdown link</a></li>

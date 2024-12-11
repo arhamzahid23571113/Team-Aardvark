@@ -1,4 +1,8 @@
 .table-head {
-    background-color: black;
-    color: brown;
+    background: linear-gradient(135deg, #4e54c8 0%, #f2fcfe 100%) !important; /* Gradient background */
+    color: #ffffff !important; 
+    border-bottom: none; 
+    border-radius: 10px 10px 0 0;
+    padding: 15px;
+    font-weight: bold; 
 }

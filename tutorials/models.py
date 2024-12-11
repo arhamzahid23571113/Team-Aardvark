@@ -30,6 +30,12 @@ class User(AbstractUser):
 
     expertise = models.TextField(blank=True, null=True,
                                  help_text="Comma-separated list of programming languages or topics the tutor specializes in.")
+    
+    profile_picture = models.ImageField(
+        upload_to='profile_pictures/', 
+        default='profile_pictures/default.jpg', 
+        blank=True
+    )
 
     class Meta:
         """Model options."""
@@ -84,7 +90,6 @@ class LessonRequest(models.Model):
         choices=[
             ('Unallocated', 'Unallocated'),
             ('Allocated', 'Allocated'),
-            ('Pending', 'Pending'),
             ('Cancelled', 'Cancelled')
         ],
         default='Unallocated',
@@ -98,6 +103,11 @@ class LessonRequest(models.Model):
         blank=True,
         default="Python Programming",  # Default topic
         help_text="Describe what you would like to learn (e.g Web Development with Django)."
+    )
+    requested_date = models.DateField(
+        help_text="Select the date for your lesson.",
+        null=True,
+        blank=True
     )
     requested_frequency = models.CharField(
         max_length=20,

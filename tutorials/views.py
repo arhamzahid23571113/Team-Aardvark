@@ -75,9 +75,9 @@ def manage_invoices(request):
     
 
 #@login_required
-def invoice_page(request, invoice_id, term_name = None):
+def invoice_page(request, term_name = None):
     """Display user invoice."""
-    invoice = Invoice.objects.get(id=invoice_id)
+    invoice = Invoice.objects.filter(request.user)
 
     total = 0
 
