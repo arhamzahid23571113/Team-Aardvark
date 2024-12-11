@@ -160,79 +160,8 @@ class LessonRequest(models.Model):
 
     def __str__(self):
         return f"Lesson Request by {self.student.username} for {self.requested_topic}"
-
-
-#change this part -amina
-
-class Lesson(models.Model):
-    title = models.CharField(max_length=255, help_text="The title of the lesson")
-    content = models.TextField(help_text="Content or description of the lesson")
-    date = models.DateField(help_text="Date of the lesson")
-    start_time = models.TimeField(help_text="Start time of the lesson")  # Add this
-    end_time = models.TimeField(help_text="End time of the lesson")      # Add this
-    tutor = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="lessons_as_tutor"
-    )
-    student = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="lessons_as_student"
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.title
-
-#AMINA'S:
-
-
-class Timetable(models.Model):
     
-    tutor = models.ForeignKey(User, related_name="tutor_timetables", on_delete=models.CASCADE)
-    student = models.ForeignKey(User, related_name="student_timetables", on_delete=models.CASCADE)
-    tutor = models.ForeignKey(
-        User,
-        related_name="tutor_timetables",  # Unique related_name for tutor in Timetable
-        on_delete=models.CASCADE
-    )
-    student = models.ForeignKey(
-        User,
-        related_name="student_timetables",  # Unique related_name for student in Timetable
-        on_delete=models.CASCADE
-    )
-    date = models.DateField(help_text="The date of the lesson")
-    start_time = models.TimeField(help_text="Lesson start time")
-    end_time = models.TimeField(help_text="Lesson end time")
-    is_attended = models.BooleanField(default=False, help_text="Has the student attended this lesson?")
-    notes = models.TextField(blank=True, null=True, help_text="Additional notes about the lesson")
-
-    def __str__(self):
-        return f"Lesson: {self.tutor.full_name()} teaching {self.student.full_name()} on {self.date}"
-
-
-
-class LessonBooking(models.Model):
-    """Models used for showing lesson bookings between students and tutors"""
-
-    student = models.ForeignKey(User, related_name="student_lessons", on_delete=models.CASCADE)
-    tutor = models.ForeignKey(User, related_name="tutor_lessons", on_delete=models.CASCADE,null=True,blank=True)
-
-    topic = models.CharField(max_length=100)  
-    duration = models.IntegerField() 
-    time = models.TimeField()  
-    lesson_date = models.DateField()  
-
-    frequency = models.CharField(max_length=20)  
-    preferred_day = models.CharField(max_length=10)  
-    experience_level = models.CharField(max_length=20)  
-    additional_notes = models.TextField(blank=True, null=True)  
-
-    def __str__(self):
-        return f"{self.student.username} - {self.topic} with {self.tutor.username}"
-        
+       
 class ContactMessage(models.Model):
     ROLES = [
         ('student', 'Student'),
