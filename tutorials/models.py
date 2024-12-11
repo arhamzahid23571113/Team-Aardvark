@@ -116,6 +116,11 @@ class LessonRequest(models.Model):
         help_text="Describe what you would like to learn (e.g Web Development with Django)."
 
     )
+    requested_date = models.DateField(
+        help_text="Select the date for your lesson.",
+        null=True,
+        blank=True
+    )
     requested_frequency = models.CharField(
         max_length=20,
         default="Weekly",  
@@ -129,11 +134,6 @@ class LessonRequest(models.Model):
     requested_time = models.TimeField(
         default="09:00:00",  
         help_text="Preferred time for the lesson."
-    )
-    preferred_day = models.CharField(
-        max_length=10,
-        default="Monday",  
-        help_text="Preferred day for the lesson."
     )
     experience_level = models.TextField(
         default="No Experience",  
@@ -162,7 +162,7 @@ class LessonRequest(models.Model):
         return f"Lesson Request by {self.student.username} for {self.requested_topic}"
 
 
-#amina
+#change this part -amina
 
 class Lesson(models.Model):
     title = models.CharField(max_length=255, help_text="The title of the lesson")

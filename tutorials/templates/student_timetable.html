@@ -35,7 +35,8 @@
                             {% for lesson in day.lessons %}
                                 <div class="event">
                                     {{ lesson.notes|default:"Lesson" }}<br>
-                                    {{ lesson.start_time }} - {{ lesson.end_time }}
+                                    {{ lesson.start_time }} - {{ lesson.end_time }}<br>
+                                    Tutor: {{ lesson.tutor }}
                                 </div>
                             {% endfor %}
                         {% else %}

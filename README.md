@@ -57,7 +57,7 @@ $ python3 manage.py migrate
 Populate the development database with sample data:
 ```bash
 $ python3 manage.py seed
-```
+
 
 ### **5. Run Tests**:
 Verify the application by running all tests:

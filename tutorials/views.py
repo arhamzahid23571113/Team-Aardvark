@@ -14,7 +14,9 @@ from django.views import View
 from django.views.generic.edit import FormView, UpdateView
 from tutorials.forms import LogInForm, PasswordForm, UserForm, SignUpForm
 from tutorials.helpers import login_prohibited
-
+from calendar import monthrange
+from datetime import datetime, timedelta, date
+from django.utils.timezone import make_aware
 
 from .models import Lesson
 
@@ -218,15 +220,7 @@ class SignUpView(LoginProhibitedMixin, FormView):
 
     
 
-def tutor_timetable(request):
-    """View for tutors to see their timetable."""
-    timetable = Timetable.objects.filter(tutor=request.user)
-    return render(request, 'tutor_timetable.html', {'timetable': timetable})
 
-def student_timetable(request):
-    
-    timetable = Timetable.objects.filter(student=request.user).order_by('date', 'start_time')
-    return render(request, 'student_timetable.html', {'timetable': timetable})
 
 from django.shortcuts import redirect, render
 from datetime import date
@@ -359,6 +353,93 @@ def see_my_tutor(request):
         'tutors': assigned_tutors,  
     }
     return render(request, 'my_tutor_profile.html', context)
+
+def see_my_student_timetable(request):
+    if request.user.role != 'student':
+        return redirect('log_in')
+
+    # Get the current month and year from the query parameters, default to the current date
+    today = date.today()
+    year = int(request.GET.get('year', today.year))
+    month = int(request.GET.get('month', today.month))
+
+    # Get all allocated lessons for the student
+    allocated_lessons = LessonRequest.objects.filter(
+        student=request.user,
+        tutor__isnull=False,
+        status='Allocated'
+    ).values(
+        'requested_time',
+        'preferred_day',
+        'requested_duration',
+        'tutor__first_name',
+        'tutor__last_name',
+        'requested_topic'
+    )
+
+    # Map days of the week to indices (e.g., Monday = 0)
+    day_mapping = {
+        "Sunday": 0, "Monday": 1, "Tuesday": 2,
+        "Wednesday": 3, "Thursday": 4,
+        "Friday": 5, "Saturday": 6
+    }
+
+    # Generate the month calendar structure
+    num_days = monthrange(year, month)[1]
+    first_day_of_month = date(year, month, 1)
+    start_day = first_day_of_month.weekday()  # Day of the week (0=Monday)
+    days = []
+    week = []
+    lessons_by_day = {}
+
+    # Populate the lessons in a dictionary by day
+    for lesson in allocated_lessons:
+        day_index = day_mapping[lesson['preferred_day']]
+        lesson_date = first_day_of_month + timedelta(days=(day_index - start_day) % 7)
+        if lesson_date not in lessons_by_day:
+            lessons_by_day[lesson_date] = []
+        lessons_by_day[lesson_date].append({
+            'notes': lesson['requested_topic'],
+            'start_time': lesson['requested_time'],
+            'end_time': (datetime.combine(date.today(), lesson['requested_time']) + timedelta(
+                minutes=lesson['requested_duration']
+            )).time(),
+            'tutor': f"{lesson['tutor__first_name']} {lesson['tutor__last_name']}"
+        })
+
+    # Fill in calendar structure
+    current_date = first_day_of_month
+    for _ in range(start_day):
+        week.append({'date': None})  # Empty days before the first day of the month
+
+    for day in range(1, num_days + 1):
+        current_date = date(year, month, day)
+        day_data = {'date': current_date, 'lessons': lessons_by_day.get(current_date, [])}
+        week.append(day_data)
+        if len(week) == 7:
+            days.append(week)
+            week = []
+    if week:  # Add any remaining days in the last week
+        days.append(week)
+
+    # Calculate navigation months
+    prev_month = month - 1 or 12
+    prev_year = year - 1 if prev_month == 12 else year
+    next_month = month + 1 if month < 12 else 1
+    next_year = year + 1 if next_month == 1 else year
+
+    # Context for the template
+    context = {
+        'month_name': first_day_of_month.strftime('%B'),
+        'year': year,
+        'month_days': days,
+        'prev_month': prev_month,
+        'prev_year': prev_year,
+        'next_month': next_month,
+        'next_year': next_year,
+    }
+    return render(request, 'student_timetable.html', context)
+    
 
 #TUTORS
 @login_required

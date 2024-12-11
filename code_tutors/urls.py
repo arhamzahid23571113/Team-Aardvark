@@ -72,22 +72,13 @@ urlpatterns = [
     path('tutor/my_profile/', views.tutor_profile, name='tutor_profile'),
     path('tutor/edit_profile/', views.edit_profile, name='edit_profile'),
 
-
-
-
-
-
-
-
-
-
     # New Pages
     path('learn-more/', views.learn_more, name='learn_more'),
     path('available-courses/', views.available_courses, name='available_courses'),
     #AMINA
-    path('tutor/timetable/', views.tutor_timetable, name='tutor_timetable'),
-    path('student/timetable/', views.student_timetable, name='student_timetable'), 
-    path('timetable/', timetable_view, name='timetable'),
+    path('tutor/timetable/', views.timetable_view, name='tutor_timetable'),
+    path('student/timetable/', views.timetable_view, name='student_timetable'), 
+    
     
 ]
 

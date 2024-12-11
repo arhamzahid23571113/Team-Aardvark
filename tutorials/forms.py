@@ -126,9 +126,10 @@ class LessonBookingForm(forms.ModelForm):
             "requested_frequency",
             "requested_duration",
             "requested_time",
-            "preferred_day",
+            "requested_date",
             "experience_level",
             "additional_notes",
+
         ]
         widgets = {
             "requested_topic": forms.Select(choices=[
@@ -147,15 +148,12 @@ class LessonBookingForm(forms.ModelForm):
                 ("weekly", "Weekly"),
                 ("fortnightly", "Fortnightly"),
             ]),
-            "preferred_day": forms.Select(choices=[
-                ("monday", "Monday"),
-                ("tuesday", "Tuesday"),
-                ("wednesday", "Wednesday"),
-                ("thursday", "Thursday"),
-                ("friday", "Friday"),
-                ("saturday", "Saturday"),
-                ("sunday", "Sunday"),
-            ]),
+
+             "requested_date": forms.DateInput(attrs={
+                "type": "date",  # HTML5 date picker
+                "class": "form-control",
+            }),
+            
             "experience_level": forms.Select(choices=[
                 ("no_experience", "No Experience"),
                 ("beginner", "Beginner"),
