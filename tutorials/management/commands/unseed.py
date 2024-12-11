@@ -10,18 +10,22 @@ class Command(BaseCommand):
         """Unseed the database."""
         # Remove invoices
         Invoice.objects.all().delete()
-        self.stdout.write("All invoices removed.")
+        self.stdout.write(self.style.SUCCESS("All invoices removed."))
 
         # Remove lesson bookings
         LessonBooking.objects.all().delete()
-        self.stdout.write("All lesson bookings removed.")
+        self.stdout.write(self.style.SUCCESS("All lesson bookings removed."))
 
         # Remove lesson requests
         LessonRequest.objects.all().delete()
-        self.stdout.write("All lesson requests removed.")
+        self.stdout.write(self.style.SUCCESS("All lesson requests removed."))
+
+        # Remove predefined users (e.g., @johndoe, @janedoe, @charlie)
+        User.objects.filter(username__in=['@johndoe', '@janedoe', '@charlie']).delete()
+        self.stdout.write(self.style.SUCCESS("All predefined users removed."))
 
         # Remove non-staff users with a specific email pattern
         User.objects.filter(is_staff=False, email__endswith='@example.com').delete()
-        self.stdout.write("All seeded users removed.")
+        self.stdout.write(self.style.SUCCESS("All seeded users removed."))
 
-        self.stdout.write("Database unseeding complete.")
+        self.stdout.write(self.style.SUCCESS("Database unseeding complete."))
