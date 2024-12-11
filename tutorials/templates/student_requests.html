@@ -22,7 +22,7 @@
                 <th>Frequency</th>
                 <th>Duration</th>
                 <th>Preferred Time</th>
-                <th>Month</th>
+                <th>Requested Date</th>
                 <th>Status</th>
                 <th>Request Date</th>
                 <th>Actions</th>
@@ -36,7 +36,7 @@
                 <td>{{ request.requested_frequency }}</td>
                 <td>{{ request.requested_duration }} mins</td>
                 <td>{{ request.requested_time }}</td>
-                <td>{{ request.requested_month}}</td>
+                <td>{{ request.requested_date}}</td>
                 <td>
                   {% if request.status == 'Allocated' %}
                     <span class="badge bg-success">Allocated</span>
