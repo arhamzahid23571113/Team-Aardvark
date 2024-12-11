@@ -77,7 +77,7 @@ urlpatterns = [
     path('available-courses/', views.available_courses, name='available_courses'),
     #AMINA
     path('tutor/timetable/', views.timetable_view, name='tutor_timetable'),
-    path('student/timetable/', views.timetable_view, name='student_timetable'), 
+    path('student/timetable/', views.see_my_student_timetable, name='student_timetable'), 
     
     
 ]
