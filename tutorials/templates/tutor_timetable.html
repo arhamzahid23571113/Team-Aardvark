@@ -1,18 +1,20 @@
 {% extends 'dashboard_base_tutor.html' %}
 
 {% block title %}
-    Your Timetable
+    Tutor Timetable
 {% endblock %}
+
 
 {% block content %}
 <div class="container mt-5">
-    <!-- Navigation for Months -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <a href="?month={{ prev_month }}&year={{ prev_year }}" class="btn btn-primary">&larr; Previous</a>
-        <h2 class="text-center text-dashboard-purple">Your Timetable for {{ current_month|date:"F Y" }}</h2>
-        <a href="?month={{ next_month }}&year={{ next_year }}" class="btn btn-primary">Next &rarr;</a>
+    <h1 class="text-center text-dashboard-purple mt-4">Welcome, {{ request.user.full_name }}!</h1>
+    <h2 class="text-center text-dashboard-purple mt-4">Your Timetable for {{ month_name }} {{ year }}</h2>
+
+    <div class="d-flex justify-content-between mb-4">
+        <a href="?month={{ prev_month }}&year={{ prev_year }}" class="btn btn-outline-primary">← Previous</a>
+        <a href="?month={{ next_month }}&year={{ next_year }}" class="btn btn-outline-primary">Next →</a>
     </div>
-    <h1 class="text-center text-dashboard-purple mt-4"> Your Timetable, {{ user.full_name }}!</h1>
+
     <div class="calendar">
         <!-- Render Day Headers -->
         <div class="day-header">Sunday</div>
@@ -23,27 +25,28 @@
         <div class="day-header">Friday</div>
         <div class="day-header">Saturday</div>
 
-        <!-- Render Empty Days Before the First Day of the Month -->
-        {% for _ in empty_days %}
-        <div class="day empty-day"></div>
-        {% endfor %}
-
-        <!-- Render Calendar Days with Lessons -->
-        {% for day in calendar_days %}
-        <div class="day">
-            <div class="day-number">{{ day.date.day }}</div>
-            {% if day.lessons %}
-                {% for lesson in day.lessons %}
-                <div class="event">
-                    <strong>{{ lesson.student.first_name }}</strong><br>
-                    {{ lesson.notes|default:"Lesson" }}<br>
-                    {{ lesson.start_time }} - {{ lesson.end_time }}
-                </div>
-                {% endfor %}
-            {% else %}
-            <div>No lessons scheduled</div>
-            {% endif %}
-        </div>
+        <!-- Render Weeks -->
+        {% for week in month_days %}
+            {% for day in week %}
+                {% if day.date %}
+                    <div class="day">
+                        <div class="day-number">{{ day.date.day }}</div>
+                        {% if day.lessons %}
+                            {% for lesson in day.lessons %}
+                                <div class="event">
+                                    {{ lesson.notes|default:"Lesson" }}<br>
+                                    {{ lesson.start_time }} - {{ lesson.end_time }}<br>
+                                    Student: {{ lesson.student }}
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p>No Lessons</p>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <div class="day empty-day"></div>
+                {% endif %}
+            {% endfor %}
         {% endfor %}
     </div>
 </div>

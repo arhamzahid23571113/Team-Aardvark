@@ -428,6 +428,7 @@ def see_my_student_timetable(request):
 
 
 
+
 def see_my_tutor_timetable(request):
     if not request.user.is_authenticated or request.user.role != 'tutor':
         return redirect('log_in')
@@ -437,25 +438,18 @@ def see_my_tutor_timetable(request):
     month = int(request.GET.get('month', today.month))
 
     allocated_lessons = LessonRequest.objects.filter(
-        student=request.user,
-        tutor__isnull=False,
+        tutor=request.user,
         status='Allocated'
     ).values(
         'requested_time',
         'requested_date',
         'requested_duration',
-        'tutor__first_name',
-        'tutor__last_name',
+        'student__first_name',
+        'student__last_name',
         'requested_topic'
     )
 
-    num_days = monthrange(year, month)[1]
-    first_day_of_month = date(year, month, 1)
-    start_day = first_day_of_month.weekday()  
-    days = []
-    week = []
     lessons_by_day = {}
-
     for lesson in allocated_lessons:
         lesson_date = lesson['requested_date']
         if lesson_date not in lessons_by_day:
@@ -469,9 +463,14 @@ def see_my_tutor_timetable(request):
             'student': f"{lesson['student__first_name']} {lesson['student__last_name']}"
         })
 
-    current_date = first_day_of_month
+    num_days = monthrange(year, month)[1]
+    first_day_of_month = date(year, month, 1)
+    start_day = first_day_of_month.weekday()
+    days = []
+    week = []
+
     for _ in range(start_day):
-        week.append({'date': None})  
+        week.append({'date': None})
 
     for day in range(1, num_days + 1):
         current_date = date(year, month, day)
@@ -480,7 +479,7 @@ def see_my_tutor_timetable(request):
         if len(week) == 7:
             days.append(week)
             week = []
-    if week:  
+    if week:
         days.append(week)
 
     prev_month = month - 1 or 12
@@ -497,6 +496,7 @@ def see_my_tutor_timetable(request):
         'next_month': next_month,
         'next_year': next_year,
     }
+
     return render(request, 'tutor_timetable.html', context)
     
 
