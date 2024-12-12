@@ -17,13 +17,9 @@ from tutorials.helpers import login_prohibited
 from calendar import monthrange
 from datetime import datetime, timedelta, date
 from django.utils.timezone import make_aware
-
-from .models import Lesson
-
 from django.shortcuts import render
-from .models import Timetable
 
-from .models import User,LessonBooking
+from .models import User
 from .models import LessonRequest
 from django.shortcuts import get_object_or_404, redirect
 from .forms import LessonBookingForm,ContactMessages
@@ -35,10 +31,8 @@ from django.utils.timezone import now
 
 
 
-from .models import Lesson
 #AMINA
 from django.shortcuts import render
-from .models import Timetable
 
 @login_required
 def dashboard(request):
@@ -225,7 +219,7 @@ class SignUpView(LoginProhibitedMixin, FormView):
 from django.shortcuts import redirect, render
 from datetime import date
 from calendar import monthrange, SUNDAY
-from .models import Lesson
+
 
 
 
@@ -724,7 +718,6 @@ def student_timetable(request):
 from django.shortcuts import redirect, render
 from datetime import date
 from calendar import monthrange, SUNDAY
-from .models import Lesson
 
 def timetable_view(request):
     today = date.today()
