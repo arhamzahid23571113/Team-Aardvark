@@ -68,6 +68,11 @@ def available_courses(request):
     """Display the Available Courses page."""
     return render(request, 'available_courses.html')
 
+#@login_required
+def manage_invoices(request):
+    
+    return render(request, 'manage_invoices.html')
+    
 
 #@login_required
 def invoice_page(request, invoice_id, term_name = None):

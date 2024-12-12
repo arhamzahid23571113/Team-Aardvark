@@ -45,6 +45,7 @@ urlpatterns = [
     path('student_dashboard/', views.student_dashboard, name='student_dashboard'),
     path('invoice_page/<int:invoice_id>/', views.invoice_page, name='invoice_page'),
     path('invoice_page/<int:invoice_id>/<str:term_name>/', views.invoice_page, name='invoice_page_term'),
+    path('manage_invoices/', views.manage_invoices, name='manage_invoices'), 
     path('request_lesson/', views.request_lesson, name='request_lesson'),
     path('contact_admin/',views.contact_admin,name='contact_admin'),
     path('my_tutor_profile/',views.see_my_tutor,name='my_tutor_profile'),
