@@ -1102,6 +1102,7 @@ def student_messages(request):
     studentMessages = ContactMessage.objects.filter(user=student).order_by('timestamp')
     return render(request,'student_messages.html',{'messages':studentMessages})
 
+
 @login_required
 def tutor_profile(request):
     """Display the tutor's profile."""
