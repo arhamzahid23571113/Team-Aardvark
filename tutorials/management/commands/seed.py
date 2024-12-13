@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from tutorials.models import User, LessonRequest, LessonBooking, Invoice,ContactMessage
+from tutorials.models import User, LessonRequest, Invoice,ContactMessage
 from faker import Faker
 from random import choice, randint
 import uuid
@@ -17,7 +17,7 @@ class Command(BaseCommand):
         self.stdout.write("Clearing existing data...")
         User.objects.all().delete()
         LessonRequest.objects.all().delete()
-        LessonBooking.objects.all().delete()
+        #LessonBooking.objects.all().delete()
         Invoice.objects.all().delete()
         ContactMessage.objects.all().delete()
 
@@ -27,7 +27,7 @@ class Command(BaseCommand):
         self.create_predefined_users()
         self.create_random_users()
         self.create_lesson_requests()
-        self.create_lesson_bookings()
+        #self.create_lesson_bookings()
         self.create_invoices()
         self.create_contact_messages()
 
@@ -97,8 +97,8 @@ class Command(BaseCommand):
                 requested_frequency=choice(["Weekly", "Fortnightly"]),
                 requested_duration=choice([30, 60, 90]),
                 requested_time=faker.time(),
-                preferred_day=choice(["Monday", "Tuesday", "Wednesday"]),
-                experience_level=choice(["No Experience", "Beginner", "Intermediate"]),
+                requested_date=faker.date(),
+                experience_level=choice(["No Experience", "Beginner", "Intermediate","Advanced"]),
                 additional_notes=faker.text(max_nb_chars=50),
             )
         self.stdout.write(self.style.SUCCESS("Lesson requests created."))

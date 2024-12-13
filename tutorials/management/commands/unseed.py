@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from tutorials.models import User, LessonRequest, LessonBooking, Invoice,ContactMessage
+from tutorials.models import User, LessonRequest, Invoice,ContactMessage
 
 class Command(BaseCommand):
     """Build automation command to unseed the database."""
@@ -12,9 +12,9 @@ class Command(BaseCommand):
         Invoice.objects.all().delete()
         self.stdout.write(self.style.SUCCESS("All invoices removed."))
 
-        # Remove lesson bookings
-        LessonBooking.objects.all().delete()
-        self.stdout.write(self.style.SUCCESS("All lesson bookings removed."))
+        # # Remove lesson bookings
+        # LessonBooking.objects.all().delete()
+        # self.stdout.write(self.style.SUCCESS("All lesson bookings removed."))
 
         # Remove lesson requests
         LessonRequest.objects.all().delete()
