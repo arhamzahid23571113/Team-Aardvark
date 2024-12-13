@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from tutorials.models import User, LessonRequest, LessonBooking, Invoice
+from tutorials.models import User, LessonRequest, Invoice,ContactMessage
 
 class Command(BaseCommand):
     """Build automation command to unseed the database."""
@@ -12,13 +12,16 @@ class Command(BaseCommand):
         Invoice.objects.all().delete()
         self.stdout.write(self.style.SUCCESS("All invoices removed."))
 
-        # Remove lesson bookings
-        LessonBooking.objects.all().delete()
-        self.stdout.write(self.style.SUCCESS("All lesson bookings removed."))
+        # # Remove lesson bookings
+        # LessonBooking.objects.all().delete()
+        # self.stdout.write(self.style.SUCCESS("All lesson bookings removed."))
 
         # Remove lesson requests
         LessonRequest.objects.all().delete()
         self.stdout.write(self.style.SUCCESS("All lesson requests removed."))
+
+        ContactMessage.objects.all().delete()
+        self.stdout.write(self.style.SUCCESS("All contact messages removed."))
 
         # Remove predefined users (e.g., @johndoe, @janedoe, @charlie)
         User.objects.filter(username__in=['@johndoe', '@janedoe', '@charlie']).delete()
@@ -29,3 +32,4 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("All seeded users removed."))
 
         self.stdout.write(self.style.SUCCESS("Database unseeding complete."))
+       

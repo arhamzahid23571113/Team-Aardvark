@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from tutorials.models import User, LessonRequest, LessonBooking, Invoice
+from tutorials.models import User, LessonRequest, Invoice,ContactMessage
 from faker import Faker
 from random import choice, randint
 import uuid
@@ -17,16 +17,20 @@ class Command(BaseCommand):
         self.stdout.write("Clearing existing data...")
         User.objects.all().delete()
         LessonRequest.objects.all().delete()
-        LessonBooking.objects.all().delete()
+        #LessonBooking.objects.all().delete()
         Invoice.objects.all().delete()
+        ContactMessage.objects.all().delete()
+
         self.stdout.write(self.style.SUCCESS("Existing data cleared."))
 
         self.create_admin_user()
         self.create_predefined_users()
         self.create_random_users()
         self.create_lesson_requests()
-        self.create_lesson_bookings()
+        #self.create_lesson_bookings()
         self.create_invoices()
+        self.create_contact_messages()
+
 
         self.stdout.write(self.style.SUCCESS("Database seeding completed successfully!"))
 
@@ -93,33 +97,32 @@ class Command(BaseCommand):
                 requested_frequency=choice(["Weekly", "Fortnightly"]),
                 requested_duration=choice([30, 60, 90]),
                 requested_time=faker.time(),
-                preferred_day=choice(["Monday", "Tuesday", "Wednesday"]),
-                experience_level=choice(["No Experience", "Beginner", "Intermediate"]),
+                requested_date=faker.date(),
+                experience_level=choice(["No Experience", "Beginner", "Intermediate","Advanced"]),
                 additional_notes=faker.text(max_nb_chars=50),
             )
         self.stdout.write(self.style.SUCCESS("Lesson requests created."))
 
-    def create_lesson_bookings(self):
-        """Seed lesson bookings."""
-        students = User.objects.filter(role='student')
-        tutors = User.objects.filter(role='tutor')
-        for _ in range(100):  # Update from 50 to 100
-            student = choice(students)
-            tutor = choice(tutors) if tutors.exists() else None
-            LessonBooking.objects.create(
-                student=student,
-                tutor=tutor,
-                topic=faker.word(),
-                duration=choice([30, 60, 90]),
-                time=faker.time(),
-                lesson_date=faker.date_between(start_date='-30d', end_date='+30d'),
-                frequency=choice(["Weekly", "Fortnightly"]),
-                preferred_day=choice(["Monday", "Tuesday", "Wednesday"]),
-                experience_level=choice(["Beginner", "Intermediate"]),
-                additional_notes=faker.text(max_nb_chars=50),
-            )
-        self.stdout.write(self.style.SUCCESS("100 Lesson bookings created."))
-
+    # def create_lesson_bookings(self):
+    #     """Seed lesson bookings."""
+    #     students = User.objects.filter(role='student')
+    #     tutors = User.objects.filter(role='tutor')
+    #     for _ in range(100):  # Update from 50 to 100
+    #         student = choice(students)
+    #         tutor = choice(tutors) if tutors.exists() else None
+    #         LessonBooking.objects.create(
+    #             student=student,
+    #             tutor=tutor,
+    #             topic=faker.word(),
+    #             duration=choice([30, 60, 90]),
+    #             time=faker.time(),
+    #             lesson_date=faker.date_between(start_date='-30d', end_date='+30d'),
+    #             frequency=choice(["Weekly", "Fortnightly"]),
+    #             preferred_day=choice(["Monday", "Tuesday", "Wednesday"]),
+    #             experience_level=choice(["Beginner", "Intermediate"]),
+    #             additional_notes=faker.text(max_nb_chars=50),
+    #         )
+    #     self.stdout.write(self.style.SUCCESS("100 Lesson bookings created."))
 
 
     def create_invoices(self):
@@ -133,4 +136,19 @@ class Command(BaseCommand):
                 payment_status=choice(['Paid', 'Unpaid']),
             )
         self.stdout.write(self.style.SUCCESS("Invoices created."))
+
+    def create_contact_messages(self):
+        """Seed contact messages."""
+        users = User.objects.filter(role__in=['student', 'tutor'])
+        for user in users:
+            for _ in range(randint(1, 3)):  
+                ContactMessage.objects.create(
+                    user=user,
+                    role=user.role,
+                    message=faker.text(max_nb_chars=100),
+                    reply=faker.text(max_nb_chars=50) if choice([True, False]) else None,
+                    reply_timestamp=faker.date_time_this_year() if choice([True, False]) else None,
+                    )
+                self.stdout.write(self.style.SUCCESS("Contact messages created."))
+
 
