@@ -298,6 +298,7 @@ def see_my_tutor(request):
     }
     return render(request, 'my_tutor_profile.html', context)
 
+
 def see_my_student_timetable(request):
     if not request.user.is_authenticated or request.user.role != 'student':
         return redirect('log_in')
