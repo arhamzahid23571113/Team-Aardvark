@@ -888,6 +888,8 @@ def lesson_request_success(request):
 #ADMINS
 @login_required
 def student_requests(request):
+    if request.user.role != 'admin':  # Only admins can access this page
+        return redirect('log_in')  # Redirect unauthorized users to login
     lesson_requests = LessonRequest.objects.select_related('student').order_by('student')
     students_with_requests = {}
     for req in lesson_requests:
