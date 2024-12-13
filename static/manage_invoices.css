@@ -1,8 +1,17 @@
-.table-head {
+.table {
     background: linear-gradient(135deg, #4e54c8 0%, #f2fcfe 100%) !important; /* Gradient background */
     color: #ffffff !important; 
     border-bottom: none; 
     border-radius: 10px 10px 0 0;
     padding: 15px;
     font-weight: bold; 
+}
+
+.text-box {
+    display: inline-block;
+    background-color: #a7b0e4;
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
 }
