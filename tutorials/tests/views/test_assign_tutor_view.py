@@ -33,7 +33,7 @@ class AssignTutorViewTestCase(TestCase):
             student=self.student_user,
             tutor=None,
             status="Unallocated",
-            requested_topic="Math",
+            requested_topic="Python Programming",
             requested_date="2024-01-01",
             requested_time="10:00:00",
             requested_duration=60,
@@ -74,7 +74,6 @@ class AssignTutorViewTestCase(TestCase):
         self.assertEqual(response.status_code, 302)  # Redirect to student_requests
         self.assertRedirects(response, reverse("student_requests"))
 
-        # Verify the lesson request remains unchanged
         self.lesson_request.refresh_from_db()
         self.assertIsNone(self.lesson_request.tutor)
         self.assertEqual(self.lesson_request.status, "Unallocated")
