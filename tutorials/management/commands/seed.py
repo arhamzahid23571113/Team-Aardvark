@@ -3,6 +3,8 @@ from tutorials.models import User, LessonRequest, Invoice,ContactMessage
 from faker import Faker
 from random import choice, randint
 import uuid
+from django.utils.timezone import make_aware
+
 
 faker = Faker('en_GB')
 
@@ -138,17 +140,20 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("Invoices created."))
 
     def create_contact_messages(self):
-        """Seed contact messages."""
-        users = User.objects.filter(role__in=['student', 'tutor'])
-        for user in users:
-            for _ in range(randint(1, 3)):  
-                ContactMessage.objects.create(
-                    user=user,
-                    role=user.role,
-                    message=faker.text(max_nb_chars=100),
-                    reply=faker.text(max_nb_chars=50) if choice([True, False]) else None,
-                    reply_timestamp=faker.date_time_this_year() if choice([True, False]) else None,
-                    )
-                self.stdout.write(self.style.SUCCESS("Contact messages created."))
+      """Seed contact messages."""
+      users = User.objects.filter(role__in=['student', 'tutor'])
+      for user in users:
+          for _ in range(randint(1, 3)):  
+            reply_timestamp = (
+                make_aware(faker.date_time_this_year()) if choice([True, False]) else None
+                )
+            ContactMessage.objects.create(
+                user=user,
+                role=user.role,
+                message=faker.text(max_nb_chars=100),
+                reply=faker.text(max_nb_chars=50) if choice([True, False]) else None,
+                reply_timestamp=reply_timestamp,
+                )
+            self.stdout.write(self.style.SUCCESS("Contact messages created."))
 
 

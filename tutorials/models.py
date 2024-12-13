@@ -117,9 +117,7 @@ class LessonRequest(models.Model):
 
     )
     requested_date = models.DateField(
-        help_text="Select the date for your lesson.",
-        null=True,
-        blank=True
+        help_text="Select the date for your lesson."
     )
     requested_frequency = models.CharField(
         max_length=20,
