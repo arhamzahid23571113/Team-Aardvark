@@ -18,7 +18,7 @@ from .forms import LessonBookingForm
 
 
 
-#@login_required
+@login_required
 def dashboard(request):
     """Redirect users to their role-based dashboards."""
     user = request.user
@@ -33,25 +33,25 @@ def dashboard(request):
         return redirect('home')
 
 
-#@login_prohibited
+@login_prohibited
 def home(request):
     """Display the application's start/home screen."""
     return render(request, 'home.html')
 
 
-#@login_required
+@login_required
 def admin_dashboard(request):
     """Admin-specific dashboard."""
     return render(request, 'admin_dashboard.html')
 
 
-#@login_required
+@login_required
 def tutor_dashboard(request):
     """Tutor-specific dashboard."""
     return render(request, 'tutor_dashboard.html')
 
 
-#@login_required
+@login_required
 def student_dashboard(request):
     """Student-specific dashboard."""
     '''student = request.user  
@@ -68,16 +68,16 @@ def available_courses(request):
     """Display the Available Courses page."""
     return render(request, 'available_courses.html')
 
-#@login_required
+@login_required
 def manage_invoices(request):
     
     return render(request, 'manage_invoices.html')
     
 
-#@login_required
+@login_required
 def invoice_page(request, term_name = None):
     """Display user invoice."""
-    invoice = Invoice.objects.filter(request.user)
+    #invoice = Invoice.objects.filter(student=request.user)
 
     total = 0
 
@@ -97,8 +97,10 @@ def invoice_page(request, term_name = None):
 
     term_dates = terms.get(term_name)
     term_start, term_end = term_dates
+
+    invoice = Invoice.objects.filter(student=request.user).first()
     
-    lesson_requests = LessonRequest.objects.filter(student=invoice.student, request_date__range=[term_start, term_end], status='Allocated')
+    lesson_requests = LessonRequest.objects.filter(student=request.user, request_date__range=[term_start, term_end], status='Unallocated')
 
     term_keys = list(terms.keys())
     current_term_index = term_keys.index(term_name)
@@ -247,25 +249,25 @@ class SignUpView(LoginProhibitedMixin, FormView):
     def get_success_url(self):
         return reverse('dashboard')
 
-#@login_required
+@login_required
 def admin_dashboard(request):
     """Admin-specific dashboard."""
     return render(request, 'admin_dashboard.html')
 
-#@login_required
+@login_required
 def tutor_dashboard(request):
     """Tutor-specific dashboard."""
     return render(request, 'tutor_dashboard.html')
 
 
-#@login_required
+@login_required
 def student_dashboard(request):
     """Student-specific dashboard."""
     return render(request, 'student_dashboard.html')
 
 
 #STUDENTS
-#@login_required
+@login_required
 def request_lesson(request):
     if request.method == 'POST':
         form = LessonBookingForm(request.POST)
@@ -283,7 +285,7 @@ def request_lesson(request):
     return render(request, 'request_lesson.html', {'form': form})
 
 #STUDENT OR TUTOR
-#@login_required
+@login_required
 def contact_admin(request):
         # Determine the base template based on the user's role 
     if request.user.is_authenticated:
@@ -303,7 +305,7 @@ def contact_admin(request):
 
 
 #STUDENTS
-#@login_required
+@login_required
 def see_my_tutor(request):
     # Ensure only students can access this page
     if request.user.role != 'student':
@@ -329,7 +331,7 @@ def see_my_tutor(request):
     return render(request, 'my_tutor_profile.html', context)
 
 #TUTORS
-#@login_required
+@login_required
 def see_my_students_profile(request):
  # Ensure only tutors can access this page 
     if request.user.role != 'tutor':
@@ -350,14 +352,14 @@ def see_my_students_profile(request):
 
 
 #STUDENTS
-#@login_required
+@login_required
 def lesson_request_success(request):
     return render(request, 'lesson_request_success.html')
 
 
 #ADMINS
+@login_required
 def student_requests(request):
-#@login_required
     lesson_requests = LessonRequest.objects.select_related('student').order_by('student')
 
     # Group requests by student 
@@ -378,7 +380,7 @@ def student_requests(request):
 
 
 #ADMINS
-#@login_required
+@login_required
 def assign_tutor(request, lesson_request_id):
     if request.method == 'POST':
         # Fetch the lesson request and selected tutor 
@@ -396,7 +398,7 @@ def assign_tutor(request, lesson_request_id):
     
 
 #ADMINS
-#@login_required
+@login_required
 def unassign_tutor(request, lesson_request_id):
     if request.method == 'POST':
         # Fetch the lesson request 
@@ -412,7 +414,7 @@ def unassign_tutor(request, lesson_request_id):
     
 
 #ADMINS
-#@login_required
+@login_required
 def cancel_request(request, lesson_request_id):
     if request.method == 'POST':
         # Fetch the lesson request 
@@ -426,7 +428,7 @@ def cancel_request(request, lesson_request_id):
 
 
 #ADMINS
-#@login_required
+@login_required
 def all_tutor_profiles(request):
     # Fetch all tutors (users with role='tutor') 
     tutors = User.objects.filter(role='tutor')
@@ -434,7 +436,7 @@ def all_tutor_profiles(request):
     return render(request, 'all_tutor_profiles.html', context)
 
 #ADMINS
-#@login_required
+@login_required
 def all_student_profiles(request):
     # Fetch all students (users with role='student') 
     students = User.objects.filter(role='student')
@@ -443,7 +445,7 @@ def all_student_profiles(request):
 
 
 #ADMINS
-#@login_required
+@login_required
 def view_tutor_profile(request, tutor_id):
     # Fetch a specific tutor by ID 
     tutor = get_object_or_404(User, id=tutor_id, role='tutor')
@@ -451,7 +453,7 @@ def view_tutor_profile(request, tutor_id):
 
 
 #ADMINS
-#@login_required
+@login_required
 def edit_tutor_profile(request, tutor_id):
     # Fetch a specific tutor by ID 
     tutor = get_object_or_404(User, id=tutor_id, role='tutor')
@@ -464,7 +466,7 @@ def edit_tutor_profile(request, tutor_id):
     
 
   #STUDENTS
-#@login_required
+@login_required
 def tutor_more_info(request, tutor_id):
     # Ensure only students can access this page 
     if request.user.role != 'student':
