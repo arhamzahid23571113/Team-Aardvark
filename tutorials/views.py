@@ -1070,11 +1070,11 @@ def admin_reply(request, message_id):
             messages.success(request, f"Reply successfully sent to {message.user.first_name}!")
             return redirect('response_success')
         else:
-            messages.error(request, "There was an error with your reply, it has not been saved successfully.")
+         return render(request, 'admin_reply.html', {'form': adminForm, 'message': message})
+
     else:
         adminForm = AdminReplyBack(instance=message)
-
-    return render(request, 'admin_reply.html', {'form': adminForm, 'message': message})
+        return render(request, 'admin_reply.html', {'form': adminForm, 'message': message})
 
 
 #ADMINS

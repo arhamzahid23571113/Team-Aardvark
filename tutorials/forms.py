@@ -197,3 +197,8 @@ class AdminReplyBack(forms.ModelForm):
         widgets = {
             'reply': forms.Textarea(attrs={'rows':4, 'placeholder': 'Write response here'}),
         }       
+    def clean_reply(self):
+        reply = self.cleaned_data.get('reply')
+        if not reply or not reply.strip(): 
+            raise forms.ValidationError("Reply cannot be blank.")
+        return reply
