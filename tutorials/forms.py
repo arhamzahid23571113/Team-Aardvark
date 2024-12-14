@@ -118,6 +118,51 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
         return user
 
 
+# class LessonBookingForm(forms.ModelForm):
+#     class Meta:
+#         model = LessonRequest
+#         fields = [
+#             "requested_topic",
+#             "requested_frequency",
+#             "requested_duration",
+#             "requested_time",
+#             "requested_date",
+#             "experience_level",
+#             "additional_notes",
+
+#         ]
+#         widgets = {
+#             "requested_topic": forms.Select(choices=[
+#                 ("python_programming", "Python Programming"),
+#                 ("web_development_with_js", "Web Development with JavaScript"),
+#                 ("ruby_on_rails", "Ruby on Rails"),
+#                 ("ai_and_ml", "AI and Machine Learning"),
+#             ]),
+#             "requested_duration": forms.Select(choices=[
+#                 ("30", "30 Minutes"),
+#                 ("60", "1 Hour"),
+#                 ("90", "1 Hour and 30 Minutes"),
+#                 ("120", "2 Hours"),
+#             ]),
+#             "requested_frequency": forms.Select(choices=[
+#                 ("weekly", "Weekly"),
+#                 ("fortnightly", "Fortnightly"),
+#             ]),
+
+#              "requested_date": forms.DateInput(attrs={
+#                 "type": "date",  # HTML5 date picker
+#                 "class": "form-control",
+#             }),
+            
+#             "experience_level": forms.Select(choices=[
+#                 ("no_experience", "No Experience"),
+#                 ("beginner", "Beginner"),
+#                 ("intermediate", "Intermediate"),
+#                 ("advanced", "Advanced"),
+#             ]),
+#         }
+
+
 class LessonBookingForm(forms.ModelForm):
     class Meta:
         model = LessonRequest
@@ -129,38 +174,22 @@ class LessonBookingForm(forms.ModelForm):
             "requested_date",
             "experience_level",
             "additional_notes",
-
         ]
         widgets = {
-            "requested_topic": forms.Select(choices=[
-                ("python_programming", "Python Programming"),
-                ("web_development_with_js", "Web Development with JavaScript"),
-                ("ruby_on_rails", "Ruby on Rails"),
-                ("ai_and_ml", "AI and Machine Learning"),
-            ]),
-            "requested_duration": forms.Select(choices=[
-                ("30", "30 Minutes"),
-                ("60", "1 Hour"),
-                ("90", "1 Hour and 30 Minutes"),
-                ("120", "2 Hours"),
-            ]),
-            "requested_frequency": forms.Select(choices=[
-                ("weekly", "Weekly"),
-                ("fortnightly", "Fortnightly"),
-            ]),
-
-             "requested_date": forms.DateInput(attrs={
+            "requested_topic": forms.Select(),  # Choices are defined in the model
+            "requested_frequency": forms.Select(),  # Choices are defined in the model
+            "requested_duration": forms.Select(),  # Choices are defined in the model
+            "requested_date": forms.DateInput(attrs={
                 "type": "date",  # HTML5 date picker
                 "class": "form-control",
             }),
-            
-            "experience_level": forms.Select(choices=[
-                ("no_experience", "No Experience"),
-                ("beginner", "Beginner"),
-                ("intermediate", "Intermediate"),
-                ("advanced", "Advanced"),
-            ]),
+            "requested_time": forms.TimeInput(attrs={
+                "type": "time",  # HTML5 time picker
+                "class": "form-control",
+            }),
+            "experience_level": forms.Select(),  # Choices are defined in the model
         }
+
         
 #class ContactMessages(forms.ModelForm):
  #   class Meta:

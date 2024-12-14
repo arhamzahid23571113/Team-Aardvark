@@ -79,6 +79,31 @@ class Invoice(models.Model):
 
 class LessonRequest(models.Model):
     """Model for students to make request lessons"""
+    TOPIC_CHOICES = [
+        ("python_programming", "Python Programming"),
+        ("web_development_with_js", "Web Development with JavaScript"),
+        ("ruby_on_rails", "Ruby on Rails"),
+        ("ai_and_ml", "AI and Machine Learning"),
+    ]
+
+    FREQUENCY_CHOICES = [
+        ("weekly", "Weekly"),
+        ("fortnightly", "Fortnightly"),
+    ]
+
+    DURATION_CHOICES = [
+        (30, "30 Minutes"),
+        (60, "1 Hour"),
+        (90, "1 Hour and 30 Minutes"),
+        (120, "2 Hours"),
+    ]
+
+    EXPERIENCE_LEVEL_CHOICES = [
+        ("no_experience", "No Experience"),
+        ("beginner", "Beginner"),
+        ("intermediate", "Intermediate"),
+        ("advanced", "Advanced"),
+    ]
     student = models.ForeignKey(
 
         settings.AUTH_USER_MODEL,
@@ -111,22 +136,25 @@ class LessonRequest(models.Model):
         help_text="The date and time when the lesson request was created."
     )
     requested_topic = models.TextField(
-        blank=True,
-        default="Python Programming",  
+        default="Python Programming",
+        choices=TOPIC_CHOICES,  
         help_text="Describe what you would like to learn (e.g Web Development with Django)."
 
     )
     requested_date = models.DateField(
+        default="2024-01-01",
         help_text="Select the date for your lesson."
     )
     requested_frequency = models.CharField(
         max_length=20,
+        choices=FREQUENCY_CHOICES,
         default="Weekly",  
         help_text="How often would you like your lessons (e.g Weekly, Fortnightly)?"
     )
 
     requested_duration = models.PositiveIntegerField(
-        default=60,  
+        default=60,
+        choices=DURATION_CHOICES,  
         help_text="Lesson duration in minutes."
     )
     requested_time = models.TimeField(
@@ -134,7 +162,8 @@ class LessonRequest(models.Model):
         help_text="Preferred time for the lesson."
     )
     experience_level = models.TextField(
-        default="No Experience",  
+        default="No Experience",
+        choices=EXPERIENCE_LEVEL_CHOICES,  
         help_text="Describe your level of experience with this topic."
     )
     additional_notes = models.TextField(
