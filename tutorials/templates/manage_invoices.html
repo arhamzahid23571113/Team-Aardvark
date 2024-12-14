@@ -19,20 +19,23 @@ Manage Invoices {% endblock %} {% block extra_css %}
     </tr>
   </thead>
   <tbody>
+    {% for invoice in invoices %}
     <tr>
-      
-      <th scope="row">1</th>
+      <th scope="row">{{invoice.invoice_num}}</th>
       <td><div class="text-box">Mark</div></td>
       <td><div class="text-box">Otto</div></td>
       <td><div class="text-box">500</div></td>
       <td><div class="text-box">unpaid</div></td>
       <td><div class="text-box">1/11</div></td>
-      <td><div class="btn-group" role="group" aria-label="Basic outlined example">
-        <button type="button" class="btn btn-outline-primary">Left</button>
-        
-      </div></td>
+      <td>
+        <div
+          class="btn-group"
+          role="group"
+          aria-label="Basic outlined example"
+        ></div>
+      </td>
     </tr>
-    </tr>
+    {% endfor %}
   </tbody>
 </table>
 {% endblock %}

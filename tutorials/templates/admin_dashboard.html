@@ -1,5 +1,5 @@
-{% extends 'dashboard_base_admin.html' %} {% block title %} Admin Dashboard {%
-endblock %} {% block content %}
+{% extends 'dashboard_base_admin.html' %} {% block title %} Admin Dashboard
+{%endblock %} {% block content %}
 <div class="container mt-5">
   <h1 class="text-center text-dashboard-purple mt-4">Admin Dashboard</h1>
 
@@ -35,7 +35,9 @@ endblock %} {% block content %}
         <div class="card-header">Invoices</div>
         <div class="card-body">
           <p>Generate and track payment statuses for student invoices.</p>
-          <a href="#" class="btn btn-outline-light">Manage Invoices</a>
+          <a href="{% url 'manage_invoices' %}" class="btn btn-outline-light"
+            >Manage Invoices</a
+          >
         </div>
       </div>
     </div>
