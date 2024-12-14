@@ -176,9 +176,9 @@ class LessonBookingForm(forms.ModelForm):
             "additional_notes",
         ]
         widgets = {
-            "requested_topic": forms.Select(),  # Choices are defined in the model
-            "requested_frequency": forms.Select(),  # Choices are defined in the model
-            "requested_duration": forms.Select(),  # Choices are defined in the model
+            "requested_topic": forms.Select(),  
+            "requested_frequency": forms.Select(),  
+            "requested_duration": forms.Select(),  
             "requested_date": forms.DateInput(attrs={
                 "type": "date",  # HTML5 date picker
                 "class": "form-control",
@@ -187,22 +187,10 @@ class LessonBookingForm(forms.ModelForm):
                 "type": "time",  # HTML5 time picker
                 "class": "form-control",
             }),
-            "experience_level": forms.Select(),  # Choices are defined in the model
+            "experience_level": forms.Select(),  
         }
 
         
-#class ContactMessages(forms.ModelForm):
- #   class Meta:
-  #      model = ContactMessage
-  #      fields = ['role','message']
-  #      exclude = ['timestamp']
-   #     widgets = {
-   #         'message': forms.Textarea(attrs={'rows':4}),
-   #         'role': forms.Select(choices=[
-    #            ("student","Student"),
-    #            ("tutor","Tutor"),
-     #       ])
-     #   }
 class ContactMessages(forms.ModelForm):
     class Meta:
         model = ContactMessage
