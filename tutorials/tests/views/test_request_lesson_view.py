@@ -16,12 +16,12 @@ class RequestLessonTestCase(TestCase):
             role="student"
         )
         self.valid_form_data = {
-            'requested_topic': 'Python Programming',  # Must match a valid dropdown choice
+            'requested_topic': 'python_programming',  
             'requested_date': '2024-01-01',
             'requested_time': '10:00:00',
             'requested_duration': 90,
-            'requested_frequency': 'Weekly',  # Must match a valid dropdown choice
-            'experience_level': 'Beginner',  # Must match a valid dropdown choice if applicable
+            'requested_frequency': 'weekly',  # Must match a valid dropdown choice
+            'experience_level': 'beginner',  
             'additional_notes': 'I would like help with advanced topics.'
         }
         self.invalid_form_data = {
@@ -48,7 +48,7 @@ class RequestLessonTestCase(TestCase):
         self.assertEqual(LessonRequest.objects.count(), 1)  # Ensure a LessonRequest was created
         lesson_request = LessonRequest.objects.first()
         self.assertEqual(lesson_request.student, self.student_user)
-        self.assertEqual(lesson_request.requested_topic, 'Python Programming')
+        self.assertEqual(lesson_request.requested_topic, 'python_programming')
         self.assertEqual(lesson_request.requested_duration, 90)
 
     def test_post_invalid_form(self):
@@ -57,9 +57,9 @@ class RequestLessonTestCase(TestCase):
         response = self.client.post(reverse('request_lesson'), data=self.invalid_form_data)
         self.assertEqual(response.status_code, 200)  # Stay on the same page
         self.assertTemplateUsed(response, 'request_lesson.html')
-        self.assertContains(response, 'Enter a valid date.')  # Specific error message for invalid date
-        self.assertContains(response, 'Ensure this value is greater than or equal to 0.')  # For duration
-        self.assertEqual(LessonRequest.objects.count(), 0)  # No LessonRequest should be created
+        self.assertContains(response, 'Enter a valid date.')  
+        self.assertContains(response, 'Select a valid choice. -1 is not one of the available choices.')
+        self.assertEqual(LessonRequest.objects.count(), 0) 
 
     def test_post_no_data(self):
         """Test POST request with no data submitted."""
