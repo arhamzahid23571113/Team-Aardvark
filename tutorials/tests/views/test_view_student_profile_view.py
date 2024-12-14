@@ -7,7 +7,7 @@ User = get_user_model()
 class ViewStudentProfileTestCase(TestCase):
     def setUp(self):
         """Set up test data for the test cases."""
-        # Create an admin user
+
         self.admin = User.objects.create_user(
             username="admin1",
             email="admin1@example.com",
@@ -15,7 +15,6 @@ class ViewStudentProfileTestCase(TestCase):
             role="admin"
         )
 
-        # Create a student user
         self.student = User.objects.create_user(
             username="student1",
             email="student1@example.com",
@@ -23,7 +22,6 @@ class ViewStudentProfileTestCase(TestCase):
             role="student"
         )
 
-        # Create a tutor user (who shouldn't have access)
         self.tutor = User.objects.create_user(
             username="tutor1",
             email="tutor1@example.com",
@@ -31,7 +29,6 @@ class ViewStudentProfileTestCase(TestCase):
             role="tutor"
         )
 
-        # URL for the view
         self.url = reverse('view_student_profile', args=[self.student.id])
 
     def test_admin_access(self):
@@ -39,7 +36,6 @@ class ViewStudentProfileTestCase(TestCase):
         self.client.login(username="admin1", password="Password123")
         response = self.client.get(self.url)
 
-        # Verify status, template, and context
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "view_student_profile.html")
         self.assertEqual(response.context["student"], self.student)
@@ -62,6 +58,5 @@ class ViewStudentProfileTestCase(TestCase):
         self.client.login(username="admin1", password="Password123")
         response = self.client.get(self.url)
 
-        # Verify that correct student details are displayed in the template
         self.assertContains(response, self.student.username)
         self.assertContains(response, self.student.email)
