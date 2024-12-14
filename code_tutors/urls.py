@@ -46,7 +46,6 @@ urlpatterns = [
     path('invoice_page/', views.invoice_page, name='invoice_page'),
     path('invoice_page/<str:term_name>/', views.invoice_page, name='invoice_page_term'),
     path('manage_invoices/', views.manage_invoices, name='manage_invoices'), 
-    path('admin_invoice_view/<str:invoice_num>', views.admin_invoice_view, name='admin_invoice_view'), 
     path('request_lesson/', views.request_lesson, name='request_lesson'),
     path('contact_admin/',views.contact_admin,name='contact_admin'),
     path('my_tutor_profile/',views.see_my_tutor,name='my_tutor_profile'),

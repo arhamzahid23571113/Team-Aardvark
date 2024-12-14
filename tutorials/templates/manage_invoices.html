@@ -5,7 +5,43 @@ Manage Invoices {% endblock %} {% block extra_css %}
 <div class="container mt-5">
   <h1 class="text-center text-dashboard-purple mt-4">Invoice Management</h1>
 </div>
+<div class="container mt-5">
+  <h5 class="text-start text-dashboard-purple mt-4">Sort by: <div
+    class="btn-group"
+    role="group"
+    aria-label="Basic radio toggle button group"
+  >
+    <input
+      type="radio"
+      class="btn-check"
+      name="btnradio"
+      id="btnradio1"
+      autocomplete="off"
+      checked
+    />
+    <label class="btn btn-outline-primary" for="btnradio1">Due Date</label>
 
+    <input
+      type="radio"
+      class="btn-check"
+      name="btnradio"
+      id="btnradio2"
+      autocomplete="off"
+    />
+    <label class="btn btn-outline-primary" for="btnradio2">Status</label>
+
+    <input
+      type="radio"
+      class="btn-check"
+      name="btnradio"
+      id="btnradio3"
+      autocomplete="off"
+    />
+    <label class="btn btn-outline-primary" for="btnradio3">Name</label>
+  </div>
+</div>
+</h5>
+  
 <table class="table">
   <thead class="table-head">
     <tr>
@@ -22,11 +58,11 @@ Manage Invoices {% endblock %} {% block extra_css %}
     {% for invoice in invoices %}
     <tr>
       <th scope="row">{{invoice.invoice_num}}</th>
-      <td><div class="text-box">Mark</div></td>
-      <td><div class="text-box">Otto</div></td>
+      <td><div class="text-box">{{invoice.student.first_name}}</div></td>
+      <td><div class="text-box">{{invoice.student.last_name}}</div></td>
       <td><div class="text-box">500</div></td>
-      <td><div class="text-box">unpaid</div></td>
-      <td><div class="text-box">1/11</div></td>
+      <td><div class="text-box">{{invoice.payment_status}}</div></td>
+      <td><div class="text-box">{{invoice.due_date}}</div></td>
       <td>
         <div
           class="btn-group"

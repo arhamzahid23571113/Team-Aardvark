@@ -68,24 +68,47 @@ def available_courses(request):
     """Display the Available Courses page."""
     return render(request, 'available_courses.html')
 
+
+def generate_invoice(invoice, term_start=None, term_end=None):
+    total = 0
+
+    if term_start and term_end:
+        lesson_requests = LessonRequest.objects.filter(
+            student=invoice.student, 
+            request_date__range=[term_start, term_end], 
+            status='Allocated')
+    else:
+        lesson_requests = LessonRequest.objects.filter(
+            student=invoice.student, 
+            status='Allocated')
+        
+    for booking in lesson_requests:
+        booking.lesson_price = (booking.requested_duration / 60) * settings.HOURLY_RATE
+        total += booking.lesson_price 
+
+    return lesson_requests, total
+            
 @login_required
 def manage_invoices(request):
     invoices = Invoice.objects.all()
     return render(request, 'manage_invoices.html', {'invoices' : invoices})
 
-@login_required
 def admin_invoice_view(request, invoice_num):
     invoice = get_object_or_404(Invoice, invoice_num=invoice_num)
 
-    return render(request, 'invoice_page.html', {'invoice': invoice})
+    lesson_requests, total = generate_invoice(invoice)
 
+    return render(request, 'invoice_page.html', {
+        'invoice' : invoice,
+        'lesson_requests' : lesson_requests,
+        'total' : total
+    })
 
 @login_required
 def invoice_page(request, term_name = None):
     """Display user invoice."""
-    #invoice = Invoice.objects.filter(student=request.user)
 
-    total = 0
+    #total = 0
 
     terms = {
         'autumn': (date(2024, 9, 1), date(2024, 12, 31)),
@@ -106,18 +129,15 @@ def invoice_page(request, term_name = None):
 
     invoice = Invoice.objects.filter(student=request.user).first()
     
-    lesson_requests = LessonRequest.objects.filter(student=request.user, request_date__range=[term_start, term_end], status='Unallocated')
-
     term_keys = list(terms.keys())
     current_term_index = term_keys.index(term_name)
 
     previous_term = term_keys[(current_term_index - 1) % len(term_keys)]
     next_term = term_keys[(current_term_index + 1) % len(term_keys)]
 
-    for booking in lesson_requests:
-        booking.lesson_price = (booking.requested_duration / 60) * settings.HOURLY_RATE
-        total += booking.lesson_price 
+    lesson_requests, total = generate_invoice(invoice)
 
+    for booking in lesson_requests:
         booking.standardised_date = booking.request_date.strftime("%d/%m/%Y")
 
     return render(request, 'invoice_page.html', {
