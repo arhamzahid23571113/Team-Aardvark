@@ -70,9 +70,27 @@ def available_courses(request):
 
 @login_required
 def manage_invoices(request):
-    
-    return render(request, 'manage_invoices.html')
-    
+    invoices = Invoice.objects.all()
+    return render(request, 'manage_invoices.html', {'invoices' : invoices})
+
+@login_required
+def admin_invoice_view(request, invoice_id):
+    invoice = get_object_or_404(Invoice, id=invoice_id)
+    lesson_requests = LessonRequest.objects.filter(
+        student=invoice.student,
+        request_date__range=[invoice.invoice_date, invoice.due_date], 
+        status="Allocated"
+    )
+    total = sum((lesson.requested_duration / 60) * settings.HOURLY_RATE for lesson in lesson_requests)
+
+    return render(request, 'invoice_page.html', {
+        'invoice': invoice,
+        'lesson_requests': lesson_requests,
+        'total': total,
+        'previous_term': None,  
+        'next_term': None,
+    })
+
 
 @login_required
 def invoice_page(request, term_name = None):

@@ -1,10 +1,8 @@
-{% extends 'dashboard_base_admin.html' %}
-{% block title %}Admin Dashboard{% endblock %}
-
-{% block content %}
+{% extends 'dashboard_base_admin.html' %} {% block title %} Admin Dashboard {%
+endblock %} {% block content %}
 <div class="container mt-5">
   <h1 class="text-center text-dashboard-purple mt-4">Admin Dashboard</h1>
-  
+
   <!-- Grid for Cards -->
   <div class="row">
     <!-- Student Requests Card -->
@@ -13,7 +11,9 @@
         <div class="card-header">Student Requests</div>
         <div class="card-body">
           <p>View and manage all pending student lesson requests here.</p>
-          <a href="{% url 'student_requests' %}" class="btn btn-outline-light">View Requests</a>
+          <a href="{% url 'student_requests' %}" class="btn btn-outline-light"
+            >View Requests</a
+          >
         </div>
       </div>
     </div>
@@ -57,7 +57,9 @@
         <div class="card-header">Tutor Profiles</div>
         <div class="card-body">
           <p>View and manage all tutor profiles.</p>
-          <a href="{% url 'all_tutor_profiles' %}" class="btn btn-outline-light">View Tutor Profiles</a>
+          <a href="{% url 'all_tutor_profiles' %}" class="btn btn-outline-light"
+            >View Tutor Profiles</a
+          >
         </div>
       </div>
     </div>
@@ -68,7 +70,9 @@
         <div class="card-header">Student Profiles</div>
         <div class="card-body">
           <p>View and manage all student profiles.</p>
-          <a href="{% url 'all_students' %}" class="btn btn-outline-light">View Student Profiles</a>
+          <a href="{% url 'all_students' %}" class="btn btn-outline-light"
+            >View Student Profiles</a
+          >
         </div>
       </div>
     </div>

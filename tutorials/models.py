@@ -57,15 +57,15 @@ class User(AbstractUser):
 
 class Invoice(models.Model):
     """Model for invoices and tracking payment status"""
+    invoice_num = models.CharField(max_length=8, unique=True)
     student = models.ForeignKey(User, related_name="invoices",on_delete=models.CASCADE)
-    amount_due = models.DecimalField(max_digits=8, decimal_places=2)
     due_date = models.DateField()
     payment_status = models.CharField(max_length=20, choices=[('Paid', 'Paid'),('Unpaid', 'Unpaid')])
     invoice_date = models.DateField(auto_now_add=True)
     payment_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
-        return f"Invoice for {self.student.first_name} {self.student.last_name}"
+        return f"Invoice {self.invoice_num} for {self.student.first_name} {self.student.last_name}"
     
 
 

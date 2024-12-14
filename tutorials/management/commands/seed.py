@@ -149,8 +149,8 @@ class Command(BaseCommand):
         students = User.objects.filter(role='student')
         for student in students:
             Invoice.objects.create(
+                invoice_num=f"INV{randint(100000, 999999)}",
                 student=student,
-                amount_due=randint(50, 500),
                 due_date=faker.date_between(start_date='-30d', end_date='+30d'),
                 payment_status=choice(['Paid', 'Unpaid']),
             )
