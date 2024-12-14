@@ -26,6 +26,8 @@ from .forms import LessonBookingForm,ContactMessages
 from .models import ContactMessage
 from .forms import AdminReplyBack
 from django.utils.timezone import now
+from django.http import HttpResponseForbidden
+
 
 
 
@@ -640,13 +642,16 @@ def view_student_messages(request,role=None):
         student_messages = ContactMessage.objects.filter(role='student').order_by('timestamp')
         return render(request,'admin_messages_students.html',{'messages':student_messages})
     else:
-        return redirect('admin_dashboard')
+        return redirect('log_in')
 
 @login_required
 def view_tutor_messages(request,role=None):
     if request.user.role == 'admin':
         tutor_messages = ContactMessage.objects.filter(role='tutor').order_by('timestamp')
         return render(request,'admin_messages_tutors.html',{'messages':tutor_messages})
+    else:
+        return redirect('log_in')
+
 
 @login_required
 def admin_reply(request, message_id):
