@@ -95,7 +95,12 @@ class Command(BaseCommand):
                 student=student,
                 tutor=choice(tutors) if tutors.exists() else None,
                 status=choice(['Unallocated', 'Allocated', 'Cancelled']),
-                requested_topic=faker.word(),
+                requested_topic=choice([
+                "Python Programming",
+                "Web Development with JavaScript",
+                "Ruby on Rails",
+                "AI and Machine Learning",
+                ]),
                 requested_frequency=choice(["Weekly", "Fortnightly"]),
                 requested_duration=choice([30, 60, 90]),
                 requested_time=faker.time(),
