@@ -95,6 +95,7 @@ def manage_invoices(request):
 
     for invoice in invoices:
         lesson_requests, total = generate_invoice(invoice)
+        invoice.standardised_due_date = invoice.due_date.strftime("%d/%m/%Y")
 
         invoice_data.append({
             'invoice' : invoice,

@@ -60,9 +60,9 @@ Manage Invoices {% endblock %} {% block extra_css %}
       <th scope="row">{{data.invoice.invoice_num}}</th>
       <td><div class="text-box">{{data.invoice.student.first_name}}</div></td>
       <td><div class="text-box">{{data.invoice.student.last_name}}</div></td>
-      <td><div class="text-box">£{{data.total}}</div></td>
+      <td><div class="text-box">£{{data.total|floatformat:2}}</div></td>
       <td><div class="text-box">{{data.invoice.payment_status}}</div></td>
-      <td><div class="text-box">{{data.invoice.due_date}}</div></td>
+      <td><div class="text-box">{{data.invoice.standardised_due_date}}</div></td>
       <td>
         <div
           class="btn-group"
