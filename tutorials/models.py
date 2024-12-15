@@ -61,7 +61,7 @@ class Invoice(models.Model):
         related_name="invoices",  # Unique related_name for Invoice
         on_delete=models.CASCADE
     )
-    amount_due = models.DecimalField(max_digits=8, decimal_places=2)
+    invoice_num = models.CharField(max_length=8, unique=True)
     due_date = models.DateField()
     payment_status = models.CharField(
         max_length=20,
@@ -75,7 +75,7 @@ class Invoice(models.Model):
     payment_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
-        return f"Invoice for {self.student.first_name} {self.student.last_name}"
+        return f"Invoice {self.invoice_num} for {self.student.first_name} {self.student.last_name}"
 
 class LessonRequest(models.Model):
     """Model for students to make request lessons"""
