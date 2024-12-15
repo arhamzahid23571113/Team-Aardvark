@@ -91,7 +91,18 @@ def generate_invoice(invoice, term_start=None, term_end=None):
 @login_required
 def manage_invoices(request):
     invoices = Invoice.objects.all()
-    return render(request, 'manage_invoices.html', {'invoices' : invoices})
+    invoice_data = []
+
+    for invoice in invoices:
+        lesson_requests, total = generate_invoice(invoice)
+
+        invoice_data.append({
+            'invoice' : invoice,
+            'lesson_requests' : lesson_requests,
+            'total' : total,
+        })
+
+    return render(request, 'manage_invoices.html', {'invoice_data' : invoice_data})
 
 def admin_invoice_view(request, invoice_num):
     invoice = get_object_or_404(Invoice, invoice_num=invoice_num)
@@ -135,7 +146,7 @@ def invoice_page(request, term_name = None):
     previous_term = term_keys[(current_term_index - 1) % len(term_keys)]
     next_term = term_keys[(current_term_index + 1) % len(term_keys)]
 
-    lesson_requests, total = generate_invoice(invoice)
+    lesson_requests, total = generate_invoice(invoice, term_start, term_end)
 
     for booking in lesson_requests:
         booking.standardised_date = booking.request_date.strftime("%d/%m/%Y")

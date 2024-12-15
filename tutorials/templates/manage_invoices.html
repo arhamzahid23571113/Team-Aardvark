@@ -43,26 +43,26 @@ Manage Invoices {% endblock %} {% block extra_css %}
 </h5>
   
 <table class="table">
-  <thead class="table-head">
+  <thead class="table-head" style="text-align: center;">
     <tr>
       <th scope="col">Invoice Num</th>
       <th scope="col">First Name</th>
       <th scope="col">Last Name</th>
-      <th scope="col">Amount</th>
+      <th scope="col">Amount Due</th>
       <th scope="col">Status</th>
       <th scope="col">Due Date</th>
       <th scope="col">Actions</th>
     </tr>
   </thead>
   <tbody>
-    {% for invoice in invoices %}
+    {% for data in invoice_data %}
     <tr>
-      <th scope="row">{{invoice.invoice_num}}</th>
-      <td><div class="text-box">{{invoice.student.first_name}}</div></td>
-      <td><div class="text-box">{{invoice.student.last_name}}</div></td>
-      <td><div class="text-box">500</div></td>
-      <td><div class="text-box">{{invoice.payment_status}}</div></td>
-      <td><div class="text-box">{{invoice.due_date}}</div></td>
+      <th scope="row">{{data.invoice.invoice_num}}</th>
+      <td><div class="text-box">{{data.invoice.student.first_name}}</div></td>
+      <td><div class="text-box">{{data.invoice.student.last_name}}</div></td>
+      <td><div class="text-box">£{{data.total}}</div></td>
+      <td><div class="text-box">{{data.invoice.payment_status}}</div></td>
+      <td><div class="text-box">{{data.invoice.due_date}}</div></td>
       <td>
         <div
           class="btn-group"
