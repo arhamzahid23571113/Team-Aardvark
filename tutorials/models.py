@@ -28,6 +28,7 @@ class User(AbstractUser):
     )
     role = models.CharField(max_length=10, choices=ROLES, default='student')
 
+
     expertise = models.TextField(
         blank=True, null=True,
         help_text="Comma-separated list of programming languages or topics the tutor specializes in."
@@ -56,6 +57,7 @@ class User(AbstractUser):
 
 class Invoice(models.Model):
     """Model for invoices and tracking payment status"""
+
     student = models.ForeignKey(
         User,
         related_name="invoices",  # Unique related_name for Invoice
@@ -67,10 +69,7 @@ class Invoice(models.Model):
         max_length=20,
         choices=[('Paid', 'Paid'), ('Unpaid', 'Unpaid')]
     )
-    payment_status = models.CharField(
-        max_length=20,
-        choices=[('Paid', 'Paid'), ('Unpaid', 'Unpaid')]
-    )
+
     invoice_date = models.DateField(auto_now_add=True)
     payment_date = models.DateField(null=True, blank=True)
 
@@ -144,6 +143,11 @@ class LessonRequest(models.Model):
     requested_date = models.DateField(
         default="2024-01-01",
         help_text="Select the date for your lesson."
+    )
+    requested_date = models.DateField(
+        help_text="Select the date for your lesson.",
+        null=True,
+        blank=True
     )
     requested_frequency = models.CharField(
         max_length=20,

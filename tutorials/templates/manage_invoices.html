@@ -1,0 +1,72 @@
+{% extends 'dashboard_base_admin.html' %} {% load static %} {% block title %}
+Manage Invoices {% endblock %} {% block extra_css %}
+<link rel="stylesheet" href="{% static 'manage_invoices.css' %}" />
+{% endblock %} {% block content %}
+<div class="container mt-5">
+  <h1 class="text-center text-dashboard-purple mt-4">Invoice Management</h1>
+</div>
+<!--<div class="container mt-5">
+  <h5 class="text-start text-dashboard-purple mt-4">Sort by: 
+    <form method="get" action="{% url 'manage_invoices' %}"></form>
+    <div
+    class="btn-group"
+    role="group"
+    aria-label="Basic radio toggle button group"
+  >
+    <input
+      type="radio"
+      class="btn-check"
+      name="sort_by"
+      id="btnradio1"
+      autocomplete="off"
+      {% if sort_by == 'due_date' %} checked {% endif %}
+      value="due_date"
+    />
+    <label class="btn btn-outline-primary" for="btnradio1">Due Date</label>
+
+    <input
+      type="radio"
+      class="btn-check"
+      name="btnradio"
+      id="btnradio2"
+      autocomplete="off"
+    />
+    <label class="btn btn-outline-primary" for="btnradio2">Status</label>
+  </div>
+</form>
+</div>
+</h5>-->
+
+<table class="table">
+  <thead class="table-head" style="text-align: center">
+    <tr>
+      <th scope="col">Invoice Num</th>
+      <th scope="col">First Name</th>
+      <th scope="col">Last Name</th>
+      <th scope="col">Amount Due</th>
+      <th scope="col">Status</th>
+      <th scope="col">Due Date</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for data in invoice_data %}
+    <tr>
+      <th scope="row">{{data.invoice.invoice_num}}</th>
+      <td><div class="text-box">{{data.invoice.student.first_name}}</div></td>
+      <td><div class="text-box">{{data.invoice.student.last_name}}</div></td>
+      <td><div class="text-box">£{{data.total|floatformat:2}}</div></td>
+      <td><div class="text-box">{{data.invoice.payment_status}}</div></td>
+      <td>
+        <div class="text-box">{{data.invoice.standardised_due_date}}</div>
+      </td>
+      <td>
+        <a href="{% url 'admin_invoice_view' data.invoice.invoice_num %}" button type="button" class="btn btn-outline-light">
+          View Invoice
+        </button>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

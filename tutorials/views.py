@@ -19,7 +19,7 @@ from datetime import datetime, timedelta, date
 from django.utils.timezone import make_aware
 from django.shortcuts import render
 
-from .models import User
+from .models import User, Invoice
 from .models import LessonRequest
 from django.shortcuts import get_object_or_404, redirect
 from .forms import LessonBookingForm,ContactMessages
@@ -29,12 +29,6 @@ from django.utils.timezone import now
 from django.http import HttpResponseForbidden
 
 
-
-
-
-
-#AMINA
-from django.shortcuts import render
 
 @login_required
 def dashboard(request):
@@ -74,7 +68,6 @@ def student_dashboard(request):
     """Student-specific dashboard."""
     return render(request, 'student_dashboard.html')
 
-
 def learn_more(request):
     """Display the Learn More page."""
     return render(request, 'learn_more.html')
@@ -83,6 +76,98 @@ def learn_more(request):
 def available_courses(request):
     """Display the Available Courses page."""
     return render(request, 'available_courses.html')
+
+
+def generate_invoice(invoice, term_start=None, term_end=None):
+    total = 0
+
+    if term_start and term_end:
+        lesson_requests = LessonRequest.objects.filter(
+            student=invoice.student, 
+            request_date__range=[term_start, term_end], 
+            status='Allocated')
+    else:
+        lesson_requests = LessonRequest.objects.filter(
+            student=invoice.student, 
+            status='Allocated')
+        
+    for booking in lesson_requests:
+        booking.lesson_price = (booking.requested_duration / 60) * settings.HOURLY_RATE
+        total += booking.lesson_price 
+
+    return lesson_requests, total
+        
+
+@login_required
+def manage_invoices(request):
+    invoices = Invoice.objects.all()
+    invoice_data = []
+
+    for invoice in invoices:
+        lesson_requests, total = generate_invoice(invoice)
+        invoice.standardised_due_date = invoice.due_date.strftime("%d/%m/%Y")
+
+        invoice_data.append({
+            'invoice' : invoice,
+            'lesson_requests' : lesson_requests,
+            'total' : total,
+        })
+
+    return render(request, 'manage_invoices.html', {'invoice_data' : invoice_data})
+
+def admin_invoice_view(request, invoice_num):
+    invoice = get_object_or_404(Invoice, invoice_num=invoice_num)
+
+    lesson_requests, total = generate_invoice(invoice)
+
+    return render(request, 'invoice_page.html', {
+        'invoice': invoice,
+        'lesson_requests': lesson_requests,
+        'total': total,
+        'is_admin': True,  
+    })
+
+@login_required
+def invoice_page(request, term_name = None):
+    """Display user invoice."""
+    terms = {
+        'autumn': (date(2024, 9, 1), date(2024, 12, 31)),
+        'spring': (date(2025, 1, 1), date (2025, 5, 31)),
+        'summer': (date(2025, 6, 1), date(2025, 8, 31)),
+    }
+
+    if term_name is None:
+        today = date.today()
+
+        for term, (start, end) in terms.items():
+            if start <= today <= end:
+                term_name = term 
+                break 
+
+    term_dates = terms.get(term_name)
+    term_start, term_end = term_dates
+
+    invoice = Invoice.objects.filter(student=request.user).first()
+    
+    term_keys = list(terms.keys())
+    current_term_index = term_keys.index(term_name)
+
+    previous_term = term_keys[(current_term_index - 1) % len(term_keys)]
+    next_term = term_keys[(current_term_index + 1) % len(term_keys)]
+
+    lesson_requests, total = generate_invoice(invoice, term_start, term_end)
+
+    for booking in lesson_requests:
+        booking.standardised_date = booking.request_date.strftime("%d/%m/%Y")
+
+    return render(request, 'invoice_page.html', {
+        'invoice': invoice, 
+        'lesson_requests': lesson_requests,
+        'total': total, 
+        'term_name': term_name.title(),
+        'previous_term': previous_term,
+        'next_term': next_term,
+        })
 
 
 class LoginProhibitedMixin:
@@ -709,7 +794,7 @@ def student_messages(request):
     studentMessages = ContactMessage.objects.filter(user=student).order_by('timestamp')
     return render(request,'student_messages.html',{'messages':studentMessages})    
 #AMINA    
-    
+
 #AMINA  PART DONE =)  
 def tutor_timetable(request):
     """View for tutors to see their timetable."""
@@ -832,6 +917,7 @@ def contact_admin(request):
 #STUDENTS
 @login_required
 def see_my_tutor(request):
+    # Ensure only students can access this page
     if request.user.role != 'student':
         return redirect('log_in')
     
@@ -916,11 +1002,13 @@ def student_requests(request):
 @login_required
 def assign_tutor(request, lesson_request_id):
     if request.method == 'POST':
+        # Fetch the lesson request and selected tutor 
         lesson_request = get_object_or_404(LessonRequest, id=lesson_request_id)
         tutor_id = request.POST.get('tutor_id')
 
         if tutor_id:
             tutor = get_object_or_404(User, id=tutor_id, role='tutor')
+            # Assign the tutor to the lesson request (assuming you have a 'tutor' field)
             lesson_request.tutor = tutor
             lesson_request.status = 'Allocated'
             lesson_request.save()

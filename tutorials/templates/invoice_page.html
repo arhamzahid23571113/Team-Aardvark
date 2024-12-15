@@ -1,0 +1,141 @@
+{% extends 'dashboard_base_student.html' %} {% load static %} {% block title %}
+Invoice Page {% endblock %} {% block extra_css %}
+<link rel="stylesheet" href="{% static 'invoice_page.css' %}" />
+{% endblock %} {% block content %} {% if is_admin %}
+<h1>admin</h1>
+{% else %}
+<svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+  <symbol id="info-fill" viewBox="0 0 16 16">
+    <path
+      d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"
+    />
+  </symbol>
+</svg>
+<div
+  class="alert alert-primary d-flex align-items-center pricing-alert"
+  role="alert"
+>
+  <svg
+    class="bi flex-shrink-0 me-2"
+    role="img"
+    aria-label="Info:"
+    width="24"
+    height="24"
+    style="fill: #ffffff"
+  >
+    <use xlink:href="#info-fill" />
+  </svg>
+  <div>
+    Click
+    <a class="nav-link d-inline fw-bold p-0" href="#scrollspyHeading1">here</a>
+    to see more on lesson pricing.
+  </div>
+</div>
+
+<div class="alert header-alert" role="alert">
+  <h1 class="alert-heading invoice-text">
+    <i class="fas fa-receipt me-2"></i>Here are your invoices,
+    {{invoice.student.first_name}}.
+  </h1>
+  <hr />
+  <p class="mb-0 invoice-text">
+    Status: {{invoice.payment_status}} | Payment due by:
+    {{invoice.due_date|date:"d/m/Y"}}
+  </p>
+</div>
+
+<div class="invoice-page">
+  <div class="card bg-transparent border-0">
+    <div
+      class="card-header d-flex align-items-center justify-content-center gap-2"
+    >
+      <a href="{% url 'invoice_page_term' previous_term %}" class="btn btn-prev"
+        >&lt;</a
+      >
+      <span class="align-middle" style="color: #787de0"
+        >{{ term_name }} term</span
+      >
+      <a href="{% url 'invoice_page_term' next_term %}" class="btn btn-next"
+        >&gt;</a
+      >
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col">
+          <p>{{invoice.student.full_name}}</p>
+          <p>{{invoice.invoice_date|date:"d/m/Y"}}</p>
+          <p>{{invoice.invoice_num}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+<hr class="my-4" />
+<div class="container text-center">
+  <div class="row justify-content-md-start">
+    <div class="col invoice-titles">Date</div>
+    <div class="col invoice-titles">Lesson length</div>
+    <div class="col invoice-titles">Tutor name</div>
+    <div class="col invoice-titles">Price</div>
+  </div>
+</div>
+
+<hr class="my-4" />
+
+<div class="invoice-page">
+  <div
+    class="card shadow-lg p-3 mb-5 bg-transparent rounded border-0 text-center"
+  >
+    <div class="card-body">
+      {% for booking in lesson_requests %}
+      <div class="row justify-content-md-start">
+        <div class="col">{{booking.standardised_date}}</div>
+        <div class="col">{{booking.requested_duration}} min</div>
+        <div class="col">
+          {{booking.tutor.first_name}} {{booking.tutor.last_name}}
+        </div>
+        <div class="col">£{{booking.lesson_price|floatformat:2}}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<hr class="my-4" />
+
+<div class="invoice-text" style="text-align: right">
+  <p>Total: £{{total|floatformat:2}}</p>
+</div>
+
+{% if not is_admin %}
+<div
+  data-bs-spy="scroll"
+  data-bs-target="#sidebar"
+  data-bs-root-margin="0px 0px -40%"
+  data-bs-smooth-scroll="true"
+  class="scrollspy-example bg-body-tertiary p-3 rounded-2"
+  tabindex="0"
+>
+  <div id="scrollspyHeading1" class="card">
+    <div class="card-header fs-4">
+      <i class="fas fa-money-check"></i> Our Prices
+    </div>
+    <div class="card-body" style="text-align: center">
+      <h4 class="card-title">
+        All lessons are charged at a flat rate of £10 per hour, regardless of
+        the subject covered.
+      </h4>
+      <p class="card-text">
+        This ensures transparent and consistent pricing for all tutoring
+        services.
+      </p>
+      <br />
+    </div>
+    <div class="card-footer text-body-secondary" style="text-align: center">
+      Still have questions?
+      <a href="#" class="alert-link" style="color: #ffffff">Contact Admin.</a>
+    </div>
+  </div>
+</div>
+{% endif %} {% endblock %}

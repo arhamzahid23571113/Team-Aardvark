@@ -12,6 +12,8 @@
 
 /* Full-height sidebar with animated dark purple gradient */
 #sidebar {
+    position: sticky;
+    overflow-y: auto;
     height: 100vh;
     padding-top: 20px;
     background: linear-gradient(135deg, #4e54c8 0%, #f2fcfe 100%) !important;
