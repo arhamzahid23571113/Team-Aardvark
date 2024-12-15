@@ -1,7 +1,9 @@
 {% extends 'dashboard_base_student.html' %} {% load static %} {% block title %}
 Invoice Page {% endblock %} {% block extra_css %}
 <link rel="stylesheet" href="{% static 'invoice_page.css' %}" />
-{% endblock %} {% block content %}
+{% endblock %} {% block content %} {% if is_admin %}
+<h1>admin</h1>
+{% else %}
 <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
   <symbol id="info-fill" viewBox="0 0 16 16">
     <path
@@ -68,7 +70,7 @@ Invoice Page {% endblock %} {% block extra_css %}
     </div>
   </div>
 </div>
-
+{% endif %}
 <hr class="my-4" />
 <div class="container text-center">
   <div class="row justify-content-md-start">
@@ -106,6 +108,7 @@ Invoice Page {% endblock %} {% block extra_css %}
   <p>Total: £{{total|floatformat:2}}</p>
 </div>
 
+{% if not is_admin %}
 <div
   data-bs-spy="scroll"
   data-bs-target="#sidebar"
@@ -135,5 +138,4 @@ Invoice Page {% endblock %} {% block extra_css %}
     </div>
   </div>
 </div>
-
-{% endblock %}
+{% endif %} {% endblock %}

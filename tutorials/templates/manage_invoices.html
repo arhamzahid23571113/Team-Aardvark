@@ -5,8 +5,10 @@ Manage Invoices {% endblock %} {% block extra_css %}
 <div class="container mt-5">
   <h1 class="text-center text-dashboard-purple mt-4">Invoice Management</h1>
 </div>
-<div class="container mt-5">
-  <h5 class="text-start text-dashboard-purple mt-4">Sort by: <div
+<!--<div class="container mt-5">
+  <h5 class="text-start text-dashboard-purple mt-4">Sort by: 
+    <form method="get" action="{% url 'manage_invoices' %}"></form>
+    <div
     class="btn-group"
     role="group"
     aria-label="Basic radio toggle button group"
@@ -14,10 +16,11 @@ Manage Invoices {% endblock %} {% block extra_css %}
     <input
       type="radio"
       class="btn-check"
-      name="btnradio"
+      name="sort_by"
       id="btnradio1"
       autocomplete="off"
-      checked
+      {% if sort_by == 'due_date' %} checked {% endif %}
+      value="due_date"
     />
     <label class="btn btn-outline-primary" for="btnradio1">Due Date</label>
 
@@ -29,21 +32,13 @@ Manage Invoices {% endblock %} {% block extra_css %}
       autocomplete="off"
     />
     <label class="btn btn-outline-primary" for="btnradio2">Status</label>
-
-    <input
-      type="radio"
-      class="btn-check"
-      name="btnradio"
-      id="btnradio3"
-      autocomplete="off"
-    />
-    <label class="btn btn-outline-primary" for="btnradio3">Name</label>
   </div>
+</form>
 </div>
-</h5>
-  
+</h5>-->
+
 <table class="table">
-  <thead class="table-head" style="text-align: center;">
+  <thead class="table-head" style="text-align: center">
     <tr>
       <th scope="col">Invoice Num</th>
       <th scope="col">First Name</th>
@@ -62,13 +57,13 @@ Manage Invoices {% endblock %} {% block extra_css %}
       <td><div class="text-box">{{data.invoice.student.last_name}}</div></td>
       <td><div class="text-box">£{{data.total|floatformat:2}}</div></td>
       <td><div class="text-box">{{data.invoice.payment_status}}</div></td>
-      <td><div class="text-box">{{data.invoice.standardised_due_date}}</div></td>
       <td>
-        <div
-          class="btn-group"
-          role="group"
-          aria-label="Basic outlined example"
-        ></div>
+        <div class="text-box">{{data.invoice.standardised_due_date}}</div>
+      </td>
+      <td>
+        <a href="{% url 'admin_invoice_view' data.invoice.invoice_num %}" button type="button" class="btn btn-outline-light">
+          View Invoice
+        </button>
       </td>
     </tr>
     {% endfor %}

@@ -87,9 +87,38 @@ def generate_invoice(invoice, term_start=None, term_end=None):
         total += booking.lesson_price 
 
     return lesson_requests, total
-            
+        
+'''def calculate_term(date):
+    terms = {
+        'autumn': (date(2024, 9, 1), date(2024, 12, 31)),
+        'spring': (date(2025, 1, 1), date (2025, 5, 31)),
+        'summer': (date(2025, 6, 1), date(2025, 8, 31)),
+    }
+
+    if term_name is None:
+        today = date.today()
+
+        for term, (start, end) in terms.items():
+            if start <= today <= end:
+                term_name = term 
+                break 
+
+    term_dates = terms.get(term_name)
+    term_start, term_end = term_dates
+'''
+
+
 @login_required
 def manage_invoices(request):
+    '''sort_by = request.GET.get('sort_by', 'due_date')
+    
+    if sort_by == 'due_date':
+        invoices = Invoice.objects.all().order_by('due_date')
+    elif sort_by == 'payment_status':
+        invoices = Invoice.objects.all().order_by('payment_status')
+    else:
+        invoices = Invoice.objects.all()'''
+
     invoices = Invoice.objects.all()
     invoice_data = []
 
@@ -103,6 +132,7 @@ def manage_invoices(request):
             'total' : total,
         })
 
+    #return render(request, 'manage_invoices.html', {'invoice_data' : invoice_data, 'sort_by' : sort_by})
     return render(request, 'manage_invoices.html', {'invoice_data' : invoice_data})
 
 def admin_invoice_view(request, invoice_num):
@@ -111,9 +141,10 @@ def admin_invoice_view(request, invoice_num):
     lesson_requests, total = generate_invoice(invoice)
 
     return render(request, 'invoice_page.html', {
-        'invoice' : invoice,
-        'lesson_requests' : lesson_requests,
-        'total' : total
+        'invoice': invoice,
+        'lesson_requests': lesson_requests,
+        'total': total,
+        'is_admin': True,  
     })
 
 @login_required
