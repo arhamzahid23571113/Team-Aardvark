@@ -28,6 +28,7 @@ from .forms import AdminReplyBack
 from django.utils.timezone import now
 from django.http import HttpResponseForbidden
 from django.db import models
+from django.core.exceptions import ValidationError
 
 
 
@@ -929,16 +930,17 @@ def student_dashboard(request):
 #STUDENTS
 @login_required
 def request_lesson(request):
+    """Allow students to request a lesson."""
     if request.method == 'POST':
         form = LessonBookingForm(request.POST)
         if form.is_valid():
-            lesson_request = form.save(commit=False)
-            lesson_request.student = request.user  
-            lesson_request.save()
-            return redirect('lesson_request_success')  
-        else:
-            
-            print(form.errors)
+            try:
+                lesson_request = form.save(commit=False)
+                lesson_request.student = request.user  
+                lesson_request.save()  
+                return redirect('lesson_request_success')  
+            except ValidationError as e:
+                form.add_error(None, e.message)  
     else:
         form = LessonBookingForm()
 
