@@ -96,6 +96,11 @@ def generate_invoice(invoice, term_start=None, term_end=None):
         booking.lesson_price = (booking.requested_duration / 60) * settings.HOURLY_RATE
         total += booking.lesson_price 
 
+    if total == 0:
+        invoice.payment_status = 'Paid' 
+    else:
+        'Unpaid'
+
     return lesson_requests, total
         
 
@@ -120,6 +125,9 @@ def admin_invoice_view(request, invoice_num):
     invoice = get_object_or_404(Invoice, invoice_num=invoice_num)
 
     lesson_requests, total = generate_invoice(invoice)
+
+    for booking in lesson_requests:
+        booking.standardised_date = booking.request_date.strftime("%d/%m/%Y")
 
     return render(request, 'invoice_page.html', {
         'invoice': invoice,

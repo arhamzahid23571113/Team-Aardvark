@@ -2,7 +2,13 @@
 Invoice Page {% endblock %} {% block extra_css %}
 <link rel="stylesheet" href="{% static 'invoice_page.css' %}" />
 {% endblock %} {% block content %} {% if is_admin %}
-<h1>admin</h1>
+<h1>
+  <div class="alert header-alert" role="alert">
+    <h1 class="alert-heading invoice-text">
+      <i class="fas fa-receipt me-2"></i>{{invoice}}
+    </h1>
+  </div>
+</h1>
 {% else %}
 <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
   <symbol id="info-fill" viewBox="0 0 16 16">
@@ -134,7 +140,12 @@ Invoice Page {% endblock %} {% block extra_css %}
     </div>
     <div class="card-footer text-body-secondary" style="text-align: center">
       Still have questions?
-      <a href="#" class="alert-link" style="color: #ffffff">Contact Admin.</a>
+      <a
+        href="{% url 'send_message_to_admin' %}"
+        class="alert-link"
+        style="color: #ffffff"
+        >Contact Admin.</a
+      >
     </div>
   </div>
 </div>

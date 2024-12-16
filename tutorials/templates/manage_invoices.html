@@ -5,38 +5,6 @@ Manage Invoices {% endblock %} {% block extra_css %}
 <div class="container mt-5">
   <h1 class="text-center text-dashboard-purple mt-4">Invoice Management</h1>
 </div>
-<!--<div class="container mt-5">
-  <h5 class="text-start text-dashboard-purple mt-4">Sort by: 
-    <form method="get" action="{% url 'manage_invoices' %}"></form>
-    <div
-    class="btn-group"
-    role="group"
-    aria-label="Basic radio toggle button group"
-  >
-    <input
-      type="radio"
-      class="btn-check"
-      name="sort_by"
-      id="btnradio1"
-      autocomplete="off"
-      {% if sort_by == 'due_date' %} checked {% endif %}
-      value="due_date"
-    />
-    <label class="btn btn-outline-primary" for="btnradio1">Due Date</label>
-
-    <input
-      type="radio"
-      class="btn-check"
-      name="btnradio"
-      id="btnradio2"
-      autocomplete="off"
-    />
-    <label class="btn btn-outline-primary" for="btnradio2">Status</label>
-  </div>
-</form>
-</div>
-</h5>-->
-
 <table class="table">
   <thead class="table-head" style="text-align: center">
     <tr>
@@ -51,6 +19,7 @@ Manage Invoices {% endblock %} {% block extra_css %}
   </thead>
   <tbody>
     {% for data in invoice_data %}
+    {% if data.invoice.payment_status == 'Unpaid' %}
     <tr>
       <th scope="row">{{data.invoice.invoice_num}}</th>
       <td><div class="text-box">{{data.invoice.student.first_name}}</div></td>
@@ -66,6 +35,7 @@ Manage Invoices {% endblock %} {% block extra_css %}
         </button>
       </td>
     </tr>
+    {% endif %}
     {% endfor %}
   </tbody>
 </table>
