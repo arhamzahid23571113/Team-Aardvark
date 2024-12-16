@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from libgravatar import Gravatar
 from django.conf import settings
+from django.core.exceptions import ValidationError
+from datetime import timedelta
 
 from django.conf import settings
 
