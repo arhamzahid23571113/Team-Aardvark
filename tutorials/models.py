@@ -103,8 +103,8 @@ class LessonRequest(models.Model):
         ("intermediate", "Intermediate"),
         ("advanced", "Advanced"),
     ]
-    student = models.ForeignKey(
 
+    student = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="lesson_requests",
         on_delete=models.CASCADE,
@@ -117,7 +117,6 @@ class LessonRequest(models.Model):
         null=True,
         blank=True,
         help_text="The tutor assigned to this lesson request. Null if unallocated."
-
     )
     status = models.CharField(
         max_length=20,
@@ -126,7 +125,6 @@ class LessonRequest(models.Model):
             ('Allocated', 'Allocated'),
             ('Cancelled', 'Cancelled')
         ],
-
         default='Unallocated',
         help_text="The current status of the lesson request."
     )
@@ -136,13 +134,8 @@ class LessonRequest(models.Model):
     )
     requested_topic = models.TextField(
         default="Python Programming",
-        choices=TOPIC_CHOICES,  
+        choices=TOPIC_CHOICES,
         help_text="Describe what you would like to learn (e.g Web Development with Django)."
-
-    )
-    requested_date = models.DateField(
-        default="2024-01-01",
-        help_text="Select the date for your lesson."
     )
     requested_date = models.DateField(
         help_text="Select the date for your lesson.",
@@ -152,27 +145,26 @@ class LessonRequest(models.Model):
     requested_frequency = models.CharField(
         max_length=20,
         choices=FREQUENCY_CHOICES,
-        default="Weekly",  
+        default="Weekly",
         help_text="How often would you like your lessons (e.g Weekly, Fortnightly)?"
     )
-
     requested_duration = models.PositiveIntegerField(
         default=60,
-        choices=DURATION_CHOICES,  
+        choices=DURATION_CHOICES,
         help_text="Lesson duration in minutes."
     )
     requested_time = models.TimeField(
-        default="09:00:00",  
+        default="09:00:00",
         help_text="Preferred time for the lesson."
     )
     experience_level = models.TextField(
         default="No Experience",
-        choices=EXPERIENCE_LEVEL_CHOICES,  
+        choices=EXPERIENCE_LEVEL_CHOICES,
         help_text="Describe your level of experience with this topic."
     )
     additional_notes = models.TextField(
         blank=True,
-        default="",  
+        default="",
         help_text="Additional information or requests."
     )
 
@@ -184,13 +176,26 @@ class LessonRequest(models.Model):
     def __str__(self):
         return f"Lesson Request by {self.student.username} for {self.requested_topic}"
 
-    class Meta:
-        verbose_name = "Lesson Request"
-        verbose_name_plural = "Lesson Requests"
-        ordering = ['-request_date']
+    def clean(self):
+        """Prevent overlapping lesson requests."""
+        super().clean()
 
-    def __str__(self):
-        return f"Lesson Request by {self.student.username} for {self.requested_topic}"
+        # Check for overlapping lesson requests
+        overlapping_requests = LessonRequest.objects.filter(
+            requested_date=self.requested_date,
+            requested_time__lt=(self.requested_time + timedelta(minutes=self.requested_duration)),
+            status='Allocated'  # Only check allocated requests
+        ).filter(
+            requested_time__gte=self.requested_time  # Ensure mutual overlap
+        ).exclude(id=self.id)  # Exclude the current instance for updates
+
+        if overlapping_requests.exists():
+            raise ValidationError("A lesson has already been booked for this time and date.")
+
+    def save(self, *args, **kwargs):
+        """Validate before saving."""
+        self.clean()
+        super().save(*args, **kwargs)
     
        
 class ContactMessage(models.Model):
