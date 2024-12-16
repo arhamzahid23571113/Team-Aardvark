@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from libgravatar import Gravatar
 from django.conf import settings
-
+from django.db import models
 from django.conf import settings
 
 class User(AbstractUser):
@@ -191,6 +191,33 @@ class LessonRequest(models.Model):
 
     def __str__(self):
         return f"Lesson Request by {self.student.username} for {self.requested_topic}"
+    
+
+    class Lesson(models.Model):
+        """Model for individual lessons generated from a LessonRequest."""
+        student = models.ForeignKey(
+            settings.AUTH_USER_MODEL,
+            related_name="lessons",
+            on_delete=models.CASCADE
+        )
+        tutor = models.ForeignKey(
+            settings.AUTH_USER_MODEL,
+            related_name="tutor_lessons",
+            on_delete=models.CASCADE
+        )
+        date = models.DateField()
+        time = models.TimeField()
+        duration = models.PositiveIntegerField()  # Duration in minutes
+        topic = models.CharField(max_length=100)
+        status = models.CharField(
+            max_length=20,
+            choices=[('Scheduled', 'Scheduled'), ('Cancelled', 'Cancelled')],
+            default='Scheduled'
+        )
+
+        def __str__(self):
+            return f"Lesson on {self.date} at {self.time} for {self.student.username}"
+    
     
        
 class ContactMessage(models.Model):

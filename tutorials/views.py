@@ -27,7 +27,7 @@ from .models import ContactMessage
 from .forms import AdminReplyBack
 from django.utils.timezone import now
 from django.http import HttpResponseForbidden
-from django.db import models
+
 
 
 
@@ -466,31 +466,7 @@ def see_my_student_timetable(request):
     }
     return render(request, 'student_timetable.html', context)
 
-class Lesson(models.Model):
-    """Model for individual lessons generated from a LessonRequest."""
-    student = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        related_name="lessons",
-        on_delete=models.CASCADE
-    )
-    tutor = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        related_name="tutor_lessons",
-        on_delete=models.CASCADE
-    )
-    date = models.DateField()
-    time = models.TimeField()
-    duration = models.PositiveIntegerField()  # Duration in minutes
-    topic = models.CharField(max_length=100)
-    status = models.CharField(
-        max_length=20,
-        choices=[('Scheduled', 'Scheduled'), ('Cancelled', 'Cancelled')],
-        default='Scheduled'
-    )
 
-    def __str__(self):
-        return f"Lesson on {self.date} at {self.time} for {self.student.username}"
-    
 
 def generate_lessons(lesson_request, num_lessons=10):
     """
@@ -849,7 +825,7 @@ def student_messages(request):
     student = request.user
     studentMessages = ContactMessage.objects.filter(user=student).order_by('timestamp')
     return render(request,'student_messages.html',{'messages':studentMessages})    
-#AMINA    
+
 
 
 
