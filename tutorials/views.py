@@ -99,7 +99,9 @@ def generate_invoice(invoice, term_start=None, term_end=None):
     if total == 0:
         invoice.payment_status = 'Paid' 
     else:
-        'Unpaid'
+        invoice.payment_status = 'Unpaid'
+
+    invoice.save()
 
     return lesson_requests, total
         
