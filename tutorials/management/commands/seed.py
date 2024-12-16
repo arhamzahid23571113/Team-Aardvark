@@ -54,7 +54,7 @@ class Command(BaseCommand):
     def create_predefined_users(self):
         """Create predefined users."""
         predefined_users = [
-            {'username': '@johndoe', 'email': 'john.doe@example.org', 'first_name': 'John', 'last_name': 'Doe', 'role': 'tutor'},
+            {'username': '@johndoe', 'email': 'john.doe@example.org', 'first_name': 'John', 'last_name': 'Doe', 'role': 'admin'},
             {'username': '@janedoe', 'email': 'jane.doe@example.org', 'first_name': 'Jane', 'last_name': 'Doe', 'role': 'tutor'},
             {'username': '@charlie', 'email': 'charlie.johnson@example.org', 'first_name': 'Charlie', 'last_name': 'Johnson', 'role': 'student'},
         ]
@@ -68,6 +68,7 @@ class Command(BaseCommand):
                 role=user_data['role']
             )
             self.stdout.write(self.style.SUCCESS(f"User {user_data['username']} created."))
+
 
     def create_random_users(self):
         """Create random users."""
