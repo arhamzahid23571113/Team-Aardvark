@@ -4,9 +4,9 @@ from django.db import models
 from libgravatar import Gravatar
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from datetime import timedelta
-
+from datetime import datetime, timedelta
 from django.conf import settings
+from django.db.models import Q
 
 class User(AbstractUser):
     """Model used for user authentication, and team member-related information."""
@@ -137,7 +137,7 @@ class LessonRequest(models.Model):
     requested_topic = models.TextField(
         default="Python Programming",
         choices=TOPIC_CHOICES,
-        help_text="Describe what you would like to learn (e.g Web Development with Django)."
+        help_text="Describe what you would like to learn."
     )
     requested_date = models.DateField(
         help_text="Select the date for your lesson.",
@@ -148,12 +148,11 @@ class LessonRequest(models.Model):
         max_length=20,
         choices=FREQUENCY_CHOICES,
         default="Weekly",
-        help_text="How often would you like your lessons (e.g Weekly, Fortnightly)?"
+        help_text="How often would you like your lessons."
     )
-    requested_duration = models.PositiveIntegerField(
-        default=60,
-        choices=DURATION_CHOICES,
-        help_text="Lesson duration in minutes."
+    requested_duration = models.DurationField(
+        default=timedelta(minutes=60),
+        help_text="Lesson duration as a time delta."
     )
     requested_time = models.TimeField(
         default="09:00:00",
@@ -182,23 +181,31 @@ class LessonRequest(models.Model):
         """Prevent overlapping lesson requests."""
         super().clean()
 
-        # Check for overlapping lesson requests
-        overlapping_requests = LessonRequest.objects.filter(
-            requested_date=self.requested_date,
-            requested_time__lt=(self.requested_time + timedelta(minutes=self.requested_duration)),
-            status='Allocated'  # Only check allocated requests
-        ).filter(
-            requested_time__gte=self.requested_time  # Ensure mutual overlap
-        ).exclude(id=self.id)  # Exclude the current instance for updates
+        # Combine the requested_date and requested_time into full datetime objects
+        requested_datetime_start = datetime.combine(self.requested_date, self.requested_time)
+        requested_datetime_end = requested_datetime_start + self.requested_duration
 
-        if overlapping_requests.exists():
-            raise ValidationError("A lesson has already been booked for this time and date.")
+        # Query for existing overlapping lessons
+        overlapping_requests = LessonRequest.objects.filter(
+            requested_date=self.requested_date,  # Same date
+            status="Allocated"  # Only check allocated lessons
+        ).exclude(
+            id=self.id  # Exclude the current instance
+        )
+
+        for request in overlapping_requests:
+            # Calculate the existing request's start and end datetime
+            existing_start = datetime.combine(request.requested_date, request.requested_time)
+            existing_end = existing_start + request.requested_duration
+
+            # Check for any overlap
+            if (requested_datetime_start < existing_end) and (requested_datetime_end > existing_start):
+                raise ValidationError("A lesson has already been booked for this time and date.")
 
     def save(self, *args, **kwargs):
         """Validate before saving."""
         self.clean()
         super().save(*args, **kwargs)
-    
        
 class ContactMessage(models.Model):
     ROLES = [
