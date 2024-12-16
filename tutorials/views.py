@@ -516,19 +516,6 @@ def generate_lessons(lesson_request, num_lessons=10):
         lessons.append(lesson)
     return lessons
 
-def approve_lesson_request(request, lesson_request_id):
-    lesson_request = get_object_or_404(LessonRequest, id=lesson_request_id)
-    
-    if request.method == "POST":
-        # Generate lessons from the request
-        generate_lessons(lesson_request, num_lessons=12)  # Example: Generate 12 lessons
-        lesson_request.status = 'Allocated'
-        lesson_request.save()
-        return redirect('lesson_requests_list')  # Redirect after approval
-    
-    return render(request, 'approve_lesson_request.html', {'lesson_request': lesson_request})
-
-
 
 def see_my_tutor_timetable(request):
     if not request.user.is_authenticated or request.user.role != 'tutor':
@@ -864,16 +851,7 @@ def student_messages(request):
     return render(request,'student_messages.html',{'messages':studentMessages})    
 #AMINA    
 
-#AMINA  PART DONE =)  
-def tutor_timetable(request):
-    """View for tutors to see their timetable."""
-    timetable = Timetable.objects.filter(tutor=request.user)
-    return render(request, 'tutor_timetable.html', {'timetable': timetable})
 
-def student_timetable(request):
-    
-    timetable = Timetable.objects.filter(student=request.user).order_by('date', 'start_time')
-    return render(request, 'student_timetable.html', {'timetable': timetable})
 
 from django.shortcuts import redirect, render
 from datetime import date
