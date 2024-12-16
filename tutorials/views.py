@@ -108,6 +108,9 @@ def generate_invoice(invoice, term_start=None, term_end=None):
 
 @login_required
 def manage_invoices(request):
+    if not request.user.is_staff:
+        return HttpResponseForbidden("You are not authorized to access this page.")
+
     invoices = Invoice.objects.all()
     invoice_data = []
 
