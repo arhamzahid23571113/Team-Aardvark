@@ -18,7 +18,7 @@ from calendar import monthrange
 from datetime import datetime, timedelta, date
 from django.utils.timezone import make_aware
 from django.shortcuts import render
-
+from datetime import timedelta
 from .models import User, Invoice
 from .models import LessonRequest
 from django.shortcuts import get_object_or_404, redirect
@@ -27,6 +27,7 @@ from .models import ContactMessage
 from .forms import AdminReplyBack
 from django.utils.timezone import now
 from django.http import HttpResponseForbidden
+from django.db import models
 
 
 
@@ -457,7 +458,67 @@ def see_my_student_timetable(request):
     }
     return render(request, 'student_timetable.html', context)
 
+class Lesson(models.Model):
+    """Model for individual lessons generated from a LessonRequest."""
+    student = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="lessons",
+        on_delete=models.CASCADE
+    )
+    tutor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="tutor_lessons",
+        on_delete=models.CASCADE
+    )
+    date = models.DateField()
+    time = models.TimeField()
+    duration = models.PositiveIntegerField()  # Duration in minutes
+    topic = models.CharField(max_length=100)
+    status = models.CharField(
+        max_length=20,
+        choices=[('Scheduled', 'Scheduled'), ('Cancelled', 'Cancelled')],
+        default='Scheduled'
+    )
 
+    def __str__(self):
+        return f"Lesson on {self.date} at {self.time} for {self.student.username}"
+    
+
+def generate_lessons(lesson_request, num_lessons=10):
+    """
+    Generate individual lessons from a lesson request.
+    - lesson_request: The LessonRequest instance.
+    - num_lessons: Number of lessons to generate (default 10).
+    """
+    start_date = lesson_request.requested_date
+    frequency = 7 if lesson_request.requested_frequency == "weekly" else 14
+    duration = lesson_request.requested_duration
+    
+    lessons = []
+    for i in range(num_lessons):  # Generate the specified number of lessons
+        lesson_date = start_date + timedelta(days=frequency * i)
+        lesson = Lesson.objects.create(
+            tutor=lesson_request.tutor,
+            student=lesson_request.student,
+            date=lesson_date,
+            time=lesson_request.requested_time,
+            duration=duration,
+            topic=lesson_request.requested_topic
+        )
+        lessons.append(lesson)
+    return lessons
+
+def approve_lesson_request(request, lesson_request_id):
+    lesson_request = get_object_or_404(LessonRequest, id=lesson_request_id)
+    
+    if request.method == "POST":
+        # Generate lessons from the request
+        generate_lessons(lesson_request, num_lessons=12)  # Example: Generate 12 lessons
+        lesson_request.status = 'Allocated'
+        lesson_request.save()
+        return redirect('lesson_requests_list')  # Redirect after approval
+    
+    return render(request, 'approve_lesson_request.html', {'lesson_request': lesson_request})
 
 
 
