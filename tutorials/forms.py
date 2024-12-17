@@ -25,40 +25,24 @@ class LogInForm(forms.Form):
 
 
 class UserForm(forms.ModelForm):
-    """Form to update user profiles with role-specific fields."""
+    """Form to update user profiles."""
 
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'username', 'email', 'role', 'profile_picture', 'expertise']
 
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)  
+        user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
-        role_specific_fields = {
-            'student': ['first_name', 'last_name', 'username', 'email', 'profile_picture'],
-            'tutor': ['first_name', 'last_name', 'username', 'email', 'profile_picture', 'expertise'],
-            'admin': ['first_name', 'last_name', 'username', 'email', 'role', 'profile_picture'],
-        }
-
         if user:
-            allowed_fields = role_specific_fields.get(user.role, [])
-            for field in list(self.fields.keys()):
-                if field not in allowed_fields:
-                    self.fields.pop(field)
-
-    def clean_email(self):
-        """Ensure email uniqueness."""
-        email = self.cleaned_data.get('email')
-        if User.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
-            raise forms.ValidationError("This email address is already in use.")
-        return email
-
-    def save(self, commit=True):
-        """Save the form."""
-        if not self.is_valid():
-            raise ValueError("The form contains invalid data.")
-        return super().save(commit=commit)
+            if user.role == 'student':
+                self.fields.pop('role', None)
+                self.fields.pop('expertise', None)
+            elif user.role == 'tutor':
+                self.fields.pop('role', None)
+            elif user.role == 'admin':
+                self.fields.pop('expertise', None)
 
 class NewPasswordMixin(forms.Form):
     """Form mixing for new_password and password_confirmation fields."""
