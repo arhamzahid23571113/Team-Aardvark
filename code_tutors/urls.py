@@ -76,6 +76,7 @@ urlpatterns = [
     path('tutor/my_profile/', views.tutor_profile, name='tutor_profile'),
     path('tutor/edit_profile/', views.edit_profile, name='edit_profile'),
     path('student/my_profile/', views.student_profile, name='student_profile'),
+    path('admin/my_profile/', views.admin_profile, name='admin_profile'),
 
     # New Pages
     path('learn-more/', views.learn_more, name='learn_more'),
