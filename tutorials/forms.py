@@ -25,25 +25,37 @@ class LogInForm(forms.Form):
 
 
 class UserForm(forms.ModelForm):
-    """Form to update user profiles."""
+    """Form to update user profiles with role-specific fields."""
 
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'username', 'email', 'role', 'profile_picture', 'expertise']
 
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
+        user = kwargs.pop('user', None)  
         super().__init__(*args, **kwargs)
-        if user and user.role == 'tutor':
-            self.fields.pop('role')  # Remove the role field for tutors
+
+        role_specific_fields = {
+            'student': ['first_name', 'last_name', 'username', 'email', 'profile_picture'],
+            'tutor': ['first_name', 'last_name', 'username', 'email', 'profile_picture', 'expertise'],
+            'admin': ['first_name', 'last_name', 'username', 'email', 'role', 'profile_picture'],
+        }
+
+        if user:
+            allowed_fields = role_specific_fields.get(user.role, [])
+            for field in list(self.fields.keys()):
+                if field not in allowed_fields:
+                    self.fields.pop(field)
 
     def clean_email(self):
+        """Ensure email uniqueness."""
         email = self.cleaned_data.get('email')
         if User.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
             raise forms.ValidationError("This email address is already in use.")
         return email
 
     def save(self, commit=True):
+        """Save the form."""
         if not self.is_valid():
             raise ValueError("The form contains invalid data.")
         return super().save(commit=commit)
