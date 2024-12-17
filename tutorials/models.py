@@ -181,6 +181,10 @@ class LessonRequest(models.Model):
         """Prevent overlapping lesson requests."""
         super().clean()
 
+        # Check if requested_date or requested_time is None and skip validation if so
+        if not self.requested_date or not self.requested_time:
+            return  # Skip further validation if essential fields are missing
+
         # Combine the requested_date and requested_time into full datetime objects
         requested_datetime_start = datetime.combine(self.requested_date, self.requested_time)
         requested_datetime_end = requested_datetime_start + self.requested_duration
@@ -201,6 +205,7 @@ class LessonRequest(models.Model):
             # Check for any overlap
             if (requested_datetime_start < existing_end) and (requested_datetime_end > existing_start):
                 raise ValidationError("A lesson has already been booked for this time and date.")
+
 
     def save(self, *args, **kwargs):
         """Validate before saving."""

@@ -340,16 +340,19 @@ def student_dashboard(request):
 #STUDENTS
 @login_required
 def request_lesson(request):
+    """Allow students to request a lesson."""
     if request.method == 'POST':
         form = LessonBookingForm(request.POST)
         if form.is_valid():
-            lesson_request = form.save(commit=False)
-            lesson_request.student = request.user  
-            lesson_request.save()
-            return redirect('lesson_request_success')  
+            try:
+                lesson_request = form.save(commit=False)
+                lesson_request.student = request.user
+                lesson_request.save()
+                return redirect('lesson_request_success')  # Redirect on success
+            except ValidationError as e:
+                form.add_error(None, str(e))  # Add validation error to form
         else:
-            
-            print(form.errors)
+            print(f"Form errors: {form.errors}")  # Debugging invalid form
     else:
         form = LessonBookingForm()
 
@@ -935,12 +938,16 @@ def request_lesson(request):
         form = LessonBookingForm(request.POST)
         if form.is_valid():
             try:
+                # Prevent invalid fields from reaching the clean method
                 lesson_request = form.save(commit=False)
-                lesson_request.student = request.user  
-                lesson_request.save()  
-                return redirect('lesson_request_success')  
+                lesson_request.student = request.user
+                if not lesson_request.requested_date or not lesson_request.requested_time:
+                    form.add_error(None, "Date and time are required.")
+                else:
+                    lesson_request.save()
+                    return redirect('lesson_request_success')
             except ValidationError as e:
-                form.add_error(None, e.message)  
+                form.add_error(None, e.message)
     else:
         form = LessonBookingForm()
 

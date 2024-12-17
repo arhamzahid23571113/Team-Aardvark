@@ -163,6 +163,9 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
 #         }
 
 
+from django import forms
+from tutorials.models import LessonRequest
+
 class LessonBookingForm(forms.ModelForm):
     class Meta:
         model = LessonRequest
@@ -176,19 +179,33 @@ class LessonBookingForm(forms.ModelForm):
             "additional_notes",
         ]
         widgets = {
-            "requested_topic": forms.Select(),  
-            "requested_frequency": forms.Select(),  
-            "requested_duration": forms.Select(),  
+            "requested_topic": forms.Select(),
+            "requested_frequency": forms.Select(),
+            "requested_duration": forms.Select(),
             "requested_date": forms.DateInput(attrs={
-                "type": "date",  # HTML5 date picker
-                "class": "form-control",
+                "type": "date", "class": "form-control",
             }),
             "requested_time": forms.TimeInput(attrs={
-                "type": "time",  # HTML5 time picker
-                "class": "form-control",
+                "type": "time", "class": "form-control",
             }),
-            "experience_level": forms.Select(),  
+            "experience_level": forms.Select(),
         }
+
+    def clean_requested_date(self):
+        """Ensure requested_date is provided."""
+        requested_date = self.cleaned_data.get('requested_date')
+        if not requested_date:
+            raise forms.ValidationError("This field is required.")
+        return requested_date
+
+    def clean_requested_time(self):
+        """Ensure requested_time is provided."""
+        requested_time = self.cleaned_data.get('requested_time')
+        if not requested_time:
+            raise forms.ValidationError("This field is required.")
+        return requested_time
+
+
 
         
 class ContactMessages(forms.ModelForm):
