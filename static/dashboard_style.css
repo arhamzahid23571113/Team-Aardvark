@@ -4,6 +4,15 @@
     animation: gradientText 3s infinite !important; /* Animated gradient text */
 }
 
+.table {
+    background: linear-gradient(135deg, #4e54c8 0%, #f2fcfe 100%) !important; 
+    color: #ffffff !important; 
+    border-bottom: none; 
+    border-radius: 10px 10px 0 0;
+    padding: 15px;
+    font-weight: bold; 
+}
+
 /* Dark purple background for navbar with gradient animation */
 .navbar-dark.bg-dark {
     background: linear-gradient(135deg, #4e54c8 0%, #f2fcfe 100%) !important;
@@ -30,7 +39,7 @@
 }
 
 #sidebar .nav-link:hover {
-    background-color: #6a0dad; /* Lighter purple for hover */
+    background-color: #5e65cc; /* Lighter purple for hover */
     color: #ffffff;
     border-radius: 5px;
     transform: scale(1.05); /* Slight zoom on hover */
