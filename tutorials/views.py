@@ -1236,6 +1236,20 @@ def tutor_profile(request):
     }
     return render(request, 'tutor_profile.html', context)
 
+@login_required
+def student_profile(request):
+    """Display the student's profile."""
+    if request.user.role != 'student':
+        messages.error(request, "Access denied. Only students can view this page.")
+        return redirect('dashboard')
+
+    student = request.user
+
+    context = {
+        'student': student,
+    }
+    return render(request, 'student_profile.html', context)
+
 
 @login_required
 def edit_profile(request):
