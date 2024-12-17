@@ -8,8 +8,6 @@ from tutorials.views import generate_invoice
 
 class GenerateInvoiceTestCase(TestCase):
     def setUp(self):
-        """Set up test data for invoice and lesson requests."""
-        # Create a test user
         self.student = User.objects.create_user(
             username='testuser',
             first_name='Test',
@@ -17,11 +15,9 @@ class GenerateInvoiceTestCase(TestCase):
             password='password'
         )
 
-        # Convert date to datetime and then make it aware
-        due_date = datetime.combine(date(2024, 12, 31), datetime.min.time())  # Convert to datetime
+        due_date = datetime.combine(date(2024, 12, 31), datetime.min.time())  
         due_date = timezone.make_aware(due_date)  # Make aware
 
-        # Create a test invoice for the student
         self.invoice = Invoice.objects.create(
             student=self.student,
             invoice_num='INV12345',
@@ -29,7 +25,6 @@ class GenerateInvoiceTestCase(TestCase):
             payment_status='Unpaid'
         )
 
-        # Set the hourly rate for pricing
         settings.HOURLY_RATE = 20  # $20 per hour
 
     def test_generate_invoice_no_term_dates(self):
@@ -68,10 +63,12 @@ class GenerateInvoiceTestCase(TestCase):
         # Create lesson requests that match and do not match the term range
         lesson_request_1 = LessonRequest.objects.create(
             student=self.student,
-            request_date=timezone.make_aware(datetime.combine(date(2024, 10, 15), datetime.min.time())),
-            requested_duration=90,  # 90 minutes
+            request_date=timezone.make_aware(datetime.combine(date(2024, 10, 15), datetime.min.time())),  # Creation time
+            requested_date=date(2024, 10, 15),  # Lesson scheduling date
+            requested_duration=90,
             status='Allocated'
         )
+
 
         lesson_request_2 = LessonRequest.objects.create(
             student=self.student,

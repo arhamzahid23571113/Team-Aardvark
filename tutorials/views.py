@@ -28,6 +28,8 @@ from .forms import AdminReplyBack
 from django.utils.timezone import now
 from django.http import HttpResponseForbidden
 from django.db import models
+from django.http import HttpResponse
+
 
 
 
@@ -85,7 +87,7 @@ def generate_invoice(invoice, term_start=None, term_end=None):
     if term_start and term_end:
         lesson_requests = LessonRequest.objects.filter(
             student=invoice.student, 
-            request_date__range=[term_start, term_end], 
+            requested_date__range=[term_start, term_end], 
             status='Allocated')
     else:
         lesson_requests = LessonRequest.objects.filter(
@@ -126,6 +128,7 @@ def manage_invoices(request):
 
     return render(request, 'manage_invoices.html', {'invoice_data' : invoice_data})
 
+@login_required
 def admin_invoice_view(request, invoice_num):
     invoice = get_object_or_404(Invoice, invoice_num=invoice_num)
 
@@ -162,6 +165,9 @@ def invoice_page(request, term_name = None):
     term_start, term_end = term_dates
 
     invoice = Invoice.objects.filter(student=request.user).first()
+
+    if not invoice:
+        return HttpResponse("No invoice found", status=404)    
     
     term_keys = list(terms.keys())
     current_term_index = term_keys.index(term_name)
