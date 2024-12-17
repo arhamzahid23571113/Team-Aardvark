@@ -24,6 +24,12 @@ class LogInForm(forms.Form):
         return user
 
 
+def validate_file_size(value):
+    """Validator to ensure profile picture file size does not exceed 10 MB."""
+    max_size = 10 * 1024 * 1024  # 10 MB
+    if value.size > max_size:
+        raise ValidationError("Profile picture size cannot exceed 10 MB.")
+
 class UserForm(forms.ModelForm):
     """Form to update user profiles."""
 
@@ -35,6 +41,7 @@ class UserForm(forms.ModelForm):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
+        # Dynamically remove fields based on user role
         if user:
             if user.role == 'student':
                 self.fields.pop('role', None)
@@ -43,6 +50,13 @@ class UserForm(forms.ModelForm):
                 self.fields.pop('role', None)
             elif user.role == 'admin':
                 self.fields.pop('expertise', None)
+
+    def clean_profile_picture(self):
+        """Validate the profile picture file size."""
+        profile_picture = self.cleaned_data.get('profile_picture')
+        if profile_picture:
+            validate_file_size(profile_picture)
+        return profile_picture
 
 class NewPasswordMixin(forms.Form):
     """Form mixing for new_password and password_confirmation fields."""
