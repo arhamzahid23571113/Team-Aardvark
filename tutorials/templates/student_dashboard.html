@@ -2,16 +2,13 @@
 {% block title %}Student Dashboard{% endblock %}
 
 {% block content %}
-<div class="container">
-  <div class="row">
-    <div class="col-12">
-      <h1 class="text-center text-dashboard-purple mt-4">Welcome to your dashboard, {{ user.username }}!</h1>
-    </div>
+<h1>
+  <div class="alert header-alert" role="alert">
+    <h1 class="alert-heading">
+      Welcome to your dashboard, {{ user.username }}!
+    </h1>
   </div>
-</div>
-
-<div class="container-fluid">
-  <h2 class="text-center text-dashboard-purple mt-4">Student Dashboard</h2>
+</h1>
 
   <!-- First Row with Three Cards -->
   <div class="row mt-4">

@@ -7,7 +7,13 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1 class="text-center text-dashboard-purple mt-4">Welcome, {{ request.user.full_name }}!</h1>
+    <h1>
+        <div class="alert header-alert" role="alert">
+          <h1 class="alert-heading">
+            Welcome, {{ request.user.full_name }}!
+          </h1>
+        </div>
+      </h1>
     <h2 class="text-center text-dashboard-purple mt-4">Your Timetable for {{ month_name }} {{ year }}</h2>
 
     <div class="d-flex justify-content-between mb-4">

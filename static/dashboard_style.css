@@ -4,19 +4,15 @@
     animation: gradientText 3s infinite !important; /* Animated gradient text */
 }
 
-.table {
-    background: linear-gradient(135deg, #4e54c8 0%, #f2fcfe 100%) !important; 
-    color: #ffffff !important; 
-    border-bottom: none; 
-    border-radius: 10px 10px 0 0;
-    padding: 15px;
-    font-weight: bold; 
-}
-
 /* Dark purple background for navbar with gradient animation */
 .navbar-dark.bg-dark {
     background: linear-gradient(135deg, #4e54c8 0%, #f2fcfe 100%) !important;
     animation: gradientBg 5s infinite alternate; /* Animated gradient background */
+}
+
+.header-alert {
+    background: linear-gradient(135deg, #4e54c8 0%, #f2fcfe 100%);
+    color: #ffffff;
 }
 
 /* Full-height sidebar with animated dark purple gradient */
