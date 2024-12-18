@@ -24,6 +24,12 @@ class LogInForm(forms.Form):
         return user
 
 
+def validate_file_size(value):
+    """Validator to ensure profile picture file size does not exceed 10 MB."""
+    max_size = 10 * 1024 * 1024  # 10 MB
+    if value.size > max_size:
+        raise ValidationError("Profile picture size cannot exceed 10 MB.")
+
 class UserForm(forms.ModelForm):
     """Form to update user profiles."""
 
@@ -34,19 +40,23 @@ class UserForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        if user and user.role == 'tutor':
-            self.fields.pop('role')  # Remove the role field for tutors
 
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        if User.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
-            raise forms.ValidationError("This email address is already in use.")
-        return email
+        # Dynamically remove fields based on user role
+        if user:
+            if user.role == 'student':
+                self.fields.pop('role', None)
+                self.fields.pop('expertise', None)
+            elif user.role == 'tutor':
+                self.fields.pop('role', None)
+            elif user.role == 'admin':
+                self.fields.pop('expertise', None)
 
-    def save(self, commit=True):
-        if not self.is_valid():
-            raise ValueError("The form contains invalid data.")
-        return super().save(commit=commit)
+    def clean_profile_picture(self):
+        """Validate the profile picture file size."""
+        profile_picture = self.cleaned_data.get('profile_picture')
+        if profile_picture:
+            validate_file_size(profile_picture)
+        return profile_picture
 
 class NewPasswordMixin(forms.Form):
     """Form mixing for new_password and password_confirmation fields."""

@@ -32,8 +32,8 @@ urlpatterns = [
     path('log_in/', views.LogInView.as_view(), name='log_in'),
     path('log_out/', views.log_out, name='log_out'),
     path('password/', views.PasswordView.as_view(), name='password'),
-    path('profile/', views.ProfileUpdateView.as_view(), name='profile'),
     path('sign_up/', views.SignUpView.as_view(), name='sign_up'),
+    path('profile/', views.ProfileUpdateView.as_view(), name='profile'),
     
     # Password Reset URLs
     path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
@@ -75,6 +75,8 @@ urlpatterns = [
     path('student_messages/', views.student_messages, name='student_messages'),
     path('tutor/my_profile/', views.tutor_profile, name='tutor_profile'),
     path('tutor/edit_profile/', views.edit_profile, name='edit_profile'),
+    path('student/my_profile/', views.student_profile, name='student_profile'),
+    path('admin/my_profile/', views.admin_profile, name='admin_profile'),
 
     # New Pages
     path('learn-more/', views.learn_more, name='learn_more'),
