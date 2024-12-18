@@ -129,11 +129,14 @@ def admin_invoice_view(request, invoice_num):
     for booking in lesson_requests:
         booking.standardised_date = booking.request_date.strftime("%d/%m/%Y")
 
+    base_template = 'dashboard_base_admin.html' if request.user.role == 'admin' else 'dashboard_base_student.html'
+
     return render(request, 'invoice_page.html', {
         'invoice': invoice,
         'lesson_requests': lesson_requests,
         'total': total,
         'is_admin': True,  
+        'base_template' : base_template,
     })
 
 @login_required
@@ -169,6 +172,8 @@ def invoice_page(request, term_name = None):
     for booking in lesson_requests:
         booking.standardised_date = booking.request_date.strftime("%d/%m/%Y")
 
+    base_template = 'dashboard_base_admin.html' if request.user.role == 'admin' else 'dashboard_base_student.html'
+
     return render(request, 'invoice_page.html', {
         'invoice': invoice, 
         'lesson_requests': lesson_requests,
@@ -176,6 +181,7 @@ def invoice_page(request, term_name = None):
         'term_name': term_name.title(),
         'previous_term': previous_term,
         'next_term': next_term,
+        'base_template' : base_template,
         })
 
 
