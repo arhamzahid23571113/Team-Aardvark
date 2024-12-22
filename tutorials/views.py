@@ -20,7 +20,7 @@ from django.utils.timezone import make_aware
 from django.shortcuts import render
 from datetime import timedelta
 from .models import User, Invoice
-from .models import LessonRequest
+from .models import LessonRequest,Lesson
 from django.shortcuts import get_object_or_404, redirect
 from .forms import LessonBookingForm,ContactMessages
 from .models import ContactMessage
