@@ -140,19 +140,6 @@ class GenerateInvoiceTestCase(TestCase):
             status='Allocated'
         )
 
-
-        # Log the data for debugging
-        print("Request Dates:", [
-            lesson_request_1.requested_date, 
-            lesson_request_2.requested_date, 
-            lesson_request_3.requested_date
-        ])
-        print("Status:", [
-            lesson_request_1.status, 
-            lesson_request_2.status, 
-            lesson_request_3.status
-        ])
-
         lesson_requests, total = generate_invoice(self.invoice, term_start, term_end)
 
         # Ensure all lesson requests are found within the term
