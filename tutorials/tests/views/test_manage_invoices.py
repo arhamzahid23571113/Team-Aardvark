@@ -1,99 +1,104 @@
 from django.test import TestCase
-from django.urls import reverse
 from django.contrib.auth import get_user_model
-from unittest.mock import patch
-from datetime import date
-from tutorials.models import Invoice, LessonRequest
+from django.urls import reverse
+from tutorials.models import Invoice  # Import the Invoice model (replace 'yourapp' with the actual app name)
 
-class ManageInvoicesTest(TestCase):
+class ManageInvoicesViewTest(TestCase):
+    
     def setUp(self):
-        # Use the custom User model
-        User = get_user_model()
-
-        # Create a test admin user
-        self.admin_user = User.objects.create_user(
-            username='admin', email='admin@test.com', password='password', is_staff=True)
+        """
+        Setup for the tests, ensuring unique emails for user creation.
+        """
+        # Create a superuser (admin user) for the test
+        self.admin_user = get_user_model().objects.create_superuser(
+            username="admin",
+            email="admin@example.com",
+            password="adminpassword"
+        )
         
-        # Create a test regular user (non-admin)
-        self.regular_user = User.objects.create_user(
-            username='user', email='user@test.com', password='password', is_staff=False)
-
-        # Create test invoices for the admin user
-        self.student = self.admin_user  # Assuming the admin user is a student for simplicity
-        self.invoice_1 = Invoice.objects.create(
-            student=self.student,
-            invoice_num="INV001",
-            due_date=date(2024, 12, 30),
-            payment_status="Unpaid"
+        # Create a non-staff user for testing permissions
+        self.non_staff_user = get_user_model().objects.create_user(
+            username="nonstaff",
+            email="nonstaff@example.com",  # Ensure unique email
+            password="password",
+            is_staff=False
         )
-        self.invoice_2 = Invoice.objects.create(
-            student=self.student,
-            invoice_num="INV002",
-            due_date=date(2024, 12, 31),
-            payment_status="Unpaid"
+        
+        # Create a staff user for testing
+        self.staff_user = get_user_model().objects.create_user(
+            username="staff",
+            email="staff@example.com",  # Ensure unique email
+            password="password",
+            is_staff=True
         )
+        
+        # URL to test the invoices page
+        self.url = reverse('manage_invoices')  # Adjust this to the actual URL name
 
-    def test_manage_invoices_redirect_if_not_logged_in(self):
-        # Test that a non-authenticated user is redirected to login
-        response = self.client.get(reverse('manage_invoices'))
-        self.assertRedirects(response, '/log_in/?next=/manage_invoices/')
+    def test_generate_invoice_updates_payment_status(self):
+        """
+        Test that generating an invoice updates the payment status.
+        """
+        # Create an invoice with pending status
+        invoice = Invoice.objects.create(user=self.admin_user, amount=100, status='pending')
+        
+        # Generate the invoice (assuming there's a method to handle this)
+        invoice.generate_invoice()  # Ensure the method exists and updates status
+        
+        # Reload the invoice from the database
+        invoice.refresh_from_db()
+        
+        # Check if the status is updated correctly
+        self.assertEqual(invoice.status, 'paid')
+    
+    def test_invoice_data_in_context(self):
+        """
+        Test that the invoice data appears in the context when the page is loaded.
+        """
+        # Log in as a staff user
+        self.client.login(username='staff', password='password')
+        
+        # Send a request to the invoices management page
+        response = self.client.get(self.url)
+        
+        # Check if the response contains invoice data (adjust based on actual content)
+        self.assertContains(response, '<tr>')  # Example check, adjust based on your HTML structure
+        
+    def test_no_invoices(self):
+        """
+        Test that the page shows a message when there are no invoices.
+        """
+        # Log in as a staff user
+        self.client.login(username='staff', password='password')
+        
+        # Send a request to the invoices management page with no invoices
+        response = self.client.get(self.url)
+        
+        # Check for a message indicating no invoices (adjust based on actual template logic)
+        self.assertContains(response, 'No invoices available')
 
-    def test_manage_invoices_for_non_admin(self):
-        # Test that a non-admin user cannot access the view
-        self.client.login(username='user', password='password')
-        response = self.client.get(reverse('manage_invoices'))
-        self.assertEqual(response.status_code, 403)  # Forbidden
+    def test_non_staff_user_forbidden(self):
+        """
+        Test that a non-staff user is forbidden from accessing the invoices page.
+        """
+        # Log in as a non-staff user
+        self.client.login(username='nonstaff', password='password')
+        
+        # Send a request to the invoices management page
+        response = self.client.get(self.url)
+        
+        # Check for a forbidden response
+        self.assertEqual(response.status_code, 403)  # Forbidden access
 
-    @patch('tutorials.views.generate_invoice')  # Mock the generate_invoice function
-    def test_manage_invoices_context_data(self, mock_generate_invoice):
-        # Mock the lesson requests and total from generate_invoice
-        mock_generate_invoice.return_value = ([], 100)
-
-        self.client.login(username='admin', password='password')
-
-        # Get the response from the view
-        response = self.client.get(reverse('manage_invoices'))
-
-        # Check that the status code is 200 (OK)
+    def test_staff_user_access(self):
+        """
+        Test that a staff user is allowed to access the invoices page.
+        """
+        # Log in as a staff user
+        self.client.login(username='staff', password='password')
+        
+        # Send a request to the invoices management page
+        response = self.client.get(self.url)
+        
+        # Check that the response status is OK
         self.assertEqual(response.status_code, 200)
-
-        # Ensure the correct context data is passed
-        self.assertIn('invoice_data', response.context)
-        invoice_data = response.context['invoice_data']
-
-        # Check the invoice data for the first invoice
-        self.assertEqual(len(invoice_data), 2)  # Two invoices should be in the context
-        self.assertEqual(invoice_data[0]['invoice'], self.invoice_1)
-        self.assertEqual(invoice_data[0]['total'], 100)
-        self.assertEqual(invoice_data[0]['lesson_requests'], [])
-        self.assertEqual(self.invoice_1.payment_status, 'Unpaid')
-
-    @patch('tutorials.views.generate_invoice')  # Mock the generate_invoice function
-    def test_manage_invoices_no_invoices(self, mock_generate_invoice):
-        # No invoices for the student
-        mock_generate_invoice.return_value = ([], 0)
-
-        self.client.login(username='admin', password='password')
-
-        # Get the response from the view
-        response = self.client.get(reverse('manage_invoices'))
-
-        # Ensure the correct context data is passed
-        invoice_data = response.context['invoice_data']
-
-        # Check if invoice data is an empty list since there are no lesson requests
-        self.assertEqual(len(invoice_data), 2)  # Check if two invoices are still present
-        self.assertEqual(invoice_data[0]['total'], 0)
-        self.assertEqual(invoice_data[1]['total'], 0)
-        self.assertEqual(self.invoice_1.payment_status, 'Paid')
-
-    def test_manage_invoices_only_admin_can_access(self):
-        # Check if admin can access the view
-        self.client.login(username='admin', password='password')
-        response = self.client.get(reverse('manage_invoices'))
-        self.assertEqual(response.status_code, 200)  # Admin should have access
-
-        # Check if regular user cannot access the view
-        self.client.login(username='user', password='password')
-        response = self.client.get(reverse('manage_invoices'))
-        self.assertEqual(response.status_code, 403)  # Forbidden for regular users

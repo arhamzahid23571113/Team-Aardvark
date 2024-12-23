@@ -119,6 +119,7 @@ class GenerateInvoiceTestCase(TestCase):
         lesson_request_1 = LessonRequest.objects.create(
             student=self.student,
             request_date=timezone.make_aware(datetime.combine(date(2024, 9, 15), datetime.min.time())),
+            requested_date=date(2024, 9, 15),  # Set explicitly
             requested_duration=90,  # 90 minutes
             status='Allocated'
         )
@@ -126,6 +127,7 @@ class GenerateInvoiceTestCase(TestCase):
         lesson_request_2 = LessonRequest.objects.create(
             student=self.student,
             request_date=timezone.make_aware(datetime.combine(date(2024, 10, 15), datetime.min.time())),
+            requested_date=date(2024, 10, 15),  # Set explicitly
             requested_duration=60,  # 60 minutes
             status='Allocated'
         )
@@ -133,9 +135,23 @@ class GenerateInvoiceTestCase(TestCase):
         lesson_request_3 = LessonRequest.objects.create(
             student=self.student,
             request_date=timezone.make_aware(datetime.combine(date(2024, 11, 5), datetime.min.time())),
+            requested_date=date(2024, 11, 5),  # Set explicitly
             requested_duration=120,  # 120 minutes
             status='Allocated'
         )
+
+
+        # Log the data for debugging
+        print("Request Dates:", [
+            lesson_request_1.requested_date, 
+            lesson_request_2.requested_date, 
+            lesson_request_3.requested_date
+        ])
+        print("Status:", [
+            lesson_request_1.status, 
+            lesson_request_2.status, 
+            lesson_request_3.status
+        ])
 
         lesson_requests, total = generate_invoice(self.invoice, term_start, term_end)
 
