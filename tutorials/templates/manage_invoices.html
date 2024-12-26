@@ -20,7 +20,6 @@ Manage Invoices {% endblock %} {% block extra_css %}
   <tbody>
     {% if invoice_data %}
     {% for data in invoice_data %}
-    {% if data.invoice.payment_status == 'Unpaid' %}
     <tr>
       <th scope="row">{{data.invoice.invoice_num}}</th>
       <td><div class="text-box">{{data.invoice.student.first_name}}</div></td>
@@ -36,7 +35,6 @@ Manage Invoices {% endblock %} {% block extra_css %}
         </button>
       </td>
     </tr>
-    {% endif %}
     {% endfor %}
     {% else %}
       <tr><td colspan="7" class="text-center">No invoices available</td></tr>

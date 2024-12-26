@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
-from tutorials.models import Invoice  # Import the Invoice model (replace 'yourapp' with the actual app name)
+from tutorials.models import Invoice, LessonRequest
 
 class ManageInvoicesViewTest(TestCase):
     
@@ -60,9 +60,6 @@ class ManageInvoicesViewTest(TestCase):
         self.assertEqual(invoice.payment_date.strftime("%Y-%m-%d"), "2024-12-20")
 
     def test_invoice_data_in_context(self):
-        """
-        Test that the invoice data appears in the context when the page is loaded.
-        """
         # Log in as a staff user
         self.client.login(username="staff", password="password")
         
@@ -71,22 +68,37 @@ class ManageInvoicesViewTest(TestCase):
             student=self.staff_user,  # Example student
             invoice_num="INV001",
             due_date="2024-12-31",
-            payment_status="Unpaid"  # Ensure this matches the template condition
+            payment_status="Unpaid"
         )
         invoice2 = Invoice.objects.create(
             student=self.admin_user,  # Another student
             invoice_num="INV002",
             due_date="2024-11-30",
-            payment_status="Paid"  # This will not be rendered
+            payment_status="Paid"
+        )
+
+        # Create associated LessonRequest data
+        LessonRequest.objects.create(
+            student=self.staff_user,
+            requested_date="2024-12-20",
+            requested_duration=60,  # 1 hour
+            status="Allocated"
+        )
+        LessonRequest.objects.create(
+            student=self.admin_user,
+            requested_date="2024-12-18",
+            requested_duration=120,  # 2 hours
+            status="Allocated"
         )
         
         # Send a request to the invoices page
         response = self.client.get(self.url)
         
-        # Assert the response contains the unpaid invoice data
+        # Assert the response contains the invoice data (e.g., invoice_num)
         self.assertContains(response, invoice1.invoice_num)
-        # Optional: Assert that a paid invoice doesn't appear (if relevant)
-        self.assertNotContains(response, invoice2.invoice_num)
+        self.assertNotContains(response, invoice2.invoice_num)  # Paid invoices shouldn't appear
+
+
         
     def test_no_invoices(self):
         """

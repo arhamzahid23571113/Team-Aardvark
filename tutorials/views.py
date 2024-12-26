@@ -113,7 +113,7 @@ def manage_invoices(request):
     if not request.user.is_staff:
         return HttpResponseForbidden("You are not authorized to access this page.")
 
-    invoices = Invoice.objects.all()
+    invoices = Invoice.objects.filter(payment_status='Unpaid')
     invoice_data = []
 
     for invoice in invoices:
