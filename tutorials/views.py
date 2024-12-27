@@ -130,6 +130,9 @@ def manage_invoices(request):
 
 @login_required
 def admin_invoice_view(request, invoice_num):
+    if not request.user.is_staff:
+        return HttpResponseForbidden("You are not authorized to access this page.")
+
     invoice = get_object_or_404(Invoice, invoice_num=invoice_num)
 
     lesson_requests, total = generate_invoice(invoice)

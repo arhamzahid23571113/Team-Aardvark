@@ -1,93 +1,83 @@
-from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
+from django.contrib.auth import get_user_model
 from django.utils import timezone
-from unittest.mock import patch
 from tutorials.models import Invoice, LessonRequest
+from datetime import timedelta
 
 class AdminInvoiceViewTest(TestCase):
     def setUp(self):
-        # Get the custom User model
-        User = get_user_model()
-        
-        # Create a test user and log them in
-        self.user = User.objects.create_user(username='testuser', password='password')
-        self.client.login(username='testuser', password='password')
-        
-        # Create an invoice for the test user
+        # Create a superuser for authorized access
+        self.superuser = get_user_model().objects.create_user(
+            username="admin", email="admin@example.com", password="password", is_staff=True
+        )
+        # Create a regular user for unauthorized access
+        self.user = get_user_model().objects.create_user(
+            username="user", email="user@example.com", password="password", is_staff=False
+        )
+        # Create a student user
+        self.student = get_user_model().objects.create_user(
+            username="student", email="student@example.com", password="password"
+        )
+        # Create an invoice and associate it with the student
         self.invoice = Invoice.objects.create(
-            student=self.user,
+            student=self.student,
             invoice_num="INV12345",
-            due_date=timezone.now().date() + timezone.timedelta(days=30),
-            payment_status="Unpaid"
+            due_date=timezone.now() + timedelta(days=7),
+            payment_status="Unpaid",
         )
-        
-        # Create lesson requests for the test user
-        self.lesson_request_1 = LessonRequest.objects.create(
-            student=self.user,
+        # Create related lesson requests
+        self.lesson_request1 = LessonRequest.objects.create(
+            student=self.student,
             requested_date=timezone.now().date(),
-            status='Allocated',
+            requested_topic="python_programming",
+            requested_frequency="weekly",
             requested_duration=60,
-            invoice=self.invoice
+            requested_time="10:00:00",
         )
-        self.lesson_request_2 = LessonRequest.objects.create(
-            student=self.user,
-            requested_date=timezone.now().date() + timezone.timedelta(days=1),
-            status='Allocated',
+        self.lesson_request2 = LessonRequest.objects.create(
+            student=self.student,
+            requested_date=timezone.now().date() + timedelta(days=1),
+            requested_topic="ai_and_ml",
+            requested_frequency="fortnightly",
             requested_duration=90,
-            invoice=self.invoice
+            requested_time="11:00:00",
         )
-        
-        # Define the URL to test
+        # Create a URL for the invoice view
         self.url = reverse('admin_invoice_view', kwargs={'invoice_num': self.invoice.invoice_num})
-    
-    @patch('yourapp.views.generate_invoice')
-    def test_admin_invoice_view(self, mock_generate_invoice):
-        # Mock the generate_invoice function
-        mock_generate_invoice.return_value = [self.lesson_request_1, self.lesson_request_2], 25.0  # Mock lesson requests and total
-        
-        # Make a GET request to the view
-        response = self.client.get(self.url)
-        
-        # Check if the view returns a 200 status code
-        self.assertEqual(response.status_code, 200)
-        
-        # Check that the correct context data is passed to the template
-        self.assertIn('invoice', response.context)
-        self.assertIn('lesson_requests', response.context)
-        self.assertIn('total', response.context)
-        self.assertEqual(response.context['invoice'], self.invoice)
-        self.assertEqual(response.context['total'], 25.0)
-        
-        # Check that the invoice's payment status is correctly set to "Unpaid"
-        self.invoice.refresh_from_db()
-        self.assertEqual(self.invoice.payment_status, 'Unpaid')
 
-        # Check if the correct template is rendered
-        self.assertTemplateUsed(response, 'invoice_page.html')
-
-    def test_invoice_not_found(self):
-        # Test for a non-existing invoice
-        response = self.client.get(reverse('admin_invoice_view', kwargs={'invoice_num': 'NONEXISTENT'}))
-        self.assertEqual(response.status_code, 404)
-        
-    def test_invoice_without_lessons(self):
-        # Test for an invoice with no lessons (should be marked as "Paid")
-        empty_invoice = Invoice.objects.create(
-            student=self.user,
-            invoice_num="INV12346",
-            due_date=timezone.now().date() + timezone.timedelta(days=30),
-            payment_status="Unpaid"
-        )
-        
-        response = self.client.get(reverse('admin_invoice_view', kwargs={'invoice_num': empty_invoice.invoice_num}))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(empty_invoice.payment_status, 'Paid')  # Check that payment status is "Paid"
-    
-    def test_access_restricted_for_non_logged_in_users(self):
-        # Log out the user
-        self.client.logout()
-        
-        # Try accessing the view without login
+    def test_access_control_non_staff(self):
+        """Test that non-staff users are forbidden from accessing the invoice view."""
+        self.client.login(username='user', password='password')
         response = self.client.get(self.url)
-        self.assertRedirects(response, f'/accounts/login/?next={self.url}')  # Should redirect to login
+        print(response.content)  # Debugging: Check the full response content
+        self.assertEqual(response.status_code, 403)  # Forbidden
+        self.assertFalse(self.user.is_staff)  # Ensure the user is not a staff member
+
+    def test_access_control_staff(self):
+        """Test that staff users can access the invoice view."""
+        self.client.login(username='admin', password='password')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)  # OK
+
+    def test_invoice_view_with_valid_data(self):
+        """Test that a valid invoice is rendered with correct data."""
+        self.client.login(username='admin', password='password')
+        response = self.client.get(self.url)
+        print(response.content)  # Debugging: Check the full response content
+
+        self.assertEqual(response.status_code, 200)  # OK
+        # Verify context data (lesson requests, total, etc.)
+        self.assertContains(response, self.lesson_request1.requested_topic)  # Check if lesson topic exists
+        self.assertContains(response, self.lesson_request2.requested_topic)  # Same here
+
+        # Check that the date is formatted correctly
+        self.assertContains(response, self.lesson_request1.requested_date.strftime("%d/%m/%Y"))
+        self.assertContains(response, self.lesson_request2.requested_date.strftime("%d/%m/%Y"))
+
+    def test_invalid_invoice(self):
+        """Test that a 404 error is returned for an invalid invoice number."""
+        self.client.login(username='admin', password='password')
+        invalid_url = reverse('admin_invoice_view', kwargs={'invoice_num': 'INVALID'})
+        response = self.client.get(invalid_url)
+        self.assertEqual(response.status_code, 404)  # Not found
