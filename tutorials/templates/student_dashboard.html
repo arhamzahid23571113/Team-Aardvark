@@ -2,16 +2,13 @@
 {% block title %}Student Dashboard{% endblock %}
 
 {% block content %}
-<div class="container">
-  <div class="row">
-    <div class="col-12">
-      <h1 class="text-center text-dashboard-purple mt-4">Welcome to your dashboard, {{ user.username }}!</h1>
-    </div>
+<h1>
+  <div class="alert header-alert" role="alert">
+    <h1 class="alert-heading">
+      Welcome to your dashboard, {{ user.username }}!
+    </h1>
   </div>
-</div>
-
-<div class="container-fluid">
-  <h2 class="text-center text-dashboard-purple mt-4">Student Dashboard</h2>
+</h1>
 
   <!-- First Row with Three Cards -->
   <div class="row mt-4">
@@ -45,7 +42,7 @@
     <div class="col-md-4 mb-4">
       <div class="card shadow text-center h-100">
         <div class="card-header">
-          <i class="fas fa-envelope"></i> Contact with Admin
+          <i class="fas fa-envelope"></i> Contact Admin
         </div>
         <div class="card-body">
           <p>Send messages or report issues to the admin team.</p>
@@ -90,12 +87,7 @@
           <i class="fas fa-book-open"></i> Request a Lesson
         </div>
         <div class="card-body">
-          <p>
-        <pre>
-    Book a new lesson with your tutor.
-(Admin will have to review 
-booking request once made.)
-        </pre></p>
+          <p>Book a new lesson with your tutor.</p>
           <a href="{% url 'request_lesson' %}" class="btn btn-outline-light">Request a Lesson</a>
         </div>
       </div>

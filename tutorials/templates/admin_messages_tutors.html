@@ -4,7 +4,13 @@
 
 {% block content %}
 <div class="container mt-5">
- <h1 class="text-center text-dashboard-purple mt-4">Messages from Tutors</h1>
+ <h1>
+    <div class="alert header-alert" role="alert">
+      <h1 class="alert-heading">
+        Messages from Tutors
+      </h1>
+    </div>
+  </h1>
     {% if messages %}
     <div class="row">
     {% for message in messages%}

@@ -20,6 +20,7 @@ from django.utils.timezone import make_aware
 from django.shortcuts import render
 from datetime import timedelta
 from .models import User, Invoice
+#from .models import LessonRequest,Lesson
 from .models import LessonRequest
 from django.shortcuts import get_object_or_404, redirect
 from .forms import LessonBookingForm,ContactMessages
@@ -27,10 +28,7 @@ from .models import ContactMessage
 from .forms import AdminReplyBack
 from django.utils.timezone import now
 from django.http import HttpResponseForbidden
-from django.db import models
 from django.http import HttpResponse
-
-
 
 
 @login_required
@@ -142,11 +140,14 @@ def admin_invoice_view(request, invoice_num):
         if hasattr(booking, 'requested_topic'):
             del booking.requested_topic
 
+    base_template = 'dashboard_base_admin.html' if request.user.role == 'admin' else 'dashboard_base_student.html'
+
     return render(request, 'invoice_page.html', {
         'invoice': invoice,
         'lesson_requests': lesson_requests,
         'total': total,
         'is_admin': True,  
+        'base_template' : base_template,
     })
 
 @login_required
@@ -185,6 +186,8 @@ def invoice_page(request, term_name = None):
     for booking in lesson_requests:
         booking.standardised_date = booking.request_date.strftime("%d/%m/%Y")
 
+    base_template = 'dashboard_base_admin.html' if request.user.role == 'admin' else 'dashboard_base_student.html'
+
     return render(request, 'invoice_page.html', {
         'invoice': invoice, 
         'lesson_requests': lesson_requests,
@@ -192,6 +195,7 @@ def invoice_page(request, term_name = None):
         'term_name': term_name.title(),
         'previous_term': previous_term,
         'next_term': next_term,
+        'base_template' : base_template,
         })
 
 
@@ -482,31 +486,7 @@ def see_my_student_timetable(request):
     }
     return render(request, 'student_timetable.html', context)
 
-class Lesson(models.Model):
-    """Model for individual lessons generated from a LessonRequest."""
-    student = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        related_name="lessons",
-        on_delete=models.CASCADE
-    )
-    tutor = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        related_name="tutor_lessons",
-        on_delete=models.CASCADE
-    )
-    date = models.DateField()
-    time = models.TimeField()
-    duration = models.PositiveIntegerField()  # Duration in minutes
-    topic = models.CharField(max_length=100)
-    status = models.CharField(
-        max_length=20,
-        choices=[('Scheduled', 'Scheduled'), ('Cancelled', 'Cancelled')],
-        default='Scheduled'
-    )
 
-    def __str__(self):
-        return f"Lesson on {self.date} at {self.time} for {self.student.username}"
-    
 
 def generate_lessons(lesson_request, num_lessons=10):
     """
@@ -865,7 +845,7 @@ def student_messages(request):
     student = request.user
     studentMessages = ContactMessage.objects.filter(user=student).order_by('timestamp')
     return render(request,'student_messages.html',{'messages':studentMessages})    
-#AMINA    
+
 
 
 
@@ -1276,30 +1256,70 @@ def tutor_profile(request):
     }
     return render(request, 'tutor_profile.html', context)
 
+@login_required
+def admin_profile(request):
+    """Display the admin's profile."""
+    if request.user.role != 'admin':
+        messages.error(request, "Access denied. Only admins can view this page.")
+        return redirect('dashboard')
+
+    admin = request.user
+
+    context = {
+        'admin': admin,
+    }
+    return render(request, 'admin_profile.html', context)
+
+
+@login_required
+def student_profile(request):
+    """Display the student's profile."""
+    if request.user.role != 'student':
+        messages.error(request, "Access denied. Only students can view this page.")
+        return redirect('dashboard')
+
+    student = request.user
+
+    context = {
+        'student': student,
+    }
+    return render(request, 'student_profile.html', context)
+
 
 @login_required
 def edit_profile(request):
-    """Allow the tutor to edit their profile details, including profile picture and expertise."""
+    """Allow users to edit their profile details based on their role."""
     user = request.user
 
+    # Role-based template selection
+    role_templates = {
+        'tutor': 'edit_my_tutor_profile.html',
+        'student': 'edit_my_student_profile.html',
+        'admin': 'edit_my_admin_profile.html'
+    }
+    profile_base_templates = {
+        'tutor': 'dashboard_base_tutor.html',
+        'student': 'dashboard_base_student.html',
+        'admin': 'dashboard_base_admin.html'
+    }
+
     if request.method == "POST":
+        # Initialize form with user-specific fields
         form = UserForm(request.POST, request.FILES, instance=user, user=user)
         if form.is_valid():
-            # Save profile changes, including expertise and profile picture
-            user = form.save(commit=False)
-            user.expertise = form.cleaned_data.get('expertise')  # Ensure expertise is saved
+            # Save profile changes conditionally based on role
+            updated_user = form.save(commit=False)
+            if user.role == 'tutor':
+                updated_user.expertise = form.cleaned_data.get('expertise')
             if 'profile_picture' in request.FILES:
-                user.profile_picture = request.FILES['profile_picture']
-            user.save()
+                updated_user.profile_picture = request.FILES['profile_picture']
+            updated_user.save()
             messages.success(request, "Profile updated successfully!")
-            return redirect('tutor_profile')
+            return redirect(f"{user.role}_dashboard")
     else:
         form = UserForm(instance=user, user=user)
 
-    # Determine the base template based on the user's role
-    profile_base_template = 'dashboard_base_tutor.html' if user.role == 'tutor' else 'dashboard.html'
-
-    return render(request, 'edit_my_tutor_profile.html', {
+    return render(request, role_templates.get(user.role, 'dashboard.html'), {
         'form': form,
-        'profile_base_template': profile_base_template,
+        'profile_base_template': profile_base_templates.get(user.role, 'dashboard.html'),
     })

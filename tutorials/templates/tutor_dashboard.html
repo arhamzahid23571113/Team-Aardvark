@@ -1,18 +1,15 @@
-{% extends 'dashboard_base_tutor.html' %}
+{% extends 'dashboard_base_tutor.html' %} 
 
-{% block title %}Tutor Dashboard{% endblock %}
+{% block title %}Tutor Dashboard{% endblock %} 
 
 {% block content %}
-<div class="container">
-  <div class="row">
-    <div class="col-12">
-      <h1 class="text-center text-dashboard-purple mt-4">Welcome to your dashboard, {{ user.username }}!</h1>
-    </div>
+<h1>
+  <div class="alert header-alert" role="alert">
+    <h1 class="alert-heading">
+      Welcome to your dashboard, {{ user.username }}!
+    </h1>
   </div>
-</div>
-
-<div class="container-fluid">
-  <h2 class="text-center text-dashboard-purple mt-4">Tutor Dashboard</h2>
+</h1>
 
   <div class="row mt-4">
     <!-- Schedule Card -->
@@ -23,7 +20,9 @@
         </div>
         <div class="card-body">
           <p>View your upcoming lessons and availability here.</p>
-          <a href="{% url 'tutor_timetable' %}" class="btn btn-outline-light">View Timetable</a>
+          <a href="{% url 'tutor_timetable' %}" class="btn btn-outline-light"
+            >View Timetable</a
+          >
         </div>
       </div>
     </div>
@@ -36,7 +35,11 @@
         </div>
         <div class="card-body">
           <p>Access profiles of students assigned to you.</p>
-          <a href="{% url 'my_students_profile' %}" class="btn btn-outline-light">View Profiles</a>
+          <a
+            href="{% url 'my_students_profile' %}"
+            class="btn btn-outline-light"
+            >View Profiles</a
+          >
         </div>
       </div>
     </div>
@@ -45,11 +48,15 @@
     <div class="col-md-4 mb-4">
       <div class="card shadow text-center h-100">
         <div class="card-header">
-          <i class="fas fa-envelope"></i> Contact with Admin
+          <i class="fas fa-envelope"></i> Contact Admin
         </div>
         <div class="card-body">
           <p>Send messages or report issues to the admin team.</p>
-          <a href="{% url 'send_message_to_admin' %}" class="btn btn-outline-light">Contact Admin</a>
+          <a
+            href="{% url 'send_message_to_admin' %}"
+            class="btn btn-outline-light"
+            >Contact Admin</a
+          >
         </div>
       </div>
     </div>
@@ -62,7 +69,9 @@
         </div>
         <div class="card-body">
           <p>Update your profile and other personal details.</p>
-          <a href="{% url 'edit_profile' %}" class="btn btn-outline-light">Update Details</a>
+          <a href="{% url 'edit_profile' %}" class="btn btn-outline-light"
+            >Update Details</a
+          >
         </div>
       </div>
     </div>

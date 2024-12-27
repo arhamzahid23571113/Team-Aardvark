@@ -10,6 +10,11 @@
     animation: gradientBg 5s infinite alternate; /* Animated gradient background */
 }
 
+.header-alert {
+    background: linear-gradient(135deg, #4e54c8 0%, #f2fcfe 100%);
+    color: #ffffff;
+}
+
 /* Full-height sidebar with animated dark purple gradient */
 #sidebar {
     position: sticky;
@@ -30,7 +35,7 @@
 }
 
 #sidebar .nav-link:hover {
-    background-color: #6a0dad; /* Lighter purple for hover */
+    background-color: #5e65cc; /* Lighter purple for hover */
     color: #ffffff;
     border-radius: 5px;
     transform: scale(1.05); /* Slight zoom on hover */
@@ -97,23 +102,23 @@ main {
 
 /* Animated form controls */
 .form-select, .form-control {
-    background-color: #4b0082; /* Dark purple background for forms*/
+    background-color: #5e65cc; /* Dark purple background for forms*/
     color: #ffffff; /* White text */
-    border: 1px solid #6a0dad; /* Lighter purple border */
+    border: 1px solid #868dda; /* Lighter purple border */
     border-radius: 5px;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .form-select:focus, .form-control:focus {
-    background-color: #6a0dad; /* Lighter purple when focused */
+    background-color: #868dda; /* Lighter purple when focused */
     color: #ffffff;
-    border-color: #4b0082; /* Darker purple border */
+    border-color: #5e65cc; /* Darker purple border */
     box-shadow: 0 0 10px rgba(75, 0, 130, 0.5); /* Glowing purple border for forms */
 }
 
 /* Submit button with gradient animation */
 .btn-dashboard-purple {
-    background: linear-gradient(135deg, #4b0082, #6a0dad); /* Gradient background for dashboards*/
+    background: linear-gradient(135deg, #5e65cc, #868dda); /* Gradient background for dashboards*/
     color: #ffffff; /* White text */
     border: none;
     border-radius: 5px;
@@ -124,7 +129,7 @@ main {
 }
 
 .btn-dashboard-purple:hover {
-    background: linear-gradient(135deg, #6a0dad, #4b0082); /* Reverse gradient on hover */
+    background: linear-gradient(135deg, #868dda, #5e65cc); /* Reverse gradient on hover */
     color: #ffffff;
     transform: translateY(-2px); /* Slight lift effect */
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); /* Shadow on hover */
@@ -151,27 +156,27 @@ main {
 
 /* Gradient Purple Table Styling */
 .table-bordered {
-    background: linear-gradient(135deg, #4b0082, #6a0dad); /* Gradient background */
+    background: linear-gradient(135deg, #868dda, #5e65cc); /* Gradient background */
     color: #ffffff; /* White text */
-    border-color: #6a0dad; /* Light purple borders */
 }
 
 .table-bordered thead th {
-    background: linear-gradient(135deg, #6a0dad, #9b66c7) !; /* Gradient header */
+    background: linear-gradient(135deg, #5e65cc, #868dda) !; /* Gradient header */
     color: #ffffff !important; /* White text */
     border-bottom: 2px solid #8465cb !important; /* Slightly darker border */
 }
 
 .table-bordered tbody tr:nth-of-type(odd) {
-    background: rgba(75, 0, 130, 0.3); /* Subtle purple for odd rows */
+    background: rgba(94, 101, 204, 0.3); /* Subtle darker purple for odd rows */
 }
 
 .table-bordered tbody tr:nth-of-type(even) {
-    background: rgba(75, 0, 130, 0.2); /* Lighter purple for even rows */
+    background: rgba(167, 176, 228, 0.2); /* Lighter purple for even rows */
 }
 
+
 .table-bordered tbody tr:hover {
-    background: linear-gradient(135deg, #6a0dad, #4b0082) !important; /* Highlight row on hover */
+    background: linear-gradient(135deg, #a7b0e4, #5e65cc) !important; /* Highlight row on hover */
     color: #ffffff; /* White text */
 }
 

@@ -3,7 +3,13 @@ Manage Invoices {% endblock %} {% block extra_css %}
 <link rel="stylesheet" href="{% static 'manage_invoices.css' %}" />
 {% endblock %} {% block content %}
 <div class="container mt-5">
-  <h1 class="text-center text-dashboard-purple mt-4">Invoice Management</h1>
+  <h1>
+    <div class="alert header-alert" role="alert">
+      <h1 class="alert-heading">
+        Invoice Management
+      </h1>
+    </div>
+  </h1>
 </div>
 <table class="table">
   <thead class="table-head" style="text-align: center">
