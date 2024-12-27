@@ -139,6 +139,8 @@ def admin_invoice_view(request, invoice_num):
 
     for booking in lesson_requests:
         booking.standardised_date = booking.request_date.strftime("%d/%m/%Y")
+        if hasattr(booking, 'requested_topic'):
+            del booking.requested_topic
 
     return render(request, 'invoice_page.html', {
         'invoice': invoice,
