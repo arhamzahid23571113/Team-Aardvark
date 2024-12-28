@@ -1,10 +1,10 @@
 from django.core.validators import RegexValidator
+from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from libgravatar import Gravatar
 from django.conf import settings
-from django.db import models
-from django.conf import settings
+from datetime import timedelta
 
 class User(AbstractUser):
     """Model used for user authentication, and team member-related information."""
@@ -78,7 +78,8 @@ class Invoice(models.Model):
 
 class LessonRequest(models.Model):
     """Model for students to make request lessons"""
-    TOPIC_CHOICES = [
+    
+     TOPIC_CHOICES = [
         ("python_programming", "Python Programming"),
         ("web_development_with_js", "Web Development with JavaScript"),
         ("ruby_on_rails", "Ruby on Rails"),
@@ -176,6 +177,20 @@ class LessonRequest(models.Model):
         help_text="Additional information or requests."
     )
 
+    def clean(self):
+        """Custom validation to prevent double-booking of lessons."""
+        if self.tutor and self.requested_date and self.requested_time:
+            # Check for overlapping lessons
+            overlapping_lessons = Lesson.objects.filter(
+                tutor=self.tutor,
+                date=self.requested_date,
+                time__lte=(self.requested_time + timedelta(minutes=self.requested_duration)),
+                time__gte=self.requested_time
+            )
+            if overlapping_lessons.exists():
+                raise ValidationError("This tutor is already booked for the requested time.")
+        super().clean()
+
     class Meta:
         verbose_name = "Lesson Request"
         verbose_name_plural = "Lesson Requests"
@@ -184,42 +199,39 @@ class LessonRequest(models.Model):
     def __str__(self):
         return f"Lesson Request by {self.student.username} for {self.requested_topic}"
 
+class Lesson(models.Model):
+    """Model for individual lessons generated from a LessonRequest."""
+    student = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="lessons",
+        on_delete=models.CASCADE
+    )
+    tutor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="tutor_lessons",
+        on_delete=models.CASCADE
+    )
+    date = models.DateField()
+    time = models.TimeField()
+    duration = models.PositiveIntegerField()  # Duration in minutes
+    topic = models.CharField(max_length=100)
+    status = models.CharField(
+        max_length=20,
+        choices=[('Scheduled', 'Scheduled'), ('Cancelled', 'Cancelled')],
+        default='Scheduled'
+    )
+
     class Meta:
-        verbose_name = "Lesson Request"
-        verbose_name_plural = "Lesson Requests"
-        ordering = ['-request_date']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['tutor', 'date', 'time'],
+                name='unique_tutor_schedule'
+            )
+        ]
 
     def __str__(self):
-        return f"Lesson Request by {self.student.username} for {self.requested_topic}"
-    
+        return f"Lesson on {self.date} at {self.time} for {self.student.username}"
 
-    class Lesson(models.Model):
-        """Model for individual lessons generated from a LessonRequest."""
-        student = models.ForeignKey(
-            settings.AUTH_USER_MODEL,
-            related_name="lessons",
-            on_delete=models.CASCADE
-        )
-        tutor = models.ForeignKey(
-            settings.AUTH_USER_MODEL,
-            related_name="tutor_lessons",
-            on_delete=models.CASCADE
-        )
-        date = models.DateField()
-        time = models.TimeField()
-        duration = models.PositiveIntegerField()  # Duration in minutes
-        topic = models.CharField(max_length=100)
-        status = models.CharField(
-            max_length=20,
-            choices=[('Scheduled', 'Scheduled'), ('Cancelled', 'Cancelled')],
-            default='Scheduled'
-        )
-
-        def __str__(self):
-            return f"Lesson on {self.date} at {self.time} for {self.student.username}"
-    
-    
-       
 class ContactMessage(models.Model):
     ROLES = [
         ('student', 'Student'),
@@ -243,7 +255,6 @@ class ContactMessage(models.Model):
     blank=True, null=True,
     help_text="Timestamp of admin's reply"
     )
-
-
+    
     def __str__(self):
         return f"{self.role.capitalize()} - {self.timestamp}"
