@@ -4,7 +4,6 @@ from django.test import TestCase
 from tutorials.models import User
 import unittest
 
-
 class UserModelTestCase(TestCase):
     """Unit tests for the User model."""
 
@@ -22,7 +21,6 @@ class UserModelTestCase(TestCase):
         """Ensure the default user from fixtures is valid."""
         self._assert_user_is_valid()
 
-    # Username Tests
     def test_username_cannot_be_blank(self):
         self.user.username = ''
         self._assert_user_is_invalid()
@@ -48,7 +46,6 @@ class UserModelTestCase(TestCase):
         self.user.username = '@jd'
         self._assert_user_is_invalid()
 
-    # First Name Tests
     def test_first_name_must_not_be_blank(self):
         self.user.first_name = ''
         self._assert_user_is_invalid()
@@ -61,7 +58,6 @@ class UserModelTestCase(TestCase):
         self.user.first_name = 'x' * 51
         self._assert_user_is_invalid()
 
-    # Last Name Tests
     def test_last_name_must_not_be_blank(self):
         self.user.last_name = ''
         self._assert_user_is_invalid()
@@ -74,7 +70,6 @@ class UserModelTestCase(TestCase):
         self.user.last_name = 'x' * 51
         self._assert_user_is_invalid()
 
-    # Email Tests
     def test_email_must_not_be_blank(self):
         self.user.email = ''
         self._assert_user_is_invalid()
@@ -98,7 +93,6 @@ class UserModelTestCase(TestCase):
         self.user.email = 'user@sub.example.com'
         self._assert_user_is_valid()
 
-    # Role Field Tests
     def test_valid_roles(self):
         for role in ['admin', 'tutor', 'student']:
             self.user.role = role
@@ -113,7 +107,6 @@ class UserModelTestCase(TestCase):
             self.user.role = role.lower()
             self._assert_user_is_valid()
 
-    # Expertise Field Tests
     def test_expertise_can_be_blank(self):
         self.user.expertise = ''
         self._assert_user_is_valid()
@@ -127,7 +120,6 @@ class UserModelTestCase(TestCase):
         self.user.expertise = 'Python@Django'
         self._assert_user_is_invalid()
 
-    # Custom Methods Tests
     def test_full_name_must_be_correct(self):
         """Ensure full_name() returns the correct concatenation of first and last name."""
         self.assertEqual(self.user.full_name(), "John Doe")
@@ -144,7 +136,6 @@ class UserModelTestCase(TestCase):
         """Ensure mini_gravatar() returns a smaller gravatar."""
         self.assertEqual(self.user.mini_gravatar(), self._gravatar_url(size=60))
 
-    # Helper Methods
     def _gravatar_url(self, size):
         """Helper to generate gravatar URLs."""
         return f"{UserModelTestCase.GRAVATAR_URL}?size={size}&default=mp"

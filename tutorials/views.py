@@ -20,7 +20,7 @@ from django.utils.timezone import make_aware
 from django.shortcuts import render
 from datetime import timedelta
 from .models import User, Invoice
-#from .models import LessonRequest,Lesson
+
 from .models import LessonRequest
 from django.shortcuts import get_object_or_404, redirect
 from .forms import LessonBookingForm,ContactMessages
@@ -45,24 +45,20 @@ def dashboard(request):
         messages.error(request, "Invalid user role!")
         return redirect('home')
 
-
 @login_prohibited
 def home(request):
     """Display the application's start/home screen."""
     return render(request, 'home.html')
-
 
 @login_required
 def admin_dashboard(request):
     """Admin-specific dashboard."""
     return render(request, 'admin_dashboard.html')
 
-
 @login_required
 def tutor_dashboard(request):
     """Tutor-specific dashboard."""
     return render(request, 'tutor_dashboard.html')
-
 
 @login_required
 def student_dashboard(request):
@@ -73,11 +69,9 @@ def learn_more(request):
     """Display the Learn More page."""
     return render(request, 'learn_more.html')
 
-
 def available_courses(request):
     """Display the Available Courses page."""
     return render(request, 'available_courses.html')
-
 
 def generate_invoice(invoice, term_start=None, term_end=None):
     total = 0
@@ -91,7 +85,7 @@ def generate_invoice(invoice, term_start=None, term_end=None):
         lesson_requests = LessonRequest.objects.filter(
             student=invoice.student, 
             status='Allocated')
-        
+
     for booking in lesson_requests:
         booking.lesson_price = (booking.requested_duration / 60) * settings.HOURLY_RATE
         total += booking.lesson_price 
@@ -104,7 +98,6 @@ def generate_invoice(invoice, term_start=None, term_end=None):
     invoice.save()
 
     return lesson_requests, total
-        
 
 @login_required
 def manage_invoices(request):
@@ -174,7 +167,7 @@ def invoice_page(request, term_name = None):
 
     if not invoice:
         return HttpResponse("No invoice found", status=404)    
-    
+
     term_keys = list(terms.keys())
     current_term_index = term_keys.index(term_name)
 
@@ -198,7 +191,6 @@ def invoice_page(request, term_name = None):
         'base_template' : base_template,
         })
 
-
 class LoginProhibitedMixin:
     """Mixin that redirects when a user is logged in."""
 
@@ -221,7 +213,6 @@ class LoginProhibitedMixin:
                 "'get_redirect_when_logged_in_url()'."
             )
         return self.redirect_when_logged_in_url
-
 
 class LogInView(LoginProhibitedMixin, View):
     """Display login screen and handle user login."""
@@ -247,12 +238,10 @@ class LogInView(LoginProhibitedMixin, View):
         form = LogInForm()
         return render(self.request, 'log_in.html', {'form': form, 'next': self.next})
 
-
 def log_out(request):
     """Log out the current user."""
     logout(request)
     return redirect('home')
-
 
 class PasswordView(LoginRequiredMixin, FormView):
     """Display password change screen and handle password change requests."""
@@ -273,7 +262,6 @@ class PasswordView(LoginRequiredMixin, FormView):
     def get_success_url(self):
         messages.success(self.request, "Password updated!")
         return reverse('log_in')
-
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     """Display user profile editing screen and handle profile modifications."""
@@ -296,8 +284,7 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Determine the base template based on the user's role
-        if hasattr(self.request.user, 'role'):  # Ensure the role attribute exists
+        if hasattr(self.request.user, 'role'):  
             if self.request.user.role == 'tutor':
                 profile_base_template = 'dashboard_base_tutor.html'
             elif self.request.user.role == 'student':
@@ -305,13 +292,12 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
             elif self.request.user.role == 'admin':
                 profile_base_template = 'dashboard_base_admin.html'
             else:
-                profile_base_template = 'dashboard.html'  # Default for other roles
+                profile_base_template = 'dashboard.html'  
         else:
             profile_base_template = 'dashboard.html'
 
         context['profile_base_template'] = profile_base_template
         return context
-
 
 class SignUpView(LoginProhibitedMixin, FormView):
     """Display the sign up screen and handle sign ups."""
@@ -328,16 +314,9 @@ class SignUpView(LoginProhibitedMixin, FormView):
     def get_success_url(self):
         return reverse('log_in')
 
-    
-
-
-
 from django.shortcuts import redirect, render
 from datetime import date
 from calendar import monthrange, SUNDAY
-
-
-
 
 @login_required
 def admin_dashboard(request):
@@ -349,14 +328,11 @@ def tutor_dashboard(request):
     """Tutor-specific dashboard."""
     return render(request, 'tutor_dashboard.html')
 
-
 @login_required
 def student_dashboard(request):
     """Student-specific dashboard."""
     return render(request, 'student_dashboard.html')
 
-
-#STUDENTS
 logger = logging.getLogger(__name__)
 
 @login_required
@@ -367,23 +343,22 @@ def request_lesson(request):
     if request.method == 'POST':
         form = LessonBookingForm(request.POST)
         if form.is_valid():
-            lesson_request = form.save(commit=False)  # Don't save immediately
-            lesson_request.student = request.user  # Assign the logged-in user as the student
+            lesson_request = form.save(commit=False)  
+            lesson_request.student = request.user  
 
             try:
-                # Model-level validation for conflicts
+
                 lesson_request.full_clean()
                 lesson_request.save()
                 messages.success(request, "Your lesson request has been successfully submitted!")
                 return redirect('lesson_request_success')
             except ValidationError as e:
-                # Attach validation errors to the form
+
                 for field, error_list in e.message_dict.items():
                     for error in error_list:
                         form.add_error(field, error)
                 messages.error(request, "There was an error with your submission. Please check below.")
 
-                # Log the error for debugging purposes
                 logger.error("Lesson request validation failed: %s", e.message_dict)
 
     else:
@@ -391,7 +366,6 @@ def request_lesson(request):
 
     return render(request, 'request_lesson.html', {'form': form})
 
-#STUDENT OR TUTOR
 @login_required
 def contact_admin(request):
     if request.user.is_authenticated:
@@ -407,13 +381,11 @@ def contact_admin(request):
         base_template = 'dashboard.html'  
     return render(request, 'contact_admin.html', {'base_template': base_template})
 
-
-#STUDENTS
 @login_required
 def see_my_tutor(request):
     if request.user.role != 'student':
         return redirect('log_in')
-    
+
     assigned_tutors = LessonRequest.objects.filter(
         student=request.user,  
         tutor__isnull=False,   
@@ -430,7 +402,6 @@ def see_my_tutor(request):
         'tutors': assigned_tutors,  
     }
     return render(request, 'my_tutor_profile.html', context)
-
 
 def see_my_student_timetable(request):
     if not request.user.is_authenticated or request.user.role != 'student':
@@ -503,8 +474,6 @@ def see_my_student_timetable(request):
     }
     return render(request, 'student_timetable.html', context)
 
-
-
 def generate_lessons(lesson_request, num_lessons=10):
     """
     Generate individual lessons from a lesson request.
@@ -514,9 +483,9 @@ def generate_lessons(lesson_request, num_lessons=10):
     start_date = lesson_request.requested_date
     frequency = 7 if lesson_request.requested_frequency == "weekly" else 14
     duration = lesson_request.requested_duration
-    
+
     lessons = []
-    for i in range(num_lessons):  # Generate the specified number of lessons
+    for i in range(num_lessons):  
         lesson_date = start_date + timedelta(days=frequency * i)
         lesson = Lesson.objects.create(
             tutor=lesson_request.tutor,
@@ -528,7 +497,6 @@ def generate_lessons(lesson_request, num_lessons=10):
         )
         lessons.append(lesson)
     return lessons
-
 
 def see_my_tutor_timetable(request):
     if not request.user.is_authenticated or request.user.role != 'tutor':
@@ -599,9 +567,7 @@ def see_my_tutor_timetable(request):
     }
 
     return render(request, 'tutor_timetable.html', context)
-    
 
-#TUTORS
 @login_required
 def see_my_students_profile(request):
     if request.user.role != 'tutor':
@@ -617,8 +583,6 @@ def see_my_students_profile(request):
     }
     return render(request, 'my_students_profile.html', context)
 
-
-#STUDENTS
 @login_required
 def lesson_request_success(request):
     dashboard_url = reverse('log_in')
@@ -638,8 +602,6 @@ def lesson_request_success(request):
         base_template = 'dashboard.html'
     return render(request, 'lesson_request_success.html',{'base_template':base_template,'dashboard_url':dashboard_url})
 
-
-#ADMINS
 @login_required
 def student_requests(request):
     lesson_requests = LessonRequest.objects.select_related('student').order_by('student')
@@ -657,9 +619,6 @@ def student_requests(request):
     }
     return render(request, 'student_requests.html', context)
 
-
-
-#ADMINS
 @login_required
 def assign_tutor(request, lesson_request_id):
     if request.method == 'POST':
@@ -673,9 +632,7 @@ def assign_tutor(request, lesson_request_id):
             lesson_request.save()
 
         return redirect('student_requests')  
-    
 
-#ADMINS
 @login_required
 def unassign_tutor(request, lesson_request_id):
     if request.method == 'POST':
@@ -684,9 +641,7 @@ def unassign_tutor(request, lesson_request_id):
         lesson_request.status = 'Unallocated'
         lesson_request.save()
         return redirect('student_requests')
-    
 
-#ADMINS
 @login_required
 def cancel_request(request, lesson_request_id):
     if request.method == 'POST':
@@ -696,30 +651,23 @@ def cancel_request(request, lesson_request_id):
         lesson_request.save()
         return redirect('student_requests')
 
-
-#ADMINS
 @login_required
 def all_tutor_profiles(request):
     tutors = User.objects.filter(role='tutor')
     context = {'tutors': tutors}
     return render(request, 'all_tutor_profiles.html', context)
 
-#ADMINS
 @login_required
 def all_student_profiles(request):
     students = User.objects.filter(role='student')
     context = {'students': students}
     return render(request, 'all_student_profiles.html', context)
 
-
-#ADMINS
 @login_required
 def view_tutor_profile(request, tutor_id):
     tutor = get_object_or_404(User, id=tutor_id, role='tutor')
     return render(request, 'view_tutor_profile.html', {'tutor': tutor})
 
-
-#ADMINS
 @login_required
 def edit_tutor_profile(request, tutor_id):
     tutor = get_object_or_404(User, id=tutor_id, role='tutor')
@@ -733,9 +681,7 @@ def edit_tutor_profile(request, tutor_id):
 def view_student_profile(request, student_id):
     student = get_object_or_404(User, id=student_id, role='student')
     return render(request, 'view_student_profile.html',{'student': student})
-    
 
-  #STUDENTS
 @login_required
 def tutor_more_info(request, tutor_id):
     if request.user.role != 'student':
@@ -748,7 +694,6 @@ def tutor_more_info(request, tutor_id):
     }
     return render(request, 'tutor_more_info.html', context)
 
-  #ADMIN
 @login_required
 def admin_messages(request,role=None):
     role = role or request.GET.get('role')
@@ -759,7 +704,6 @@ def admin_messages(request,role=None):
     else:
         messages = []
     return render(request, 'admin_messages.html', {'messages': messages, 'role_filter': role})
-
 
 @login_required
 def send_message_to_admin(request):
@@ -806,7 +750,6 @@ def view_tutor_messages(request,role=None):
     else:
         return redirect('log_in')
 
-
 @login_required
 def admin_reply(request, message_id):
     if request.user.role != 'admin':  
@@ -829,8 +772,6 @@ def admin_reply(request, message_id):
 
     return render(request, 'admin_reply.html', {'form': adminForm, 'message': message})
 
-
-#ADMINS
 @login_required
 def response_submitted_success(request):
     dashboard_url = reverse('log_in')
@@ -850,7 +791,6 @@ def response_submitted_success(request):
         base_template = 'home.html'
     return render(request, 'response_submitted.html',{'base_template':base_template,'dashboard_url':dashboard_url})
 
-#TUTORS
 @login_required
 def tutor_messages(request):
     tutor = request.user
@@ -863,34 +803,28 @@ def student_messages(request):
     studentMessages = ContactMessage.objects.filter(user=student).order_by('timestamp')
     return render(request,'student_messages.html',{'messages':studentMessages})    
 
-
-
-
 from django.shortcuts import redirect, render
 from datetime import date
 from calendar import monthrange, SUNDAY
 
 def timetable_view(request):
     today = date.today()
-    selected_month = int(request.GET.get('month', today.month))  # Default to current month
-    selected_year = int(request.GET.get('year', today.year))  # Default to current year
+    selected_month = int(request.GET.get('month', today.month))  
+    selected_year = int(request.GET.get('year', today.year))  
 
-    # Ensure user is authenticated
     if not request.user.is_authenticated:
         return redirect('log_in')
 
     user = request.user
 
-    # Get calendar for the selected month and year
     cal = Calendar(SUNDAY)
     month_days = cal.monthdayscalendar(selected_year, selected_month)
 
-    # Prepare lessons for each day
     structured_month_days = []
     for week in month_days:
         week_data = []
         for day in week:
-            if day == 0:  # Empty day for alignment
+            if day == 0:  
                 week_data.append({'date': None, 'lessons': None})
             else:
                 day_date = date(selected_year, selected_month, day)
@@ -902,7 +836,6 @@ def timetable_view(request):
                 week_data.append({'date': day_date, 'lessons': lessons})
         structured_month_days.append(week_data)
 
-    # Calculate previous and next months
     prev_month = selected_month - 1 if selected_month > 1 else 12
     prev_year = selected_year - 1 if prev_month == 12 else selected_year
     next_month = selected_month + 1 if selected_month < 12 else 1
@@ -921,7 +854,6 @@ def timetable_view(request):
 
     return render(request, 'student_timetable.html', context)
 
-
 @login_required
 def admin_dashboard(request):
     """Admin-specific dashboard."""
@@ -932,14 +864,11 @@ def tutor_dashboard(request):
     """Tutor-specific dashboard."""
     return render(request, 'tutor_dashboard.html')
 
-
 @login_required
 def student_dashboard(request):
     """Student-specific dashboard."""
     return render(request, 'student_dashboard.html')
 
-
-#STUDENTS
 @login_required
 def request_lesson(request):
     """
@@ -949,15 +878,15 @@ def request_lesson(request):
         form = LessonBookingForm(request.POST)
         if form.is_valid():
             lesson_request = form.save(commit=False)
-            lesson_request.student = request.user  # The user who is logged in
+            lesson_request.student = request.user  
 
             try:
-                # This triggers the model-level clean() (overlap check)
+
                 lesson_request.full_clean()  
                 lesson_request.save()
                 return redirect('lesson_request_success')
             except ValidationError as e:
-                # Pass validation errors to form
+
                 form.add_error(None, e.message)
 
     else:
@@ -965,8 +894,6 @@ def request_lesson(request):
 
     return render(request, 'request_lesson.html', {'form': form})
 
-
-#STUDENT OR TUTOR
 @login_required
 def contact_admin(request):
     if request.user.is_authenticated:
@@ -982,18 +909,16 @@ def contact_admin(request):
         base_template = 'dashboard.html'  
     return render(request, 'contact_admin.html', {'base_template': base_template})
 
-
-#STUDENTS
 @login_required
 def see_my_tutor(request):
-    # Ensure only students can access this page
+
     if request.user.role != 'student':
         return redirect('log_in')
-    
+
     assigned_tutors = LessonRequest.objects.filter(
         student=request.user,  
         tutor__isnull=False,   
-        status='Allocated'     # Optional: Only show allocated tutors
+        status='Allocated'     
     ).values(
         'tutor__id',
         'tutor__first_name',
@@ -1007,7 +932,6 @@ def see_my_tutor(request):
     }
     return render(request, 'my_tutor_profile.html', context)
 
-#TUTORS
 @login_required
 def see_my_students_profile(request):
     if request.user.role != 'tutor':
@@ -1023,8 +947,6 @@ def see_my_students_profile(request):
     }
     return render(request, 'my_students_profile.html', context)
 
-
-#STUDENTS
 @login_required
 def lesson_request_success(request):
     dashboard_url = reverse('log_in')
@@ -1044,12 +966,10 @@ def lesson_request_success(request):
         base_template = 'dashboard.html'
     return render(request, 'lesson_request_success.html',{'base_template':base_template,'dashboard_url':dashboard_url})
 
-
-#ADMINS
 @login_required
 def student_requests(request):
-    if request.user.role != 'admin':  # Only admins can access this page
-        return redirect('log_in')  # Redirect unauthorized users to login
+    if request.user.role != 'admin':  
+        return redirect('log_in')  
     lesson_requests = LessonRequest.objects.select_related('student').order_by('student')
     students_with_requests = {}
     for req in lesson_requests:
@@ -1065,27 +985,22 @@ def student_requests(request):
     }
     return render(request, 'student_requests.html', context)
 
-
-
-#ADMINS
 @login_required
 def assign_tutor(request, lesson_request_id):
     if request.method == 'POST':
-        # Fetch the lesson request and selected tutor 
+
         lesson_request = get_object_or_404(LessonRequest, id=lesson_request_id)
         tutor_id = request.POST.get('tutor_id')
 
         if tutor_id:
             tutor = get_object_or_404(User, id=tutor_id, role='tutor')
-            # Assign the tutor to the lesson request (assuming you have a 'tutor' field)
+
             lesson_request.tutor = tutor
             lesson_request.status = 'Allocated'
             lesson_request.save()
 
         return redirect('student_requests')  
-    
 
-#ADMINS
 @login_required
 def unassign_tutor(request, lesson_request_id):
     if request.method == 'POST':
@@ -1094,9 +1009,7 @@ def unassign_tutor(request, lesson_request_id):
         lesson_request.status = 'Unallocated'
         lesson_request.save()
         return redirect('student_requests')
-    
 
-#ADMINS
 @login_required
 def cancel_request(request, lesson_request_id):
     if request.method == 'POST':
@@ -1106,30 +1019,23 @@ def cancel_request(request, lesson_request_id):
         lesson_request.save()
         return redirect('student_requests')
 
-
-#ADMINS
 @login_required
 def all_tutor_profiles(request):
     tutors = User.objects.filter(role='tutor')
     context = {'tutors': tutors}
     return render(request, 'all_tutor_profiles.html', context)
 
-#ADMINS
 @login_required
 def all_student_profiles(request):
     students = User.objects.filter(role='student')
     context = {'students': students}
     return render(request, 'all_student_profiles.html', context)
 
-
-#ADMINS
 @login_required
 def view_tutor_profile(request, tutor_id):
     tutor = get_object_or_404(User, id=tutor_id, role='tutor')
     return render(request, 'view_tutor_profile.html', {'tutor': tutor})
 
-
-#ADMINS
 @login_required
 def edit_tutor_profile(request, tutor_id):
     tutor = get_object_or_404(User, id=tutor_id, role='tutor')
@@ -1138,9 +1044,7 @@ def edit_tutor_profile(request, tutor_id):
         tutor.save()
         return redirect('all_tutor_profiles')
     return render(request, 'edit_tutor_profile.html', {'tutor': tutor})
-    
 
-  #STUDENTS
 @login_required
 def tutor_more_info(request, tutor_id):
     if request.user.role != 'student':
@@ -1153,9 +1057,6 @@ def tutor_more_info(request, tutor_id):
     }
     return render(request, 'tutor_more_info.html', context)
 
-
-
-  #ADMIN
 @login_required
 def admin_messages(request,role=None):
     role = role or request.GET.get('role')
@@ -1166,7 +1067,6 @@ def admin_messages(request,role=None):
     else:
         messages = []
     return render(request, 'admin_messages.html', {'messages': messages, 'role_filter': role})
-
 
 @login_required
 def send_message_to_admin(request):
@@ -1233,8 +1133,6 @@ def admin_reply(request, message_id):
         adminForm = AdminReplyBack(instance=message)
         return render(request, 'admin_reply.html', {'form': adminForm, 'message': message})
 
-
-#ADMINS
 @login_required
 def response_submitted_success(request):
     dashboard_url = reverse('log_in')
@@ -1254,7 +1152,6 @@ def response_submitted_success(request):
         base_template = 'home.html'
     return render(request, 'response_submitted.html',{'base_template':base_template,'dashboard_url':dashboard_url})
 
-#TUTORS
 @login_required
 def tutor_messages(request):
     tutor = request.user
@@ -1266,7 +1163,6 @@ def student_messages(request):
     student = request.user
     studentMessages = ContactMessage.objects.filter(user=student).order_by('timestamp')
     return render(request,'student_messages.html',{'messages':studentMessages})
-
 
 @login_required
 def tutor_profile(request):
@@ -1296,7 +1192,6 @@ def admin_profile(request):
     }
     return render(request, 'admin_profile.html', context)
 
-
 @login_required
 def student_profile(request):
     """Display the student's profile."""
@@ -1311,13 +1206,11 @@ def student_profile(request):
     }
     return render(request, 'student_profile.html', context)
 
-
 @login_required
 def edit_profile(request):
     """Allow users to edit their profile details based on their role."""
     user = request.user
 
-    # Role-based template selection
     role_templates = {
         'tutor': 'edit_my_tutor_profile.html',
         'student': 'edit_my_student_profile.html',
@@ -1330,10 +1223,10 @@ def edit_profile(request):
     }
 
     if request.method == "POST":
-        # Initialize form with user-specific fields
+
         form = UserForm(request.POST, request.FILES, instance=user, user=user)
         if form.is_valid():
-            # Save profile changes conditionally based on role
+
             updated_user = form.save(commit=False)
             if user.role == 'tutor':
                 updated_user.expertise = form.cleaned_data.get('expertise')
@@ -1349,3 +1242,4 @@ def edit_profile(request):
         'form': form,
         'profile_base_template': profile_base_templates.get(user.role, 'dashboard.html'),
     })
+    

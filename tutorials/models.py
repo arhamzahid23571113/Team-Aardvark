@@ -9,7 +9,7 @@ from django.utils.dateparse import parse_time
 
 class User(AbstractUser):
     """Model used for user authentication, and team member-related information."""
-    
+
     username = models.CharField(
         max_length=30,
         unique=True,
@@ -28,7 +28,6 @@ class User(AbstractUser):
         ('student', 'Student'),
     )
     role = models.CharField(max_length=10, choices=ROLES, default='student')
-
 
     expertise = models.TextField(
         blank=True, null=True,
@@ -61,7 +60,7 @@ class Invoice(models.Model):
 
     student = models.ForeignKey(
         User,
-        related_name="invoices",  # Unique related_name for Invoice
+        related_name="invoices",  
         on_delete=models.CASCADE
     )
     invoice_num = models.CharField(max_length=8, unique=True)
@@ -82,7 +81,6 @@ from django.db import models
 from django.conf import settings
 from datetime import datetime, date, timedelta
 from django.utils.dateparse import parse_time
-
 
 class LessonRequest(models.Model):
     """Model for students to make lesson requests."""
@@ -234,7 +232,7 @@ class Lesson(models.Model):
     )
     date = models.DateField()
     time = models.TimeField()
-    duration = models.PositiveIntegerField()  # Duration in minutes
+    duration = models.PositiveIntegerField()  
     topic = models.CharField(max_length=100)
     status = models.CharField(
         max_length=20,
@@ -276,6 +274,6 @@ class ContactMessage(models.Model):
     blank=True, null=True,
     help_text="Timestamp of admin's reply"
     )
-    
+
     def __str__(self):
         return f"{self.role.capitalize()} - {self.timestamp}"

@@ -6,8 +6,6 @@ from .models import User, LessonRequest,ContactMessage
 
 from .models import User, LessonRequest,ContactMessage
 
-
-
 class LogInForm(forms.Form):
     """Form enabling registered users to log in."""
 
@@ -23,10 +21,9 @@ class LogInForm(forms.Form):
             user = authenticate(username=username, password=password)
         return user
 
-
 def validate_file_size(value):
     """Validator to ensure profile picture file size does not exceed 10 MB."""
-    max_size = 10 * 1024 * 1024  # 10 MB
+    max_size = 10 * 1024 * 1024  
     if value.size > max_size:
         raise ValidationError("Profile picture size cannot exceed 10 MB.")
 
@@ -41,7 +38,6 @@ class UserForm(forms.ModelForm):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
-        # Dynamically remove fields based on user role
         if user:
             if user.role == 'student':
                 self.fields.pop('role', None)
@@ -78,7 +74,6 @@ class NewPasswordMixin(forms.Form):
         if new_password != password_confirmation:
             self.add_error('password_confirmation', 'Confirmation does not match password.')
 
-
 class PasswordForm(NewPasswordMixin):
     """Form enabling users to change their password."""
 
@@ -103,7 +98,6 @@ class PasswordForm(NewPasswordMixin):
             self.user.save()
         return self.user
 
-
 class SignUpForm(NewPasswordMixin, forms.ModelForm):
     """Form enabling unregistered users to sign up."""
 
@@ -126,52 +120,6 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
         if commit:
             user.save()
         return user
-
-
-# class LessonBookingForm(forms.ModelForm):
-#     class Meta:
-#         model = LessonRequest
-#         fields = [
-#             "requested_topic",
-#             "requested_frequency",
-#             "requested_duration",
-#             "requested_time",
-#             "requested_date",
-#             "experience_level",
-#             "additional_notes",
-
-#         ]
-#         widgets = {
-#             "requested_topic": forms.Select(choices=[
-#                 ("python_programming", "Python Programming"),
-#                 ("web_development_with_js", "Web Development with JavaScript"),
-#                 ("ruby_on_rails", "Ruby on Rails"),
-#                 ("ai_and_ml", "AI and Machine Learning"),
-#             ]),
-#             "requested_duration": forms.Select(choices=[
-#                 ("30", "30 Minutes"),
-#                 ("60", "1 Hour"),
-#                 ("90", "1 Hour and 30 Minutes"),
-#                 ("120", "2 Hours"),
-#             ]),
-#             "requested_frequency": forms.Select(choices=[
-#                 ("weekly", "Weekly"),
-#                 ("fortnightly", "Fortnightly"),
-#             ]),
-
-#              "requested_date": forms.DateInput(attrs={
-#                 "type": "date",  # HTML5 date picker
-#                 "class": "form-control",
-#             }),
-            
-#             "experience_level": forms.Select(choices=[
-#                 ("no_experience", "No Experience"),
-#                 ("beginner", "Beginner"),
-#                 ("intermediate", "Intermediate"),
-#                 ("advanced", "Advanced"),
-#             ]),
-#         }
-
 
 class LessonBookingForm(forms.ModelForm):
     """
@@ -259,7 +207,6 @@ class LessonBookingForm(forms.ModelForm):
 
         return cleaned_data
 
-        
 class ContactMessages(forms.ModelForm):
     class Meta:
         model = ContactMessage
