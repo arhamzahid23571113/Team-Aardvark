@@ -6,8 +6,6 @@ from .models import User, LessonRequest,ContactMessage
 
 from .models import User, LessonRequest,ContactMessage
 
-
-
 class LogInForm(forms.Form):
     """Form enabling registered users to log in."""
 
@@ -23,10 +21,9 @@ class LogInForm(forms.Form):
             user = authenticate(username=username, password=password)
         return user
 
-
 def validate_file_size(value):
     """Validator to ensure profile picture file size does not exceed 10 MB."""
-    max_size = 10 * 1024 * 1024  # 10 MB
+    max_size = 10 * 1024 * 1024  
     if value.size > max_size:
         raise ValidationError("Profile picture size cannot exceed 10 MB.")
 
@@ -41,7 +38,6 @@ class UserForm(forms.ModelForm):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
-        # Dynamically remove fields based on user role
         if user:
             if user.role == 'student':
                 self.fields.pop('role', None)
@@ -78,7 +74,6 @@ class NewPasswordMixin(forms.Form):
         if new_password != password_confirmation:
             self.add_error('password_confirmation', 'Confirmation does not match password.')
 
-
 class PasswordForm(NewPasswordMixin):
     """Form enabling users to change their password."""
 
@@ -103,7 +98,6 @@ class PasswordForm(NewPasswordMixin):
             self.user.save()
         return self.user
 
-
 class SignUpForm(NewPasswordMixin, forms.ModelForm):
     """Form enabling unregistered users to sign up."""
 
@@ -127,53 +121,28 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
             user.save()
         return user
 
-
-# class LessonBookingForm(forms.ModelForm):
-#     class Meta:
-#         model = LessonRequest
-#         fields = [
-#             "requested_topic",
-#             "requested_frequency",
-#             "requested_duration",
-#             "requested_time",
-#             "requested_date",
-#             "experience_level",
-#             "additional_notes",
-
-#         ]
-#         widgets = {
-#             "requested_topic": forms.Select(choices=[
-#                 ("python_programming", "Python Programming"),
-#                 ("web_development_with_js", "Web Development with JavaScript"),
-#                 ("ruby_on_rails", "Ruby on Rails"),
-#                 ("ai_and_ml", "AI and Machine Learning"),
-#             ]),
-#             "requested_duration": forms.Select(choices=[
-#                 ("30", "30 Minutes"),
-#                 ("60", "1 Hour"),
-#                 ("90", "1 Hour and 30 Minutes"),
-#                 ("120", "2 Hours"),
-#             ]),
-#             "requested_frequency": forms.Select(choices=[
-#                 ("weekly", "Weekly"),
-#                 ("fortnightly", "Fortnightly"),
-#             ]),
-
-#              "requested_date": forms.DateInput(attrs={
-#                 "type": "date",  # HTML5 date picker
-#                 "class": "form-control",
-#             }),
-            
-#             "experience_level": forms.Select(choices=[
-#                 ("no_experience", "No Experience"),
-#                 ("beginner", "Beginner"),
-#                 ("intermediate", "Intermediate"),
-#                 ("advanced", "Advanced"),
-#             ]),
-#         }
-
-
 class LessonBookingForm(forms.ModelForm):
+    """
+    Ensures that requested_date and requested_time are required,
+    and validates against scheduling conflicts.
+    """
+
+    requested_date = forms.DateField(
+        required=True,
+        widget=forms.DateInput(attrs={
+            "type": "date",
+            "class": "form-control",
+        })
+    )
+
+    requested_time = forms.TimeField(
+        required=True,
+        widget=forms.TimeInput(attrs={
+            "type": "time",
+            "class": "form-control",
+        })
+    )
+
     class Meta:
         model = LessonRequest
         fields = [
@@ -186,21 +155,58 @@ class LessonBookingForm(forms.ModelForm):
             "additional_notes",
         ]
         widgets = {
-            "requested_topic": forms.Select(),  
-            "requested_frequency": forms.Select(),  
-            "requested_duration": forms.Select(),  
-            "requested_date": forms.DateInput(attrs={
-                "type": "date",  # HTML5 date picker
-                "class": "form-control",
-            }),
-            "requested_time": forms.TimeInput(attrs={
-                "type": "time",  # HTML5 time picker
-                "class": "form-control",
-            }),
-            "experience_level": forms.Select(),  
+            "requested_topic": forms.Select(),
+            "requested_frequency": forms.Select(),
+            "requested_duration": forms.Select(),
+            "experience_level": forms.Select(),
         }
 
-        
+    def clean_requested_duration(self):
+        """
+        Validate the requested_duration value.
+        """
+        duration = self.cleaned_data.get("requested_duration")
+        valid_durations = [choice[0] for choice in LessonRequest.DURATION_CHOICES]
+        if duration not in valid_durations:
+            raise ValidationError("Please select a valid lesson duration.")
+        return duration
+
+    def clean(self):
+        """
+        Validate scheduling conflicts.
+        """
+        cleaned_data = super().clean()
+        tutor = self.instance.tutor
+        requested_date = cleaned_data.get("requested_date")
+        requested_time = cleaned_data.get("requested_time")
+        requested_duration = cleaned_data.get("requested_duration")
+
+        if tutor and requested_date and requested_time and requested_duration:
+            request_end_time = (
+                datetime.combine(datetime.today(), requested_time)
+                + timedelta(minutes=requested_duration)
+            ).time()
+
+            overlapping_lessons = LessonRequest.objects.filter(
+                tutor=tutor,
+                requested_date=requested_date,
+                status="Allocated",
+            )
+
+            for lesson in overlapping_lessons:
+                existing_start = lesson.requested_time
+                existing_end = (
+                    datetime.combine(datetime.today(), existing_start)
+                    + timedelta(minutes=lesson.requested_duration)
+                ).time()
+
+                if requested_time < existing_end and request_end_time > existing_start:
+                    raise forms.ValidationError(
+                        "A lesson is already booked for the requested time slot."
+                    )
+
+        return cleaned_data
+
 class ContactMessages(forms.ModelForm):
     class Meta:
         model = ContactMessage
