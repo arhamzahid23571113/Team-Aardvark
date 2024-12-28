@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from calendar import monthrange, SUNDAY
@@ -359,16 +359,24 @@ def student_dashboard(request):
 #STUDENTS
 @login_required
 def request_lesson(request):
+    """
+    Handles lesson requests by students, ensuring no double-booking occurs.
+    """
     if request.method == 'POST':
         form = LessonBookingForm(request.POST)
         if form.is_valid():
             lesson_request = form.save(commit=False)
             lesson_request.student = request.user  
-            lesson_request.save()
-            return redirect('lesson_request_success')  
-        else:
             
-            print(form.errors)
+            try:
+                # Run model-level validation for conflicts
+                lesson_request.clean()
+                lesson_request.save()
+                return redirect('lesson_request_success')  
+            except ValidationError as e:
+                # Capture validation errors and pass them to the form
+                form.add_error(None, e.message)
+
     else:
         form = LessonBookingForm()
 
