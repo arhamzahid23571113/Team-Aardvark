@@ -4,7 +4,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from libgravatar import Gravatar
 from django.conf import settings
-from datetime import timedelta
+from datetime import date, datetime, timedelta
+from django.utils.dateparse import parse_time
 
 class User(AbstractUser):
     """Model used for user authentication, and team member-related information."""
@@ -76,10 +77,17 @@ class Invoice(models.Model):
     def __str__(self):
         return f"Invoice {self.invoice_num} for {self.student.first_name} {self.student.last_name}"
 
+from django.core.exceptions import ValidationError
+from django.db import models
+from django.conf import settings
+from datetime import datetime, date, timedelta
+from django.utils.dateparse import parse_time
+
+
 class LessonRequest(models.Model):
-    """Model for students to make request lessons"""
-    
-     TOPIC_CHOICES = [
+    """Model for students to make lesson requests."""
+
+    TOPIC_CHOICES = [
         ("python_programming", "Python Programming"),
         ("web_development_with_js", "Web Development with JavaScript"),
         ("ruby_on_rails", "Ruby on Rails"),
@@ -104,12 +112,12 @@ class LessonRequest(models.Model):
         ("intermediate", "Intermediate"),
         ("advanced", "Advanced"),
     ]
-    student = models.ForeignKey(
 
+    student = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="lesson_requests",
         on_delete=models.CASCADE,
-        help_text="The student making the lesson request."
+        help_text="The student making this lesson request."
     )
     tutor = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -118,8 +126,8 @@ class LessonRequest(models.Model):
         null=True,
         blank=True,
         help_text="The tutor assigned to this lesson request. Null if unallocated."
-
     )
+
     status = models.CharField(
         max_length=20,
         choices=[
@@ -127,77 +135,90 @@ class LessonRequest(models.Model):
             ('Allocated', 'Allocated'),
             ('Cancelled', 'Cancelled')
         ],
-
         default='Unallocated',
         help_text="The current status of the lesson request."
     )
+
     request_date = models.DateTimeField(
         auto_now_add=True,
         help_text="The date and time when the lesson request was created."
     )
-    requested_topic = models.TextField(
-        default="Python Programming",
-        choices=TOPIC_CHOICES,  
-        help_text="Describe what you would like to learn (e.g Web Development with Django)."
-
-    )
-    requested_date = models.DateField(
-        default="2024-01-01",
-        help_text="Select the date for your lesson."
-    )
-    requested_date = models.DateField(
-        help_text="Select the date for your lesson.",
-        null=True,
-        blank=True
+    requested_topic = models.CharField(
+        max_length=50,
+        choices=TOPIC_CHOICES,
+        default="python_programming",
+        help_text="What you would like to learn (e.g., Python, Rails, etc.)."
     )
     requested_frequency = models.CharField(
         max_length=20,
         choices=FREQUENCY_CHOICES,
-        default="Weekly",  
-        help_text="How often would you like your lessons (e.g Weekly, Fortnightly)?"
+        default="weekly",
+        help_text="How often would you like lessons?"
     )
-
-    requested_duration = models.PositiveIntegerField(
-        default=60,
-        choices=DURATION_CHOICES,  
-        help_text="Lesson duration in minutes."
+    requested_date = models.DateField(
+        null=True,
+        blank=True,
+        help_text="Select the date for your lesson."
     )
     requested_time = models.TimeField(
-        default="09:00:00",  
+        default="09:00:00",
         help_text="Preferred time for the lesson."
     )
-    experience_level = models.TextField(
-        default="No Experience",
-        choices=EXPERIENCE_LEVEL_CHOICES,  
+    requested_duration = models.PositiveIntegerField(
+        default=60,
+        choices=DURATION_CHOICES,
+        help_text="Lesson duration in minutes."
+    )
+    experience_level = models.CharField(
+        max_length=20,
+        choices=EXPERIENCE_LEVEL_CHOICES,
+        default="no_experience",
         help_text="Describe your level of experience with this topic."
     )
     additional_notes = models.TextField(
         blank=True,
-        default="",  
+        default="",
         help_text="Additional information or requests."
     )
-
-    def clean(self):
-        """Custom validation to prevent double-booking of lessons."""
-        if self.tutor and self.requested_date and self.requested_time:
-            # Check for overlapping lessons
-            overlapping_lessons = Lesson.objects.filter(
-                tutor=self.tutor,
-                date=self.requested_date,
-                time__lte=(self.requested_time + timedelta(minutes=self.requested_duration)),
-                time__gte=self.requested_time
-            )
-            if overlapping_lessons.exists():
-                raise ValidationError("This tutor is already booked for the requested time.")
-        super().clean()
 
     class Meta:
         verbose_name = "Lesson Request"
         verbose_name_plural = "Lesson Requests"
         ordering = ['-request_date']
 
+    def clean(self):
+        """
+        Validates scheduling conflicts and other constraints.
+        """
+        if not self.requested_date or not self.requested_time:
+            raise ValidationError("Both requested_date and requested_time are required.")
+
+        start_time = self.requested_time
+        end_time = self.get_end_time()
+
+        overlapping_lessons = LessonRequest.objects.filter(
+            requested_date=self.requested_date,
+            status="Allocated",
+        ).exclude(id=self.id)
+
+        for lesson in overlapping_lessons:
+            existing_start = lesson.requested_time
+            existing_end = lesson.get_end_time()
+
+            if start_time < existing_end and end_time > existing_start:
+                raise ValidationError(
+                    "A lesson is already booked for the requested time slot."
+                )
+
+    def get_end_time(self):
+        """Calculate the end time of the lesson."""
+        return (
+            datetime.combine(date.today(), self.requested_time)
+            + timedelta(minutes=self.requested_duration)
+        ).time()
+
     def __str__(self):
-        return f"Lesson Request by {self.student.username} for {self.requested_topic}"
+        return f"Lesson Request by {self.student.username} for {self.requested_topic} on {self.requested_date} at {self.requested_time}"
 
 class Lesson(models.Model):
     """Model for individual lessons generated from a LessonRequest."""

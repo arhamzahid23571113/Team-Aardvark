@@ -29,7 +29,7 @@ from .forms import AdminReplyBack
 from django.utils.timezone import now
 from django.http import HttpResponseForbidden
 from django.http import HttpResponse
-
+import logging
 
 @login_required
 def dashboard(request):
@@ -357,6 +357,8 @@ def student_dashboard(request):
 
 
 #STUDENTS
+logger = logging.getLogger(__name__)
+
 @login_required
 def request_lesson(request):
     """
@@ -365,17 +367,24 @@ def request_lesson(request):
     if request.method == 'POST':
         form = LessonBookingForm(request.POST)
         if form.is_valid():
-            lesson_request = form.save(commit=False)
-            lesson_request.student = request.user  
-            
+            lesson_request = form.save(commit=False)  # Don't save immediately
+            lesson_request.student = request.user  # Assign the logged-in user as the student
+
             try:
-                # Run model-level validation for conflicts
-                lesson_request.clean()
+                # Model-level validation for conflicts
+                lesson_request.full_clean()
                 lesson_request.save()
-                return redirect('lesson_request_success')  
+                messages.success(request, "Your lesson request has been successfully submitted!")
+                return redirect('lesson_request_success')
             except ValidationError as e:
-                # Capture validation errors and pass them to the form
-                form.add_error(None, e.message)
+                # Attach validation errors to the form
+                for field, error_list in e.message_dict.items():
+                    for error in error_list:
+                        form.add_error(field, error)
+                messages.error(request, "There was an error with your submission. Please check below.")
+
+                # Log the error for debugging purposes
+                logger.error("Lesson request validation failed: %s", e.message_dict)
 
     else:
         form = LessonBookingForm()
@@ -933,20 +942,29 @@ def student_dashboard(request):
 #STUDENTS
 @login_required
 def request_lesson(request):
+    """
+    Handles lesson requests by students, ensuring no double-booking occurs.
+    """
     if request.method == 'POST':
         form = LessonBookingForm(request.POST)
         if form.is_valid():
             lesson_request = form.save(commit=False)
-            lesson_request.student = request.user  
-            lesson_request.save()
-            return redirect('lesson_request_success')  
-        else:
-            
-            print(form.errors)
+            lesson_request.student = request.user  # The user who is logged in
+
+            try:
+                # This triggers the model-level clean() (overlap check)
+                lesson_request.full_clean()  
+                lesson_request.save()
+                return redirect('lesson_request_success')
+            except ValidationError as e:
+                # Pass validation errors to form
+                form.add_error(None, e.message)
+
     else:
         form = LessonBookingForm()
 
     return render(request, 'request_lesson.html', {'form': form})
+
 
 #STUDENT OR TUTOR
 @login_required
