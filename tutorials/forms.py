@@ -200,6 +200,32 @@ class LessonBookingForm(forms.ModelForm):
             "experience_level": forms.Select(),  
         }
 
+    def clean(self):
+        """
+        Custom validation to ensure there are no scheduling conflicts for the tutor.
+        """
+        cleaned_data = super().clean()
+        tutor = self.instance.tutor  # Retrieve the tutor (if set)
+        requested_date = cleaned_data.get('requested_date')
+        requested_time = cleaned_data.get('requested_time')
+        requested_duration = cleaned_data.get('requested_duration')
+
+        if tutor and requested_date and requested_time and requested_duration:
+            # Check for overlapping lessons
+            overlapping_lessons = LessonRequest.objects.filter(
+                tutor=tutor,
+                requested_date=requested_date,
+                requested_time__lte=(datetime.combine(date.today(), requested_time) + timedelta(minutes=requested_duration)).time(),
+                requested_time__gte=requested_time,
+                status='Allocated'
+            )
+            if overlapping_lessons.exists():
+                raise forms.ValidationError(
+                    f"This tutor is already booked at the requested time on {requested_date}."
+                )
+
+        return cleaned_data
+
         
 class ContactMessages(forms.ModelForm):
     class Meta:
