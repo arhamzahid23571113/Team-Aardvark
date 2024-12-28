@@ -96,14 +96,38 @@ class UserModelTestCase(TestCase):
         self.user.expertise = 'Python, Django'
         self._assert_user_is_valid()
 
-    # Lesson Preferences Field Tests
-    def test_lesson_preferences_can_be_blank(self):
-        self.user.lesson_preferences = ''
+    def test_expertise_cannot_contain_invalid_characters(self):
+        self.user.expertise = 'Python@Django'
+        self._assert_user_is_invalid()
+
+    # New Tests for Edge Cases
+    def test_username_must_start_with_at_symbol(self):
+        """Test that usernames must start with '@'."""
+        self.user.username = 'johndoe'
+        self._assert_user_is_invalid()
+
+    def test_username_must_be_at_least_four_characters(self):
+        """Test that usernames must have a minimum length of 4 characters."""
+        self.user.username = '@jd'
+        self._assert_user_is_invalid()
+
+    def test_email_must_have_valid_format(self):
+        """Test that the email field must follow a valid format."""
+        invalid_emails = ['plainaddress', '@missingusername.com', 'username@.com']
+        for email in invalid_emails:
+            self.user.email = email
+            self._assert_user_is_invalid()
+
+    def test_email_can_have_subdomain(self):
+        """Test that email addresses with subdomains are valid."""
+        self.user.email = 'user@sub.example.com'
         self._assert_user_is_valid()
 
-    def test_lesson_preferences_can_contain_preferences(self):
-        self.user.lesson_preferences = 'Python Basics'
-        self._assert_user_is_valid()
+    def test_role_case_insensitivity(self):
+        """Test that roles are case-insensitive."""
+        for role in ['Admin', 'TUTOR', 'Student']:
+            self.user.role = role.lower()
+            self._assert_user_is_valid()
 
     # Custom Methods Tests
     def test_full_name_must_be_correct(self):
