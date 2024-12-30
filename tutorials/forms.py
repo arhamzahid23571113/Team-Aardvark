@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
 from .models import User, LessonRequest,ContactMessage
-
+from datetime import datetime, timedelta
 from .models import User, LessonRequest,ContactMessage
 
 class LogInForm(forms.Form):
@@ -123,7 +123,7 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
 
 class LessonBookingForm(forms.ModelForm):
     """
-    Ensures that requested_date and requested_time are required,
+    Ensures that requested_date, requested_time, and tutor are required,
     and validates against scheduling conflicts.
     """
 
@@ -176,17 +176,22 @@ class LessonBookingForm(forms.ModelForm):
         Validate scheduling conflicts.
         """
         cleaned_data = super().clean()
-        tutor = self.instance.tutor
+        tutor = self.instance.tutor or self.cleaned_data.get("tutor")
+        if not tutor:
+            raise forms.ValidationError("A tutor must be assigned to validate scheduling conflicts.")
+
         requested_date = cleaned_data.get("requested_date")
         requested_time = cleaned_data.get("requested_time")
         requested_duration = cleaned_data.get("requested_duration")
 
         if tutor and requested_date and requested_time and requested_duration:
+            # Calculate the end time of the requested lesson
             request_end_time = (
                 datetime.combine(datetime.today(), requested_time)
                 + timedelta(minutes=requested_duration)
             ).time()
 
+            # Check for overlapping lessons
             overlapping_lessons = LessonRequest.objects.filter(
                 tutor=tutor,
                 requested_date=requested_date,
@@ -202,10 +207,11 @@ class LessonBookingForm(forms.ModelForm):
 
                 if requested_time < existing_end and request_end_time > existing_start:
                     raise forms.ValidationError(
-                        "A lesson is already booked for the requested time slot."
+                        f"The tutor is already booked for {requested_date} from {existing_start} to {existing_end}."
                     )
 
         return cleaned_data
+
 
 class ContactMessages(forms.ModelForm):
     class Meta:

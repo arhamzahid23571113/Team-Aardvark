@@ -878,21 +878,38 @@ def request_lesson(request):
         form = LessonBookingForm(request.POST)
         if form.is_valid():
             lesson_request = form.save(commit=False)
-            lesson_request.student = request.user  
+            lesson_request.student = request.user  # Assign the current user as the student
 
-            try:
+            # Example logic to assign a tutor dynamically
+            tutor = User.objects.filter(role='tutor').first()  # Assign the first available tutor (modify as needed)
+            if not tutor:
+                form.add_error(None, "No tutors are currently available. Please try again later.")
+            else:
+                lesson_request.tutor = tutor
 
-                lesson_request.full_clean()  
-                lesson_request.save()
-                return redirect('lesson_request_success')
-            except ValidationError as e:
+                try:
+                    # Perform full validation (e.g., for scheduling conflicts)
+                    lesson_request.full_clean()
+                    lesson_request.save()
 
-                form.add_error(None, e.message)
+                    # Redirect to success page on successful booking
+                    return redirect('lesson_request_success')
+
+                except ValidationError as e:
+                    # Add validation errors to the form
+                    for field, errors in e.message_dict.items():
+                        for error in errors:
+                            form.add_error(field, error)
+
+                    # Add a general error message
+                    form.add_error(None, "There were issues with your submission. Please check below.")
 
     else:
         form = LessonBookingForm()
 
+    # Render the form with errors or an empty form for GET requests
     return render(request, 'request_lesson.html', {'form': form})
+
 
 @login_required
 def contact_admin(request):

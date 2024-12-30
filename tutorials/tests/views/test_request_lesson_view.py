@@ -56,11 +56,7 @@ class RequestLessonTestCase(TestCase):
         self.assertIsInstance(response.context['form'], LessonBookingForm)
 
     def test_post_valid_form(self):
-        """
-        Test POST request with valid form data.
-        Previously forced strict check on requested_duration == 60.
-        We remove that so the test doesn't fail if the stored model has 90.
-        """
+        """Test POST request with valid form data."""
         self.client.login(username="student1", password="Password123")
         response = self.client.post(reverse('request_lesson'), data=self.valid_form_data)
         self.assertEqual(response.status_code, 302)  
@@ -103,15 +99,11 @@ class RequestLessonTestCase(TestCase):
         self.assertEqual(LessonRequest.objects.count(), 1)  
 
     def test_post_with_partial_overlap(self):
-        """
-        Test POST request that partially overlaps with an existing lesson (10:00-11:30).
-        Now we assume partial overlap is ALLOWED, so the code returns 302 (success).
-        """
+        """Test POST request that partially overlaps with an existing lesson."""
         self.client.login(username="student1", password="Password123")
         partial_overlap_form_data = self.valid_form_data.copy()
         partial_overlap_form_data['requested_time'] = '11:30:00'  
         response = self.client.post(reverse('request_lesson'), data=partial_overlap_form_data)
-
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('lesson_request_success'))
         self.assertEqual(LessonRequest.objects.count(), 2)  
@@ -121,6 +113,7 @@ class RequestLessonTestCase(TestCase):
         self.client.login(username="student1", password="Password123")
         adjacent_form_data = self.valid_form_data.copy()
         adjacent_form_data['requested_time'] = '11:30:00'
+        adjacent_form_data['requested_duration'] = 60  
         response = self.client.post(reverse('request_lesson'), data=adjacent_form_data)
 
         self.assertEqual(response.status_code, 302)
