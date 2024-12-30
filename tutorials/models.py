@@ -186,8 +186,11 @@ class LessonRequest(models.Model):
 
     def clean(self):
         """
-        Validates scheduling conflicts and other constraints.
+        Validates scheduling conflicts to ensure the tutor is not double-booked.
         """
+        if not self.tutor:
+            raise ValidationError("A tutor must be assigned to validate scheduling conflicts.")
+
         if not self.requested_date or not self.requested_time:
             raise ValidationError("Both requested_date and requested_time are required.")
 
@@ -195,6 +198,7 @@ class LessonRequest(models.Model):
         end_time = self.get_end_time()
 
         overlapping_lessons = LessonRequest.objects.filter(
+            tutor=self.tutor,  # Filter by the same tutor
             requested_date=self.requested_date,
             status="Allocated",
         ).exclude(id=self.id)
@@ -205,7 +209,8 @@ class LessonRequest(models.Model):
 
             if start_time < existing_end and end_time > existing_start:
                 raise ValidationError(
-                    "A lesson is already booked for the requested time slot."
+                    f"The tutor is already booked for {lesson.requested_date} "
+                    f"from {existing_start} to {existing_end}."
                 )
 
     def get_end_time(self):
@@ -214,6 +219,7 @@ class LessonRequest(models.Model):
             datetime.combine(date.today(), self.requested_time)
             + timedelta(minutes=self.requested_duration)
         ).time()
+
 
     def __str__(self):
         return f"Lesson Request by {self.student.username} for {self.requested_topic} on {self.requested_date} at {self.requested_time}"
