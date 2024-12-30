@@ -1,6 +1,5 @@
 from django.test import TestCase
 from django.core.exceptions import ValidationError
-from django.utils.dateparse import parse_time
 from datetime import datetime, date, timedelta
 from tutorials.forms import LessonBookingForm
 from tutorials.models import LessonRequest, User
@@ -19,21 +18,23 @@ class LessonBookingFormTestCase(TestCase):
             username="tutor1", role="tutor", email="tutor1@example.com", password="Password123"
         )
 
+        # Existing lesson to simulate a conflict
         self.existing_lesson = LessonRequest.objects.create(
             student=self.student,
             tutor=self.tutor,
             requested_date="2024-12-20",
             requested_time="10:00:00",
-            requested_duration=60,  
+            requested_duration=60,  # 10:00 - 11:00
             requested_topic="python_programming",
             status="Allocated",
         )
 
+        # Valid data for a lesson that doesn't conflict
         self.valid_data = {
             "requested_topic": "python_programming",
             "requested_frequency": "weekly",
             "requested_duration": 60,
-            "requested_time": "12:00:00",  
+            "requested_time": "12:00:00",  # 12:00 - 13:00, no conflict
             "requested_date": "2024-12-20",
             "experience_level": "beginner",
             "additional_notes": "",
@@ -47,25 +48,28 @@ class LessonBookingFormTestCase(TestCase):
         form = LessonBookingForm(data=self.valid_data)
         self.assertTrue(form.is_valid(), f"Form should be valid but had errors: {form.errors}")
 
-    def test_form_invalid_with_time_conflict(self):
+    def test_tutor_double_booking_conflict(self):
         """
-        Test that the form is invalid if a scheduling conflict exists.
+        Ensure a tutor cannot be double-booked for the same day and time.
         """
-        conflict_data = self.valid_data.copy()
-        conflict_data["requested_time"] = "10:00:00"  
-        form = LessonBookingForm(data=conflict_data)
-        self.assertFalse(form.is_valid(), "Form unexpectedly valid despite time conflict.")
+        conflicting_data = self.valid_data.copy()
+        conflicting_data["requested_time"] = "10:30:00"  # Overlaps with existing 10:00 - 11:00
+        conflicting_data["requested_date"] = "2024-12-20"
+        form = LessonBookingForm(data=conflicting_data)
+        form.instance.tutor = self.tutor  # Assign the same tutor
+
+        self.assertFalse(form.is_valid(), "Form should be invalid due to tutor double-booking conflict.")
 
         expected_error_message = "A lesson is already booked for the requested time slot."
         actual_errors = form.errors.get("__all__")
-        self.assertIsNotNone(actual_errors, "No non-field errors found for conflict scenario.")
+        self.assertIsNotNone(actual_errors, "No non-field errors found for tutor conflict scenario.")
         self.assertIn(expected_error_message, actual_errors[0])
 
     def test_form_valid_with_boundary_duration_choice(self):
         """
         Remove all existing lessons so that boundary durations do not conflict.
         """
-        LessonRequest.objects.all().delete()  
+        LessonRequest.objects.all().delete()  # No conflict
         boundary_durations = [30, 60, 90, 120]
         for duration in boundary_durations:
             data = self.valid_data.copy()
@@ -85,7 +89,7 @@ class LessonBookingFormTestCase(TestCase):
         Confirm the form is invalid if the date format is incorrect.
         """
         invalid_data = self.valid_data.copy()
-        invalid_data["requested_date"] = "31-12-2099"  
+        invalid_data["requested_date"] = "31-12-2099"  # Wrong format (DD-MM-YYYY)
         form = LessonBookingForm(data=invalid_data)
         self.assertFalse(form.is_valid(), "Form unexpectedly valid with invalid date format.")
         self.assertIn("requested_date", form.errors)
@@ -95,7 +99,7 @@ class LessonBookingFormTestCase(TestCase):
         Confirm the form is invalid if required fields are missing.
         """
         missing_data = self.valid_data.copy()
-        missing_data.pop("requested_date")  
+        missing_data.pop("requested_date")  # Remove a required field
         form = LessonBookingForm(data=missing_data)
         self.assertFalse(form.is_valid(), "Form unexpectedly valid despite missing required field.")
         self.assertIn("requested_date", form.errors)
@@ -111,7 +115,7 @@ class LessonBookingFormTestCase(TestCase):
         )
 
         conflict_data = self.valid_data.copy()
-        conflict_data["requested_time"] = "10:00:00"  
+        conflict_data["requested_time"] = "10:00:00"  # Same as existing lesson
         form = LessonBookingForm(data=conflict_data)
         form.instance.tutor = another_tutor
 
