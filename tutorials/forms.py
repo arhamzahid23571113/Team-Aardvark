@@ -140,25 +140,43 @@ class PasswordForm(forms.Form):
         self.user.save()
         return self.user
 
-class SignUpForm(NewPasswordMixin, forms.ModelForm):
+class SignUpForm(forms.ModelForm):
     """Form enabling unregistered users to sign up."""
+
+    new_password = forms.CharField(label="New password", widget=forms.PasswordInput())
+    password_confirmation = forms.CharField(label="Confirm password", widget=forms.PasswordInput())
 
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'username', 'email', 'role']
 
+    def clean(self):
+        """Ensure password rules and confirmation match."""
+        cleaned_data = super().clean()
+        new_password = cleaned_data.get('new_password')
+        confirm_password = cleaned_data.get('password_confirmation')
+
+        # Check password confirmation
+        if new_password != confirm_password:
+            self.add_error('password_confirmation', "Passwords do not match.")
+
+        # Check password complexity
+        if new_password:
+            if not any(char.isupper() for char in new_password):
+                self.add_error('new_password', "Password must contain at least one uppercase letter.")
+            if not any(char.islower() for char in new_password):
+                self.add_error('new_password', "Password must contain at least one lowercase letter.")
+            if not any(char.isdigit() for char in new_password):
+                self.add_error('new_password', "Password must contain at least one number.")
+
+        return cleaned_data
+
     def save(self, commit=True):
+        """Save the user with the hashed password."""
         if not self.is_valid():
             raise ValueError("The form contains invalid data.")
-        user = User.objects.create_user(
-            username=self.cleaned_data.get('username'),
-            first_name=self.cleaned_data.get('first_name'),
-            last_name=self.cleaned_data.get('last_name'),
-            email=self.cleaned_data.get('email'),
-            password=self.cleaned_data.get('new_password'),
-            role=self.cleaned_data.get('role'),
-        )
-
+        user = super().save(commit=False)
+        user.password = make_password(self.cleaned_data.get('new_password'))
         if commit:
             user.save()
         return user
