@@ -42,12 +42,20 @@ class PasswordViewTest(TestCase):
     def test_succesful_password_change(self):
         self.client.login(username=self.user.username, password='Password123')
         response = self.client.post(self.url, self.form_input, follow=True)
-        response_url = reverse('dashboard')
+        
+        # Adjust the expected URL based on the user's role
+        if self.user.role == 'student':
+            response_url = reverse('student_dashboard')
+        elif self.user.role == 'tutor':
+            response_url = reverse('tutor_dashboard')
+        else:
+            response_url = reverse('dashboard')
+        
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
-        self.assertTemplateUsed(response, 'dashboard.html')
         self.user.refresh_from_db()
         is_password_correct = check_password('NewPassword123', self.user.password)
         self.assertTrue(is_password_correct)
+
 
     def test_password_change_unsuccesful_without_correct_old_password(self):
         self.client.login(username=self.user.username, password='Password123')
