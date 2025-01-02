@@ -76,11 +76,37 @@ class Invoice(models.Model):
     def __str__(self):
         return f"Invoice {self.invoice_num} for {self.student.first_name} {self.student.last_name}"
 
-from django.core.exceptions import ValidationError
-from django.db import models
-from django.conf import settings
-from datetime import datetime, date, timedelta
-from django.utils.dateparse import parse_time
+    def clean(self):
+        super().clean()
+        #ensures that student is a user of role 'student'
+        if self.student_id is None:
+            raise ValidationError('A student must be specified')
+
+        # Fetch the user to check the role
+        try:
+            user = User.objects.get(id=self.student_id)
+            if user.role != 'student':
+                raise ValidationError(f'Only students can have invoices. Current user role is {user.role}')
+        except User.DoesNotExist:
+            raise ValidationError('Selected student does not exist')
+        
+        #make sure due date is after invoice date
+        if self.due_date and self.invoice_date and (self.due_date < self.invoice_date):
+            raise ValidationError("Payment due date must be after the date invoice is provided")
+        
+        #ensures that the payment date is not before the invoice date, if it is set
+        if self.payment_date and self.invoice_date and not(self.payment_date >= self.invoice_date):
+            raise ValidationError("Provided payment date cannot be before invoice date")
+        
+        if self.payment_date and self.payment_status != "Paid":
+            raise ValidationError("Payment_date should not be set if payment status isn't Paid")
+        
+        if self.payment_status == "Paid" and not self.payment_date:
+            raise ValidationError("The payment status cannot be set to Paid if there is no payment date provided")
+        
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
 class LessonRequest(models.Model):
     """Model for students to make lesson requests."""
