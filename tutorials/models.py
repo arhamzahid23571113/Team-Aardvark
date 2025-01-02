@@ -283,3 +283,41 @@ class ContactMessage(models.Model):
 
     def __str__(self):
         return f"{self.role.capitalize()} - {self.timestamp}"
+
+class LessonBooking(models.Model):
+    """Model for lesson bookings derived from Lesson Requests."""
+
+    student = models.ForeignKey(
+        User,
+        related_name="lesson_bookings",
+        on_delete=models.CASCADE
+    )
+    tutor = models.ForeignKey(
+        User,
+        related_name="tutor_bookings",
+        on_delete=models.CASCADE
+    )
+    lesson_request = models.ForeignKey(
+        LessonRequest,
+        related_name="bookings",
+        on_delete=models.CASCADE
+    )
+    date = models.DateField()
+    time = models.TimeField()
+    duration = models.PositiveIntegerField()
+    status = models.CharField(
+        max_length=20,
+        choices=[('Booked', 'Booked'), ('Completed', 'Completed'), ('Cancelled', 'Cancelled')],
+        default='Booked'
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['tutor', 'date', 'time'],
+                name='unique_booking_schedule'
+            )
+        ]
+
+    def __str__(self):
+        return f"Booking on {self.date} at {self.time} by {self.student.username}"

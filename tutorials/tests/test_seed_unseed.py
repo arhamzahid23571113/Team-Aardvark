@@ -1,6 +1,6 @@
 from django.core.management import call_command
 from django.test import TestCase
-from tutorials.models import User, LessonRequest, LessonBooking, Invoice
+from tutorials.models import User, LessonRequest, Lesson, Invoice
 
 class SeedUnseedTests(TestCase):
     """Test suite for database seeding and unseeding."""
@@ -18,7 +18,7 @@ class SeedUnseedTests(TestCase):
         self.assertGreater(lesson_requests.count(), 0)
 
         # Test lesson bookings
-        lesson_bookings = LessonBooking.objects.all()
+        lesson_bookings = Lesson.objects.all()
         self.assertEqual(lesson_bookings.count(), 100)  # Update if required
 
         # Test invoices
@@ -38,5 +38,5 @@ class SeedUnseedTests(TestCase):
         call_command('unseed')
         self.assertEqual(User.objects.filter(role__in=['student', 'tutor']).count(), 0)
         self.assertEqual(LessonRequest.objects.count(), 0)
-        self.assertEqual(LessonBooking.objects.count(), 0)
+        self.assertEqual(Lesson.objects.count(), 0)
         self.assertEqual(Invoice.objects.count(), 0)
