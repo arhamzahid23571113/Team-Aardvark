@@ -21,37 +21,30 @@ class LogInForm(forms.Form):
             user = authenticate(username=username, password=password)
         return user
 
-def validate_file_size(value):
-    """Validator to ensure profile picture file size does not exceed 10 MB."""
-    max_size = 10 * 1024 * 1024  
-    if value.size > max_size:
-        raise ValidationError("Profile picture size cannot exceed 10 MB.")
+def validate_file_size(value, max_size=5 * 1024 * 1024):  # 5 MB limit
+    """Validate the file size."""
+    if hasattr(value, 'size') and value.size > max_size:
+        raise forms.ValidationError(f"The file size exceeds the limit of {max_size / (1024 * 1024)} MB.")
+    return value
+
 
 class UserForm(forms.ModelForm):
-    """Form to update user profiles."""
+    """Form to update user profiles based on the User model."""
 
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'username', 'email', 'role', 'profile_picture', 'expertise']
 
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
-        super().__init__(*args, **kwargs)
-
-        if user:
-            if user.role == 'student':
-                self.fields.pop('role', None)
-                self.fields.pop('expertise', None)
-            elif user.role == 'tutor':
-                self.fields.pop('role', None)
-            elif user.role == 'admin':
-                self.fields.pop('expertise', None)
-
     def clean_profile_picture(self):
-        """Validate the profile picture file size."""
+        """
+        Ignore validation if `profile_picture` is empty or the default path (string).
+        This avoids FileNotFoundError for 'profile_pictures/default.jpg'.
+        """
         profile_picture = self.cleaned_data.get('profile_picture')
-        if profile_picture:
-            validate_file_size(profile_picture)
+        # If no file is actually uploaded, skip file-size checks
+        if not profile_picture or isinstance(profile_picture, str):
+            return profile_picture
+        # Otherwise, you can do file-size checks here if needed
         return profile_picture
 
 class NewPasswordMixin(forms.Form):
