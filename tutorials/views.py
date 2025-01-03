@@ -318,20 +318,6 @@ from django.shortcuts import redirect, render
 from datetime import date
 from calendar import monthrange, SUNDAY
 
-@login_required
-def admin_dashboard(request):
-    """Admin-specific dashboard."""
-    return render(request, 'admin_dashboard.html')
-
-@login_required
-def tutor_dashboard(request):
-    """Tutor-specific dashboard."""
-    return render(request, 'tutor_dashboard.html')
-
-@login_required
-def student_dashboard(request):
-    """Student-specific dashboard."""
-    return render(request, 'student_dashboard.html')
 
 logger = logging.getLogger(__name__)
 
@@ -620,32 +606,6 @@ def student_requests(request):
     return render(request, 'student_requests.html', context)
 
 @login_required
-def all_tutor_profiles(request):
-    tutors = User.objects.filter(role='tutor')
-    context = {'tutors': tutors}
-    return render(request, 'all_tutor_profiles.html', context)
-
-@login_required
-def all_student_profiles(request):
-    students = User.objects.filter(role='student')
-    context = {'students': students}
-    return render(request, 'all_student_profiles.html', context)
-
-@login_required
-def view_tutor_profile(request, tutor_id):
-    tutor = get_object_or_404(User, id=tutor_id, role='tutor')
-    return render(request, 'view_tutor_profile.html', {'tutor': tutor})
-
-@login_required
-def edit_tutor_profile(request, tutor_id):
-    tutor = get_object_or_404(User, id=tutor_id, role='tutor')
-    if request.method == 'POST':
-        tutor.expertise = request.POST.get('expertise', tutor.expertise)
-        tutor.save()
-        return redirect('all_tutor_profiles')
-    return render(request, 'edit_tutor_profile.html', {'tutor': tutor})
-
-@login_required
 def view_student_profile(request, student_id):
     student = get_object_or_404(User, id=student_id, role='student')
     return render(request, 'view_student_profile.html',{'student': student})
@@ -860,21 +820,6 @@ def see_my_tutor(request):
         'tutors': assigned_tutors,  
     }
     return render(request, 'my_tutor_profile.html', context)
-
-@login_required
-def see_my_students_profile(request):
-    if request.user.role != 'tutor':
-        return redirect('log_in')
-    assigned_students = (
-        User.objects.filter(
-            lesson_requests__tutor=request.user  
-        )
-        .distinct()
-    )
-    context = {
-        'students': assigned_students,
-    }
-    return render(request, 'my_students_profile.html', context)
 
 @login_required
 def lesson_request_success(request):
