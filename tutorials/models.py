@@ -197,30 +197,28 @@ class LessonRequest(models.Model):
         """
         Validates scheduling conflicts to ensure the tutor is not double-booked.
         """
-        if not self.tutor:
-            raise ValidationError("A tutor must be assigned to validate scheduling conflicts.")
-
         if not self.requested_date or not self.requested_time:
             raise ValidationError("Both requested_date and requested_time are required.")
-
+    
         start_time = self.requested_time
         end_time = self.get_end_time()
-
+    
         overlapping_lessons = LessonRequest.objects.filter(
             tutor=self.tutor,  # Filter by the same tutor
             requested_date=self.requested_date,
             status="Allocated",
         ).exclude(id=self.id)
-
+    
         for lesson in overlapping_lessons:
             existing_start = lesson.requested_time
             existing_end = lesson.get_end_time()
-
+    
             if start_time < existing_end and end_time > existing_start:
                 raise ValidationError(
                     f"The tutor is already booked for {lesson.requested_date} "
                     f"from {existing_start} to {existing_end}."
                 )
+
 
     def get_end_time(self):
         """Calculate the end time of the lesson."""
