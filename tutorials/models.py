@@ -1,4 +1,4 @@
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, validate_email
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -6,6 +6,11 @@ from libgravatar import Gravatar
 from django.conf import settings
 from datetime import date, datetime, timedelta
 from django.utils.dateparse import parse_time
+
+def validate_email_format(value):
+    if value.startswith("@"):
+        raise ValidationError("Email address cannot start with '@'.")
+    validate_email(value)
 
 class User(AbstractUser):
     """Model used for user authentication, and team member-related information."""
@@ -20,7 +25,11 @@ class User(AbstractUser):
     )
     first_name = models.CharField(max_length=50, blank=False)
     last_name = models.CharField(max_length=50, blank=False)
-    email = models.EmailField(unique=True, blank=False)
+    email = models.EmailField(
+        unique=True,
+        blank=False,
+        validators=[validate_email_format]
+    )
 
     ROLES = (
         ('admin', 'Admin'),
@@ -220,6 +229,42 @@ class LessonRequest(models.Model):
             + timedelta(minutes=self.requested_duration)
         ).time()
 
+    def assign_tutor(self, tutor):
+        """
+        Assign a tutor to this lesson request and update the status to 'Allocated'.
+        """
+        self.tutor = tutor
+        self.status = "Allocated"
+        self.save()
+
+    @staticmethod
+    def assign_tutor_to_student(student_username, tutor_username):
+        """
+        Utility function to assign a specific tutor to a student.
+        """
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+
+        try:
+            student = User.objects.get(username=student_username)
+            tutor = User.objects.get(username=tutor_username)
+
+            # Check if the student already has a lesson request
+            lesson_request = LessonRequest.objects.filter(student=student).first()
+            if lesson_request:
+                lesson_request.assign_tutor(tutor)
+                print(f"Tutor {tutor.username} assigned to Student {student.username}.")
+            else:
+                # Create a new lesson request
+                LessonRequest.objects.create(
+                    student=student,
+                    tutor=tutor,
+                    status="Allocated",
+                    requested_topic="python_programming",
+                )
+                print(f"New lesson request created for Student {student.username} with Tutor {tutor.username}.")
+        except User.DoesNotExist as e:
+            print(f"Error: {e}")
 
     def __str__(self):
         return f"Lesson Request by {self.student.username} for {self.requested_topic} on {self.requested_date} at {self.requested_time}"
