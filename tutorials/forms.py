@@ -6,6 +6,10 @@ from .models import User, LessonRequest,ContactMessage
 from django.contrib.auth.hashers import make_password
 from .models import User, LessonRequest,ContactMessage
 
+from django import forms
+from django.core.exceptions import ValidationError
+from datetime import datetime, timedelta
+
 class LogInForm(forms.Form):
     """Form enabling registered users to log in."""
 

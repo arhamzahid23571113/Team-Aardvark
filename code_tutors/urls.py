@@ -20,8 +20,7 @@ from django.contrib import admin
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from tutorials import views
-from django.urls import path, include 
-from tutorials.views import timetable_view
+from django.urls import path
 from django.contrib.auth.views import LoginView
 
 urlpatterns = [
