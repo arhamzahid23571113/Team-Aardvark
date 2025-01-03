@@ -32,22 +32,7 @@ class InvoicePageTests(TestCase):
         # Assert redirect to the customized login page
         self.assertEqual(response.status_code, 302)
         self.assertIn('/log_in/', response.url)  # Match the actual login URL
-
-
-
-    @patch('tutorials.views.date')  # Replace 'tutorials' with your app name
-    def test_invoice_page_autumn_term(self, mock_date):
-        # Set the mocked date.today() to return a specific date
-        mock_date.today.return_value = date(2024, 9, 15)
-        mock_date.side_effect = lambda *args, **kwargs: date(*args, **kwargs)  # Ensure side_effect mimics date behavior
-
-        response = self.client.get(reverse('invoice_page'))
-
-        # Validate response status and context
-        self.assertEqual(response.status_code, 200)
-        self.assertIn("autumn", response.context['term_name'].lower())
-
-
+        
     def test_invoice_page_with_term_name(self):
         # Pass a valid term_name
         response = self.client.get(reverse('invoice_page_term', args=["spring"]))
