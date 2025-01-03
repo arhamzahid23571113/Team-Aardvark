@@ -193,4 +193,18 @@ def manage_invoices(request):
 
     return render(request, 'manage_invoices.html', {'invoice_data' : invoice_data})
 
+@login_required
+def edit_tutor_profile(request, tutor_id):
+    tutor = get_object_or_404(User, id=tutor_id, role='tutor')
+    if request.method == 'POST':
+        tutor.expertise = request.POST.get('expertise', tutor.expertise)
+        tutor.save()
+        return redirect('all_tutor_profiles')
+    return render(request, 'edit_tutor_profile.html', {'tutor': tutor})
+
+@login_required
+def view_student_profile(request, student_id):
+    student = get_object_or_404(User, id=student_id, role='student')
+    return render(request, 'view_student_profile.html',{'student': student})
+
 

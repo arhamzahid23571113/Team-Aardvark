@@ -15,7 +15,8 @@ from tutorials.helpers import login_prohibited
 from datetime import timedelta, date
 from django.shortcuts import render
 from datetime import timedelta
-from tutorials.models import User, Invoice, LessonRequest, ContactMessages, Lesson
+from tutorials.models import User, Invoice, LessonRequest, Lesson
+from tutorials.forms import ContactMessages
 from django.shortcuts import redirect
 from django.http import HttpResponse
 import logging
