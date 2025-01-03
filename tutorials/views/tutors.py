@@ -1,35 +1,16 @@
-from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.shortcuts import redirect, render
-from django.urls import reverse
-from calendar import monthrange, SUNDAY
+from calendar import monthrange
 from datetime import date
-from calendar import Calendar, monthrange
+from calendar import monthrange
 from django.shortcuts import render
-from django.views import View
-from django.views.generic.edit import FormView, UpdateView
-from tutorials.forms import LogInForm, PasswordForm, UserForm, SignUpForm
-from tutorials.helpers import login_prohibited
 from calendar import monthrange
 from datetime import datetime, timedelta, date
-from django.utils.timezone import make_aware
 from django.shortcuts import render
 from datetime import timedelta
-from tutorials.models import User, Invoice
-
-from tutorials.models import LessonRequest
-from django.shortcuts import get_object_or_404, redirect
-from tutorials.forms import LessonBookingForm,ContactMessages
-from tutorials.models import ContactMessage
-from tutorials.forms import AdminReplyBack
-from django.utils.timezone import now
-from django.http import HttpResponseForbidden
-from django.http import HttpResponse
-import logging
+from tutorials.models import User, LessonRequest, ContactMessage, Lesson
+from django.shortcuts import redirect
 
 @login_required
 def tutor_dashboard(request):

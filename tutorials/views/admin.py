@@ -12,6 +12,8 @@ from tutorials.forms import AdminReplyBack
 from django.utils.timezone import now
 from django.http import HttpResponseForbidden
 
+from .common import generate_invoice
+
 @login_required
 def admin_dashboard(request):
     """Admin-specific dashboard."""
@@ -170,4 +172,25 @@ def admin_profile(request):
         'admin': admin,
     }
     return render(request, 'admin_profile.html', context)
+
+@login_required
+def manage_invoices(request):
+    if not request.user.is_staff:
+        return HttpResponseForbidden("You are not authorized to access this page.")
+
+    invoices = Invoice.objects.filter(payment_status='Unpaid')
+    invoice_data = []
+
+    for invoice in invoices:
+        lesson_requests, total = generate_invoice(invoice)
+        invoice.standardised_due_date = invoice.due_date.strftime("%d/%m/%Y")
+
+        invoice_data.append({
+            'invoice' : invoice,
+            'lesson_requests' : lesson_requests,
+            'total' : total,
+        })
+
+    return render(request, 'manage_invoices.html', {'invoice_data' : invoice_data})
+
 

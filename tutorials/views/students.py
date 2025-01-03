@@ -1,35 +1,27 @@
-from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import ImproperlyConfigured, ValidationError
+from django.core.exceptions import ValidationError
 from django.shortcuts import redirect, render
-from django.urls import reverse
 from calendar import monthrange, SUNDAY
 from datetime import date
 from calendar import Calendar, monthrange
 from django.shortcuts import render
-from django.views import View
-from django.views.generic.edit import FormView, UpdateView
-from tutorials.forms import LogInForm, PasswordForm, UserForm, SignUpForm
-from tutorials.helpers import login_prohibited
 from calendar import monthrange
 from datetime import datetime, timedelta, date
 from django.shortcuts import render
 from datetime import timedelta
-from tutorials.models import User
-
-from tutorials.models import LessonRequest
+from tutorials.models import User, LessonRequest, ContactMessage, Lesson
 from django.shortcuts import get_object_or_404, redirect
 from tutorials.forms import LessonBookingForm
-from tutorials.models import ContactMessage
+import logging
 
 
 @login_required
 def student_dashboard(request):
     """Student-specific dashboard."""
     return render(request, 'student_dashboard.html')
+
+logger = logging.getLogger(__name__)
 
 @login_required
 def request_lesson(request):
@@ -209,3 +201,50 @@ def student_profile(request):
         'student': student,
     }
     return render(request, 'student_profile.html', context)
+
+def timetable_view(request):
+    today = date.today()
+    selected_month = int(request.GET.get('month', today.month))  
+    selected_year = int(request.GET.get('year', today.year))  
+
+    if not request.user.is_authenticated:
+        return redirect('log_in')
+
+    user = request.user
+
+    cal = Calendar(SUNDAY)
+    month_days = cal.monthdayscalendar(selected_year, selected_month)
+
+    structured_month_days = []
+    for week in month_days:
+        week_data = []
+        for day in week:
+            if day == 0:  
+                week_data.append({'date': None, 'lessons': None})
+            else:
+                day_date = date(selected_year, selected_month, day)
+                lessons = []
+                if user.role == 'student':
+                    lessons = Lesson.objects.filter(student=user, date=day_date)
+                elif user.role == 'tutor':
+                    lessons = Lesson.objects.filter(tutor=user, date=day_date).order_by('start_time')
+                week_data.append({'date': day_date, 'lessons': lessons})
+        structured_month_days.append(week_data)
+
+    prev_month = selected_month - 1 if selected_month > 1 else 12
+    prev_year = selected_year - 1 if prev_month == 12 else selected_year
+    next_month = selected_month + 1 if selected_month < 12 else 1
+    next_year = selected_year + 1 if next_month == 1 else selected_year
+
+    context = {
+        'month_days': structured_month_days,
+        'year': selected_year,
+        'month': selected_month,
+        'month_name': date(selected_year, selected_month, 1).strftime('%B'),
+        'prev_month': prev_month,
+        'prev_year': prev_year,
+        'next_month': next_month,
+        'next_year': next_year,
+    }
+
+    return render(request, 'student_timetable.html', context)

@@ -314,10 +314,6 @@ class SignUpView(LoginProhibitedMixin, FormView):
     def get_success_url(self):
         return reverse('log_in')
 
-from django.shortcuts import redirect, render
-from datetime import date
-from calendar import monthrange, SUNDAY
-
 
 logger = logging.getLogger(__name__)
 
@@ -634,35 +630,6 @@ def admin_messages(request,role=None):
     return render(request, 'admin_messages.html', {'messages': messages, 'role_filter': role})
 
 @login_required
-def send_message_to_admin(request):
-    if request.user.is_authenticated:
-        if request.user.role == 'tutor':
-            base_template = 'dashboard_base_tutor.html'
-        elif request.user.role == 'student':
-            base_template = 'dashboard_base_student.html'
-        elif request.user.role == 'admin':
-            base_template = 'dashboard_base_admin.html'
-        else:
-            base_template = 'dashboard.html'
-    else:
-        base_template = 'dashboard.html'
-
-    if request.method == 'POST':
-        form = ContactMessages(request.POST)
-        if form.is_valid():
-            contact_message = form.save(commit=False)
-            contact_message.user = request.user  
-            contact_message.save()
-            messages.success(request, 'Your message has been submitted successfully!')
-            return redirect('response_success')
-        else:
-            messages.error(request, 'There was an error with your submission.')
-    else:
-        form = ContactMessages()
-
-    return render(request, 'contact_admin.html', {'form': form, 'base_template': base_template})
-
-@login_required
 def view_student_messages(request,role=None):
     if request.user.role == 'admin':
         student_messages = ContactMessage.objects.filter(role='student').order_by('timestamp')
@@ -731,9 +698,6 @@ def student_messages(request):
     studentMessages = ContactMessage.objects.filter(user=student).order_by('timestamp')
     return render(request,'student_messages.html',{'messages':studentMessages})    
 
-from django.shortcuts import redirect, render
-from datetime import date
-from calendar import monthrange, SUNDAY
 
 def timetable_view(request):
     today = date.today()
@@ -781,83 +745,6 @@ def timetable_view(request):
     }
 
     return render(request, 'student_timetable.html', context)
-
-
-@login_required
-def contact_admin(request):
-    if request.user.is_authenticated:
-        if request.user.role == 'tutor':
-            base_template = 'dashboard_base_tutor.html'
-        elif request.user.role == 'student':
-            base_template = 'dashboard_base_student.html'
-        elif request.user.role == 'admin':
-            base_template = 'dashboard_base_admin.html'
-        else:
-            base_template = 'dashboard.html'  
-    else:
-        base_template = 'dashboard.html'  
-    return render(request, 'contact_admin.html', {'base_template': base_template})
-
-@login_required
-def see_my_tutor(request):
-
-    if request.user.role != 'student':
-        return redirect('log_in')
-
-    assigned_tutors = LessonRequest.objects.filter(
-        student=request.user,  
-        tutor__isnull=False,   
-        status='Allocated'     
-    ).values(
-        'tutor__id',
-        'tutor__first_name',
-        'tutor__last_name',
-        'tutor__email',
-        'tutor__expertise'
-    ).distinct()
-
-    context = {
-        'tutors': assigned_tutors,  
-    }
-    return render(request, 'my_tutor_profile.html', context)
-
-@login_required
-def lesson_request_success(request):
-    dashboard_url = reverse('log_in')
-    if request.user.is_authenticated:
-        if request.user.role == 'tutor':
-            base_template = 'dashboard_base_tutor.html'
-            dashboard_url = reverse('tutor_dashboard')
-        elif request.user.role == 'student':
-            base_template = 'dashboard_base_student.html'
-            dashboard_url = reverse('student_dashboard')
-        elif request.user.role == 'admin':
-            base_template = 'dashboard_base_admin.html'
-            dashboard_url = reverse('admin_dashboard')
-        else:
-            base_template = 'dashboard.html'
-    else:
-        base_template = 'dashboard.html'
-    return render(request, 'lesson_request_success.html',{'base_template':base_template,'dashboard_url':dashboard_url})
-
-@login_required
-def student_requests(request):
-    if request.user.role != 'admin':  
-        return redirect('log_in')  
-    lesson_requests = LessonRequest.objects.select_related('student').order_by('student')
-    students_with_requests = {}
-    for req in lesson_requests:
-        if req.student not in students_with_requests:
-            students_with_requests[req.student] = []
-        students_with_requests[req.student].append(req)
-
-    tutors = User.objects.filter(role='tutor')  
-
-    context = {
-        'students_with_requests': students_with_requests,
-        'tutors': tutors,
-    }
-    return render(request, 'student_requests.html', context)
 
 @login_required
 def assign_tutor(request, lesson_request_id):
@@ -947,59 +834,6 @@ def send_message_to_admin(request):
         form = ContactMessages()
 
     return render(request, 'contact_admin.html', {'form': form, 'base_template': base_template})
-
-@login_required
-def view_tutor_messages(request,role=None):
-    if request.user.role == 'admin':
-        tutor_messages = ContactMessage.objects.filter(role='tutor').order_by('timestamp')
-        return render(request,'admin_messages_tutors.html',{'messages':tutor_messages})
-
-@login_required
-def admin_reply(request, message_id):
-    if request.user.role != 'admin':  
-        return redirect('log_in')
-
-    message = get_object_or_404(ContactMessage, id=message_id)
-
-    if request.method == 'POST':
-        adminForm = AdminReplyBack(request.POST, instance=message)
-        if adminForm.is_valid():
-            reply_message = adminForm.save(commit=False)
-            reply_message.reply_timestamp = now()  
-            reply_message.save()
-            messages.success(request, f"Reply successfully sent to {message.user.first_name}!")
-            return redirect('response_success')
-        else:
-         return render(request, 'admin_reply.html', {'form': adminForm, 'message': message})
-
-    else:
-        adminForm = AdminReplyBack(instance=message)
-        return render(request, 'admin_reply.html', {'form': adminForm, 'message': message})
-
-@login_required
-def response_submitted_success(request):
-    dashboard_url = reverse('log_in')
-    if request.user.is_authenticated:
-        if request.user.role == 'tutor':
-            base_template = 'dashboard_base_tutor.html'
-            dashboard_url = reverse('tutor_dashboard')
-        elif request.user.role == 'student':
-            base_template = 'dashboard_base_student.html'
-            dashboard_url = reverse('student_dashboard')
-        elif request.user.role == 'admin':
-            base_template = 'dashboard_base_admin.html'
-            dashboard_url = reverse('admin_dashboard')
-        else:
-            base_template = 'home.html'
-    else:
-        base_template = 'home.html'
-    return render(request, 'response_submitted.html',{'base_template':base_template,'dashboard_url':dashboard_url})
-
-@login_required
-def tutor_messages(request):
-    tutor = request.user
-    tutorMessages = ContactMessage.objects.filter(user=tutor).order_by('timestamp')
-    return render(request,'tutor_messages.html',{'messages':tutorMessages})
 
 @login_required
 def tutor_profile(request):
