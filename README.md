@@ -26,7 +26,7 @@ The project, named `task_manager`, consists of a single app called `tasks`. This
 ## **Deployed Application**  
 
 The deployed version of the application is available at:  
-[**Insert Deployment URL Here**](#)
+[https://k23006731.pythonanywhere.com/]
 
 ---
 
